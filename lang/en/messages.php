@@ -1,0 +1,30 @@
+<?php
+
+return
+    [
+        'success' => 'Successfully completed',
+        'failure' => 'Operation failed',
+        'ActivationNeeded' => 'Please confirm your account',
+        'CompletetionNeeded' => 'Please complete your profile information',
+        'unauthenticated' => 'Unauthorized access',
+        'unauthorized' => 'Unauthorized action',
+        'last_updated' => 'Last updated ',
+        'fcm_token_updated' => 'FCM token updated successfully',
+        'added_successfully' => 'Added successfully',
+        'updated_successfully' => 'Updated successfully',
+        'deleted_successfully' => 'Deleted successfully',
+        'not_found' => 'Not found',
+        'url_not_found' => 'URL not found',
+        'invalid_data' => 'Invalid data provided',
+        'failed_to_send_code' => 'Failed to send the code',
+        'code_sent_successfully' => 'Code sent successfully',
+        'logged_out' => 'Successfully logged out',
+        'profile_updated_successfully' => 'Profile updated successfully',
+        'profile_completion_needed' => 'Please complete your profile information',
+        'failed_to_complete_profile' => 'Failed to complete profile',
+        'profile_completed_successfully' => 'Profile completed successfully',
+        'profile_already_completed' => 'Profile already completed',
+        'user_not_active' => 'User is not active',
+        'personal_info_updated' => 'Personal information updated successfully',
+        'study_info_updated' => 'Study information updated successfully',
+    ];
