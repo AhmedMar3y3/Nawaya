@@ -1,41 +1,33 @@
 <?php
 
 return [
-    'levels'         => [
-        'beginner'     => 'مبتدئ',
-        'intermediate' => 'متوسط',
-        'advanced'     => 'متقدم',
-    ],
-
-    'genders'        => [
-        'male'   => 'ذكر',
-        'female' => 'أنثى',
-    ],
-
-    'sections'       => [
-        'scientific' => 'علمي',
-        'literal'    => 'أدبي',
-    ],
-
-    'question_kinds' => [
-        'verbal'       => 'لفظي',
-        'quantitative' => 'كمي',
-    ],
-
-    'difficulties'   => [
-        'easy'   => 'سهل',
-        'medium' => 'متوسط',
-        'hard'   => 'صعب',
-    ],
-    'subscription_statuses' => [
+    'order_statuses'            => [
         'pending'   => 'قيد المراجعة',
-        'active'    => 'نشط',
-        'expired'   => 'منتهي',
-        'cancelled' => 'ملغي',
+        'paid'      => 'مدفوع',
+        'completed' => 'مكتمل',
+        'failed'    => 'فشل',
+        'refunded'  => 'مسترجع',
     ],
-    'subscription_types' => [
-        'trial'     => 'تجريبي',
-        'monthly'   => 'شهري',
-        'yearly'    => 'سنوي',
+    'payment_types'             => [
+        'cash'          => 'نقدي',
+        'online'        => 'بطاقة بنكية',
+        'bank_transfer' => 'تحويل بنكي',
+    ],
+
+    'boutique_owner_types'      => [
+        'platform' => 'المنصة',
+        'user'     => 'المستخدم',
+    ],
+
+    'workshop_types'            => [
+        'online'        => 'أونلاين',
+        'onsite'        => 'حضوري',
+        'online_onsite' => 'أونلاين و حضوري',
+        'recorded'      => 'مسجلة',
+    ],
+
+    'workshop_attachment_types' => [
+        'audio' => 'ملف صوتي',
+        'video' => 'ملف فيديو',
     ],
 ];

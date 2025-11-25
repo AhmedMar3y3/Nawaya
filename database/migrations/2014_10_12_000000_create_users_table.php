@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);
+            $table->double('balance')->default(0);
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });
