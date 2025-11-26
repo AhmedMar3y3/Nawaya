@@ -16,16 +16,14 @@ class AdminSeeder extends Seeder
         $admins = [
             [
                 'name' => 'أحمد محمد',
-                'email' => 'admin@qudratuh.com',
+                'email' => 'admin@nawaya.com',
                 'password' => Hash::make('password'),
-                'role' => 'admin',
                 'is_active' => true,
             ],
             [
                 'name' => 'محمد حسن',
-                'email' => 'mohamed@qudratuh.com',
+                'email' => 'mohamed@nawaya.com',
                 'password' => Hash::make('password'),
-                'role' => 'assistant',
                 'is_active' => true,
             ],
         ];

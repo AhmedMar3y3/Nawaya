@@ -1,16 +1,18 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
-use Illuminate\View\View;
-use App\Services\Admin\UserService;
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\Admin\User\StoreUserRequest;
-use App\Http\Requests\Admin\User\BulkActionRequest;
 use App\Http\Requests\Admin\User\UpdateUserRequest;
 use App\Http\Requests\Admin\User\UserFilterRequest;
+use App\Models\User;
+use App\Services\Admin\UserService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -20,111 +22,192 @@ class UserController extends Controller
 
     public function index(UserFilterRequest $request): View
     {
-        $filters       = $request->validated();
-        $users         = $this->userService->getUsersWithFilters($filters, 15);
-        $stats         = $this->userService->getUserStats();
-        $filterOptions = $this->userService->getFilterOptions();
+        $tab = $request->get('tab', 'active');
 
-        return view('Admin.users.index', compact('users', 'stats', 'filterOptions'));
+        $onlyTrashed = $tab === 'deleted';
+        $users       = $this->userService->getUsersWithFilters($request, 15, $onlyTrashed);
+        $stats       = $this->userService->getUserStats();
+        $countries   = \App\Models\Country::get(['id', 'name']);
+
+        return view('Admin.users.index', compact('users', 'stats', 'tab', 'countries'));
     }
 
-    public function show(User $user): View
+    public function show($id): JsonResponse
     {
-        $user     = $this->userService->getUserById($user->id);
-        $activity = $this->userService->getUserActivity($user);
-        return view('Admin.users.show', compact('user', 'activity'));
+        try {
+            $user = $this->userService->getUserById($id);
+
+            return response()->json([
+                'success'   => true,
+                'modalType' => 'show',
+                'user'      => [
+                    'id'                         => $user->id,
+                    'full_name'                  => $user->full_name,
+                    'email'                      => $user->email,
+                    'phone'                      => $user->phone,
+                    'is_active'                  => $user->is_active,
+                    'active_subscriptions_count' => $user->active_subscriptions_count ?? 0,
+                    'country'                    => $user->country ? ['name' => $user->country->name] : null,
+                    'subscriptions'              => $user->subscriptions->map(function ($sub) {
+                        return [
+                            'workshop' => $sub->workshop ? ['title' => $sub->workshop->title] : null,
+                        ];
+                    })->toArray(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء جلب بيانات المستخدم',
+            ], 404);
+        }
     }
 
-    public function create(): View
+    public function create(): JsonResponse
     {
-        $filterOptions = $this->userService->getFilterOptions();
-        return view('Admin.users.create', compact('filterOptions'));
+        return response()->json([
+            'success'   => true,
+            'modalType' => 'create',
+        ]);
     }
 
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(StoreUserRequest $request): JsonResponse
     {
         try {
             $this->userService->createUser($request->validated());
-            return redirect()->route('admin.users.index')->with('success', 'تم إنشاء المستخدم بنجاح');
-        } catch (\Exception) {
-            return redirect()->back()->withInput()->with('error', 'حدث خطأ أثناء إنشاء المستخدم');
+            return response()->json([
+                'success' => true,
+                'message' => 'تم إنشاء المستخدم بنجاح',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء إنشاء المستخدم',
+            ], 500);
         }
     }
 
-    public function edit(User $user): View
-    {
-        $user          = $this->userService->getUserById($user->id);
-        $filterOptions = $this->userService->getFilterOptions();
-        return view('Admin.users.edit', compact('user', 'filterOptions'));
-    }
-
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function edit($id): JsonResponse
     {
         try {
+            $user = $this->userService->getUserById($id);
+            return response()->json([
+                'success'   => true,
+                'modalType' => 'edit',
+                'user'      => [
+                    'id'         => $user->id,
+                    'full_name'  => $user->full_name,
+                    'email'      => $user->email,
+                    'phone'      => $user->phone,
+                    'country_id' => $user->country_id,
+                    'is_active'  => $user->is_active,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء جلب بيانات المستخدم',
+            ], 404);
+        }
+    }
+
+    public function update(UpdateUserRequest $request, $id): JsonResponse
+    {
+        try {
+            $user = User::findOrFail($id);
             $this->userService->updateUser($user, $request->validated());
-            return redirect()->route('admin.users.index')->with('success', 'تم تحديث المستخدم بنجاح');
-        } catch (\Exception) {
-            return redirect()->back()->withInput()->with('error', 'حدث خطأ أثناء تحديث المستخدم');
+            return response()->json([
+                'success' => true,
+                'message' => 'تم تحديث المستخدم بنجاح',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء تحديث المستخدم',
+            ], 500);
         }
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy($id): JsonResponse
     {
         try {
+            $user = User::findOrFail($id);
             $this->userService->deleteUser($user);
-
-            return redirect()->route('admin.users.index')->with('success', 'تم حذف المستخدم بنجاح');
-        } catch (\Exception) {
-            return redirect()->back()->with('error', 'حدث خطأ أثناء حذف المستخدم');
+            return response()->json([
+                'success' => true,
+                'message' => 'تم حذف المستخدم بنجاح',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حذف المستخدم',
+            ], 500);
         }
     }
 
-    public function toggleStatus(User $user): RedirectResponse
+    public function restore($id): JsonResponse
     {
         try {
-            $this->userService->toggleUserStatus($user);
-            $status = $user->is_active ? 'تم تفعيل المستخدم' : 'تم إيقاف المستخدم';
-            return redirect()->back()->with('success', $status);
-        } catch (\Exception) {
-            return redirect()->back()->with('error', 'حدث خطأ أثناء تغيير حالة المستخدم');
+            $this->userService->restoreUser($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'تم استعادة المستخدم بنجاح',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء استعادة المستخدم',
+            ], 500);
         }
     }
 
-    public function bulkAction(BulkActionRequest $request): RedirectResponse
+    public function permanentlyDelete($id): JsonResponse
     {
         try {
-            $action  = $request->input('action');
-            $userIds = $request->input('user_ids', []);
-
-            if (empty($userIds)) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'يرجى اختيار مستخدم واحد على الأقل');
-            }
-
-            switch ($action) {
-                case 'delete':
-                    $count   = $this->userService->bulkDeleteUsers($userIds);
-                    $message = "تم حذف {$count} مستخدم بنجاح";
-                    break;
-
-                case 'activate':
-                    $count   = $this->userService->bulkToggleUserStatus($userIds, true);
-                    $message = "تم تفعيل {$count} مستخدم بنجاح";
-                    break;
-
-                case 'deactivate':
-                    $count   = $this->userService->bulkToggleUserStatus($userIds, false);
-                    $message = "تم إيقاف {$count} مستخدم بنجاح";
-                    break;
-
-                default:
-                    return redirect()->back()->with('error', 'إجراء غير صحيح');
-            }
-
-            return redirect()->back()->with('success', $message);
-        } catch (\Exception) {
-            return redirect()->back()->with('error', 'حدث خطأ أثناء تنفيذ الإجراء');
+            $this->userService->permanentlyDeleteUser($id);
+            return response()->json([
+                'success' => true,
+                'message' => 'تم حذف المستخدم نهائياً بنجاح',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حذف المستخدم',
+            ], 500);
         }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $tab         = $request->get('tab', 'active');
+        $onlyTrashed = $tab === 'deleted';
+
+        return Excel::download(new UsersExport($request->only(['search', 'status']), $onlyTrashed), 'users.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        set_time_limit(180);
+        ini_set('memory_limit', '512M');
+
+        $tab         = $request->get('tab', 'active');
+        $onlyTrashed = $tab === 'deleted';
+
+        $users = $this->userService->getUsersForExport($request, $onlyTrashed, 1000);
+
+        $pdf = PDF::loadView('Admin.users.exports.pdf', [
+            'users' => $users,
+            'tab'   => $tab,
+        ]);
+
+        $pdf->setOption('enable-local-file-access', true);
+        $pdf->setOption('isRemoteEnabled', false);
+        $pdf->setOption('chroot', base_path());
+        $pdf->setPaper('a4', 'landscape');
+        $pdf->setOption('defaultFont', 'DejaVu Sans');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isPhpEnabled', false);
+
+        return $pdf->download('users.pdf');
     }
 }

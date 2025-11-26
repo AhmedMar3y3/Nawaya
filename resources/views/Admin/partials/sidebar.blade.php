@@ -80,42 +80,15 @@
                 </span>
             </a>
         </li>
-        
-        <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.packages.index') }}">
-                <span class="menu-title me-2">باقة الاشتراك</span>
-                <span class="menu-icon">
-                    <i class="fa fa-box"></i>
-                </span>
-            </a>
-        </li>
 
-        <li class="nav-item menu-items">
+        {{-- <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.subscriptions.index') }}">
                 <span class="menu-title me-2">الاشتراكات</span>
                 <span class="menu-icon">
                     <i class="fa fa-crown"></i>
                 </span>
             </a>
-        </li>
-
-        <li class="nav-item menu-items">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.cities.index') }}">
-                <span class="menu-title me-2">المدن</span>
-                <span class="menu-icon">
-                    <i class="fa fa-city"></i>
-                </span>
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.schools.index') }}">
-                <span class="menu-title me-2">المدارس</span>
-                <span class="menu-icon">
-                    <i class="fa fa-school"></i>
-                </span>
-            </a>
-        </li>
+        </li> --}}
 
         <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end"

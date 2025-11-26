@@ -8,9 +8,13 @@
         <div class="ms-auto d-flex align-items-center justify-content-center">
             <a class="sidebar-brand brand-logo text-decoration-none ms-5 fs-2" href="{{ route('admin.dashboard') }}"
                 style="color: white;">
-                <span class="align-middle">قدراتو</span>
-                    <img src="{{ asset('defaults/logo.png') }}" alt="Logo" class="d-inline-block align-middle me-2" style="width:48px; height:auto;">
-                </a>
+                <span class="align-middle">نوايا</span>
+                @php
+                    $logo = \App\Models\Setting::where('key', 'logo')->first();
+                    $logoUrl = $logo && $logo->value ? $logo->value : asset('defaults/nawaya.png');
+                @endphp
+                <img src="{{ $logoUrl }}" alt="Logo" class="d-inline-block align-middle me-2" style="width:48px; height:auto; object-fit: contain;">
+            </a>
         </div>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
             data-toggle="offcanvas">

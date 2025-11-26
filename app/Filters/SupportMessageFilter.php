@@ -20,9 +20,14 @@ class SupportMessageFilter
         $this->builder = $builder;
 
         foreach ($this->request->all() as $name => $value) {
-            if (method_exists($this, $name) && ! empty($value)) {
+            if (method_exists($this, $name) && $value !== null && $value !== '') {
                 $this->$name($value);
             }
+        }
+        
+        // Default sorting if not specified
+        if (!$this->request->has('sort')) {
+            $this->builder->orderBy('created_at', 'desc');
         }
 
         return $this->builder;
@@ -31,10 +36,12 @@ class SupportMessageFilter
     protected function search($value): void
     {
         $this->builder->where(function ($query) use ($value) {
-            $query->where('name', 'like', "%{$value}%")
-                ->orWhere('email', 'like', "%{$value}%")
-                ->orWhere('title', 'like', "%{$value}%")
-                ->orWhere('message', 'like', "%{$value}%");
+            $query->where('message', 'like', "%{$value}%")
+                ->orWhereHas('user', function ($q) use ($value) {
+                    $q->where('full_name', 'like', "%{$value}%")
+                      ->orWhere('email', 'like', "%{$value}%")
+                      ->orWhere('phone', 'like', "%{$value}%");
+                });
         });
     }
 
@@ -51,32 +58,13 @@ class SupportMessageFilter
     protected function sort($value): void
     {
         switch ($value) {
-            case 'name_asc':
-                $this->builder->orderBy('name', 'asc');
-                break;
-            case 'name_desc':
-                $this->builder->orderBy('name', 'desc');
-                break;
-            case 'email_asc':
-                $this->builder->orderBy('email', 'asc');
-                break;
-            case 'email_desc':
-                $this->builder->orderBy('email', 'desc');
-                break;
-            case 'title_asc':
-                $this->builder->orderBy('title', 'asc');
-                break;
-            case 'title_desc':
-                $this->builder->orderBy('title', 'desc');
-                break;
             case 'created_asc':
                 $this->builder->orderBy('created_at', 'asc');
                 break;
             case 'created_desc':
-                $this->builder->orderBy('created_at', 'desc');
-                break;
             default:
                 $this->builder->orderBy('created_at', 'desc');
+                break;
         }
     }
 }

@@ -27,158 +27,92 @@
         margin: 0.5rem 0 0 0;
     }
     
-    .stats-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+    .tabs-container {
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        border-radius: 15px;
+        padding: 0;
         margin-bottom: 2rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        overflow: hidden;
     }
     
-    .stat-card {
+    .nav-tabs {
+        border: none;
+        background: rgba(255,255,255,0.05);
+        padding: 0.5rem;
+    }
+    
+    .nav-tabs .nav-link {
+        border: none;
+        color: #94a3b8;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        margin: 0 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        color: #fff;
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .nav-tabs .nav-link.active {
+        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+        color: #fff;
+    }
+    
+    .search-export-section {
         background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
         border-radius: 15px;
         padding: 1.5rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .stat-card.active {
-        border-color: rgba(16, 185, 129, 0.3);
-    }
-    
-    .stat-card.inactive {
-        border-color: rgba(239, 68, 68, 0.3);
-    }
-    
-    .stat-card.subscribed {
-        border-color: rgba(56, 189, 248, 0.3);
-    }
-    
-    .stat-card.verified {
-        border-color: rgba(139, 92, 246, 0.3);
-    }
-    
-    .stat-number {
-        color: #fff;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0;
-    }
-    
-    .stat-label {
-        color: #94a3b8;
-        font-size: 0.9rem;
-        margin: 0.5rem 0 0 0;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .stat-icon {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .stat-card.active .stat-icon {
-        color: #10b981;
-    }
-    
-    .stat-card.inactive .stat-icon {
-        color: #ef4444;
-    }
-    
-    .stat-card.subscribed .stat-icon {
-        color: #38bdf8;
-    }
-    
-    .stat-card.verified .stat-icon {
-        color: #8b5cf6;
-    }
-    
-    .filters-section {
-        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-        border-radius: 15px;
-        padding: 2rem;
         margin-bottom: 2rem;
         box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
     }
     
-    .filters-title {
+    .search-input {
+        flex: 1;
+        min-width: 250px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
         color: #fff;
-        font-size: 1.2rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .search-input:focus {
+        background: rgba(255,255,255,0.08);
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 0.2rem rgba(56,189,248,0.25);
+        color: #fff;
+        outline: none;
+    }
+    
+    .btn-export {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        color: white;
         font-weight: 600;
-        margin-bottom: 1.5rem;
-        display: flex;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
         align-items: center;
         gap: 0.5rem;
     }
     
-    .filters-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
+    .btn-export:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        color: white;
+        text-decoration: none;
     }
     
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .filter-label {
-        color: #94a3b8;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-    }
-    
-    .filter-input {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px;
-        color: #fff;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-    
-    .filter-input:focus {
-        background: rgba(255,255,255,0.08);
-        border-color: #38bdf8;
-        box-shadow: 0 0 0 0.2rem rgba(56,189,248,0.25);
-        color: #fff;
-    }
-    
-    .filter-input::placeholder {
-        color: #64748b;
-    }
-    
-    .filter-select {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px;
-        color: #fff;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-    
-    .filter-select:focus {
-        background: rgba(255,255,255,0.08);
-        border-color: #38bdf8;
-        box-shadow: 0 0 0 0.2rem rgba(56,189,248,0.25);
-        color: #fff;
-    }
-    
-    .filter-select option {
-        background: #1E293B;
-        color: #fff;
-    }
-    
-    .filters-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
-        flex-wrap: wrap;
-    }
-    
-    .btn-filter {
+    .btn-create {
         background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
         border: none;
         border-radius: 8px;
@@ -192,97 +126,11 @@
         gap: 0.5rem;
     }
     
-    .btn-filter:hover {
+    .btn-create:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
         color: white;
         text-decoration: none;
-    }
-    
-    .btn-clear {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
-        color: #94a3b8;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .btn-clear:hover {
-        background: rgba(255,255,255,0.15);
-        border-color: rgba(255,255,255,0.3);
-        color: #fff;
-        text-decoration: none;
-    }
-    
-    .bulk-actions {
-        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-        border-radius: 15px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-        display: none;
-    }
-    
-    .bulk-actions.show {
-        display: block;
-    }
-    
-    .bulk-actions-title {
-        color: #fff;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .bulk-actions-buttons {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-    
-    .btn-bulk {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
-        color: white;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .btn-bulk.activate {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    }
-    
-    .btn-bulk.deactivate {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    }
-    
-    .btn-bulk:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-        color: white;
-        text-decoration: none;
-    }
-    
-    .btn-bulk.activate:hover {
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-    
-    .btn-bulk.deactivate:hover {
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
     }
     
     .users-table {
@@ -317,96 +165,10 @@
         background: rgba(255,255,255,0.02);
     }
     
-    .table tbody tr:last-child {
-        border-bottom: none;
-    }
-    
     .table tbody td {
         padding: 1.5rem 1rem;
         border: none;
         vertical-align: middle;
-    }
-    
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    
-    .user-avatar {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid rgba(255,255,255,0.1);
-    }
-    
-    .user-details {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .user-name {
-        color: #fff;
-        font-weight: 600;
-        font-size: 1rem;
-        margin: 0;
-    }
-    
-    .user-phone {
-        color: #94a3b8;
-        font-size: 0.9rem;
-        margin: 0;
-    }
-    
-    .status-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .status-active {
-        background: rgba(16, 185, 129, 0.1);
-        color: #10b981;
-        border: 1px solid rgba(16, 185, 129, 0.2);
-    }
-    
-    .status-inactive {
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.2);
-    }
-    
-    .status-verified {
-        background: rgba(139, 92, 246, 0.1);
-        color: #8b5cf6;
-        border: 1px solid rgba(139, 92, 246, 0.2);
-    }
-    
-    .status-unverified {
-        background: rgba(245, 158, 11, 0.1);
-        color: #f59e0b;
-        border: 1px solid rgba(245, 158, 11, 0.2);
-    }
-    
-    .academic-info {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-    
-    .academic-level {
-        color: #fff;
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-    
-    .academic-details {
-        color: #94a3b8;
-        font-size: 0.8rem;
     }
     
     .action-buttons {
@@ -415,8 +177,7 @@
         align-items: center;
     }
     
-    .btn-view {
-        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+    .btn-action {
         border: none;
         border-radius: 8px;
         padding: 0.5rem 1rem;
@@ -427,6 +188,11 @@
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
+        cursor: pointer;
+    }
+    
+    .btn-view {
+        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
     }
     
     .btn-view:hover {
@@ -438,16 +204,6 @@
     
     .btn-edit {
         background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        color: white;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
     }
     
     .btn-edit:hover {
@@ -457,30 +213,8 @@
         text-decoration: none;
     }
     
-    .btn-toggle {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        color: white;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-toggle:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        color: white;
-    }
-    
     .btn-delete {
         background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        color: white;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
     }
     
     .btn-delete:hover {
@@ -489,633 +223,761 @@
         color: white;
     }
     
-    /* Alert Styles */
-    .alert {
+    .btn-restore {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    
+    .btn-restore:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        color: white;
+    }
+    
+    .whatsapp-link {
+        color: #25D366;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    
+    .whatsapp-link:hover {
+        color: #128C7E;
+        text-decoration: underline;
+    }
+    
+    .modal-content {
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        color: #fff;
+        direction: rtl;
+        text-align: right;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 1.5rem 2rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .modal-title {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 2rem;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 1.5rem 2rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 0 0 20px 20px;
+    }
+    
+    .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+    
+    .btn-close:hover {
+        opacity: 1;
+    }
+    
+    .form-control, .form-select {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        direction: rtl;
+        text-align: right;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        background: rgba(255,255,255,0.08);
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 0.2rem rgba(56,189,248,0.25);
+        color: #fff;
+        outline: none;
+    }
+    
+    .form-control::placeholder {
+        color: #64748b;
+        text-align: right;
+    }
+    
+    .form-select option {
+        background: #1E293B;
+        color: #fff;
+        direction: rtl;
+    }
+    
+    .form-label {
+        color: #94a3b8;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
         border: none;
         border-radius: 10px;
-        padding: 1rem 1.5rem;
-        margin-bottom: 1rem;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
     
-    .alert-success {
-        background: rgba(16, 185, 129, 0.1);
-        color: #10b981;
-        border-left: 4px solid #10b981;
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
     }
     
-    .alert-danger {
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
-        border-left: 4px solid #ef4444;
+    .btn-secondary {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+        padding: 0.75rem 2rem;
+        color: #94a3b8;
+        transition: all 0.3s ease;
     }
     
-    /* Custom Pagination - Complete Override */
+    .btn-secondary:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.3);
+        color: #fff;
+    }
+    
+    .pagination-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+        border-radius: 15px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .pagination-info {
+        color: #94a3b8;
+        font-size: 0.95rem;
+    }
+    
+    .pagination-text {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .pagination-text strong {
+        color: #fff;
+        font-weight: 600;
+    }
+    
     .custom-pagination {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-        margin-top: 2rem !important;
-        list-style: none !important;
-        padding: 0 !important;
-        flex-wrap: wrap !important;
-    }
-    
-    .custom-pagination .page-item {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: none !important;
-        border: none !important;
-        box-shadow: none !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
     
     .custom-pagination .page-link {
-        background: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.1) !important;
-        color: #94a3b8 !important;
-        border-radius: 8px !important;
-        padding: 0.75rem 1rem !important;
-        transition: all 0.3s ease !important;
-        text-decoration: none !important;
-        min-width: 45px !important;
-        text-align: center !important;
-        display: block !important;
-        font-size: 0.9rem !important;
-        font-weight: 500 !important;
-        line-height: 1 !important;
-        margin: 0 !important;
-        box-shadow: none !important;
-        outline: none !important;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #94a3b8;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        min-width: 45px;
+        justify-content: center;
     }
     
     .custom-pagination .page-link:hover {
-        background: rgba(255,255,255,0.1) !important;
-        border-color: rgba(255,255,255,0.2) !important;
-        color: #fff !important;
-        text-decoration: none !important;
-        transform: translateY(-1px) !important;
+        background: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.2);
+        color: #fff;
+        transform: translateY(-2px);
     }
     
     .custom-pagination .page-item.active .page-link {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-        border-color: #10b981 !important;
-        color: white !important;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-color: #10b981;
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
     
     .custom-pagination .page-item.disabled .page-link {
-        background: rgba(255,255,255,0.02) !important;
-        border-color: rgba(255,255,255,0.05) !important;
-        color: #64748b !important;
-        cursor: not-allowed !important;
-        opacity: 0.5 !important;
+        background: rgba(255,255,255,0.02);
+        border-color: rgba(255,255,255,0.05);
+        color: #64748b;
+        cursor: not-allowed;
+        opacity: 0.5;
     }
     
     .custom-pagination .page-item.disabled .page-link:hover {
-        transform: none !important;
-        background: rgba(255,255,255,0.02) !important;
-        border-color: rgba(255,255,255,0.05) !important;
-        color: #64748b !important;
+        transform: none;
+        background: rgba(255,255,255,0.02);
+        border-color: rgba(255,255,255,0.05);
+        color: #64748b;
     }
     
-    .custom-pagination .page-link:focus {
-        box-shadow: 0 0 0 0.2rem rgba(56, 189, 248, 0.25) !important;
-        outline: none !important;
+    /* Responsive Pagination */
+    @media (max-width: 768px) {
+        .pagination-wrapper {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .pagination-info {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .custom-pagination {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .custom-pagination .page-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            min-width: 40px;
+        }
     }
     
-    /* Hide default Laravel pagination */
-    .pagination:not(.custom-pagination) {
-        display: none !important;
-    }
-    
-    /* Pagination container */
-    .pagination-container {
-        display: flex !important;
-        justify-content: center !important;
-        width: 100% !important;
-        margin-top: 2rem !important;
-    }
-    
-    /* Empty State */
     .empty-state {
         text-align: center;
         padding: 3rem 2rem;
         color: #94a3b8;
     }
     
-    .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
+    .workshop-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
     
-    .empty-state h4 {
-        color: #fff;
+    .workshop-item {
+        padding: 0.75rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
         margin-bottom: 0.5rem;
+        border-right: 3px solid #38bdf8;
+        transition: all 0.3s ease;
     }
     
-    /* Modal Styles */
-    .modal-content {
-        background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 15px;
-        color: #fff;
+    .workshop-item:hover {
+        background: rgba(255,255,255,0.08);
+        transform: translateX(-5px);
     }
     
-    .modal-header {
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .modal-title {
-        color: #fff;
-        font-weight: 600;
-    }
-    
-    .btn-close {
-        filter: invert(1);
-    }
-    
-    .form-control {
+    .info-box {
         background: rgba(255,255,255,0.05);
         border: 1px solid rgba(255,255,255,0.1);
-        color: #fff;
-    }
-    
-    .form-control:focus {
-        background: rgba(255,255,255,0.08);
-        border-color: #38bdf8;
-        box-shadow: 0 0 0 0.2rem rgba(56,189,248,0.25);
-        color: #fff;
-    }
-    
-    .form-select {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: #fff;
-    }
-    
-    .form-select:focus {
-        background: rgba(255,255,255,0.08);
-        border-color: #38bdf8;
-        box-shadow: 0 0 0 0.2rem rgba(56,189,248,0.25);
-        color: #fff;
-    }
-    
-    .form-label {
-        color: #94a3b8;
-        font-weight: 500;
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .filters-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .stats-cards {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        }
-        
-        .action-buttons {
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-        
-        .btn-view, .btn-edit, .btn-toggle, .btn-delete {
-            width: 100%;
-            justify-content: center;
-        }
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
     }
 </style>
 @endsection
 
 @section('main')
 <div class="users-container" dir="rtl">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1 class="page-title">إدارة المستخدمين</h1>
-                <p class="page-subtitle">عرض وإدارة جميع مستخدمي التطبيق</p>
+    <!-- Tabs -->
+    <div class="tabs-container">
+        <ul class="nav nav-tabs" id="usersTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {{ $tab === 'active' ? 'active' : '' }}" 
+                        id="active-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#active-users" 
+                        type="button" 
+                        role="tab"
+                        onclick="switchTab('active')">
+                    المستخدمين النشطين
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {{ $tab === 'deleted' ? 'active' : '' }}" 
+                        id="deleted-tab" 
+                        data-bs-toggle="tab" 
+                        data-bs-target="#deleted-users" 
+                        type="button" 
+                        role="tab"
+                        onclick="switchTab('deleted')">
+                    المستخدمين المحذوفين
+                </button>
+            </li>
+        </ul>
             </div>
-            <div class="col-md-6 text-end">
-                <a href="{{ route('admin.users.create') }}" class="btn-filter">
+
+    <!-- Search and Export Section -->
+    <div class="search-export-section">
+        <input type="text" 
+               id="searchInput" 
+               class="search-input" 
+               placeholder="البحث بالاسم أو البريد الإلكتروني أو رقم الهاتف..."
+               value="{{ request('search') }}"
+               onkeyup="handleSearch(event)">
+        <button type="button" class="btn-create" onclick="openCreateModal()">
                     <i class="fa fa-plus"></i>
                     إضافة مستخدم جديد
-                </a>
+        </button>
+        <a href="{{ route('admin.users.export.excel', ['tab' => $tab, 'search' => request('search')]) }}" class="btn-export">
+            <i class="fa fa-file-excel"></i>
+            تصدير Excel
+        </a>
+        <a href="{{ route('admin.users.export.pdf', ['tab' => $tab, 'search' => request('search')]) }}" class="btn-export">
+            <i class="fa fa-file-pdf"></i>
+            تصدير PDF
+        </a>
+    </div>
 
+    <!-- Tab Content -->
+    <div class="tab-content" id="usersTabContent">
+        <!-- Active Users Tab -->
+        <div class="tab-pane fade {{ $tab === 'active' ? 'show active' : '' }}" 
+             id="active-users" 
+             role="tabpanel">
+            @include('Admin.users.partials.users-table', ['users' => $users, 'isDeleted' => false])
+        </div>
+
+        <!-- Deleted Users Tab -->
+        <div class="tab-pane fade {{ $tab === 'deleted' ? 'show active' : '' }}" 
+             id="deleted-users" 
+             role="tabpanel">
+            @include('Admin.users.partials.users-table', ['users' => $users, 'isDeleted' => true])
             </div>
         </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-cards">
-        <div class="stat-card active">
-            <i class="fa fa-users stat-icon"></i>
-            <h3 class="stat-number">{{ $stats['total'] }}</h3>
-            <p class="stat-label">إجمالي المستخدمين</p>
+<!-- Main Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true" dir="rtl">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">معلومات المستخدم</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="stat-card active">
-            <i class="fa fa-check-circle stat-icon"></i>
-            <h3 class="stat-number">{{ $stats['active'] }}</h3>
-            <p class="stat-label">المستخدمين النشطين</p>
+            <div class="modal-body" id="modalContent">
+                <!-- Content will be loaded here -->
         </div>
-        <div class="stat-card verified">
-            <i class="fa fa-shield-alt stat-icon"></i>
-            <h3 class="stat-number">{{ $stats['verified'] }}</h3>
-            <p class="stat-label">المستخدمين المؤكدين</p>
         </div>
-        <div class="stat-card subscribed">
-            <i class="fa fa-graduation-cap stat-icon"></i>
-            <h3 class="stat-number">{{ $stats['questionnaire_taken'] }}</h3>
-            <p class="stat-label">أخذوا الاستبيان</p>
         </div>
     </div>
 
-    <!-- Filters Section -->
-    <div class="filters-section">
-        <h3 class="filters-title">
-            <i class="fa fa-filter"></i>
-            فلاتر البحث
-        </h3>
-        
-        <form method="GET" action="{{ route('admin.users.index') }}" id="filtersForm">
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label class="filter-label">البحث</label>
-                    <input type="text" name="search" class="filter-input" placeholder="الاسم أو رقم الهاتف أو البريد الإلكتروني" value="{{ request('search') }}">
+<!-- Modal Templates (Hidden) -->
+<div style="display: none;">
+    <!-- Create Modal Template -->
+    <div id="createModalTemplate">
+        <form action="{{ route('admin.users.store') }}" method="POST" id="createUserForm" dir="rtl">
+            @csrf
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="full_name" class="form-label">الاسم الكامل <span class="text-danger">*</span></label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="full_name" 
+                           name="full_name" 
+                           placeholder="أدخل الاسم الكامل"
+                           required>
                 </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">الحالة</label>
-                    <select name="status" class="filter-select">
-                        <option value="">جميع الحالات</option>
-                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>نشط</option>
-                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>معطل</option>
-                    </select>
+                <div class="col-md-6">
+                    <label for="email" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="email" 
+                           name="email"
+                           placeholder="example@email.com">
                 </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">التأكيد</label>
-                    <select name="verified" class="filter-select">
-                        <option value="">جميع المستخدمين</option>
-                        <option value="verified" {{ request('verified') === 'verified' ? 'selected' : '' }}>مؤكد</option>
-                        <option value="unverified" {{ request('verified') === 'unverified' ? 'selected' : '' }}>غير مؤكد</option>
-                    </select>
                 </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">الجنس</label>
-                    <select name="gender" class="filter-select">
-                        <option value="">جميع الأجناس</option>
-                        @foreach($filterOptions['genders'] as $gender)
-                            <option value="{{ $gender->value }}" {{ request('gender') === $gender->value ? 'selected' : '' }}>
-                                {{ $gender->getLocalizedName() }}
-                            </option>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="phone" class="form-label">رقم الهاتف <span class="text-danger">*</span></label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="phone" 
+                           name="phone" 
+                           placeholder="+966XXXXXXXXX"
+                           required>
+                </div>
+                <div class="col-md-6">
+                    <label for="country_id" class="form-label">الدولة</label>
+                    <select class="form-select" id="country_id" name="country_id">
+                        <option value="">اختر الدولة</option>
+                        @foreach($countries as $country)
+                            <option value="{{ $country->id }}">{{ $country->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">القسم</label>
-                    <select name="section" class="filter-select">
-                        <option value="">جميع الأقسام</option>
-                        @foreach($filterOptions['sections'] as $section)
-                            <option value="{{ $section->value }}" {{ request('section') === $section->value ? 'selected' : '' }}>
-                                {{ $section->getLocalizedName() }}
-                            </option>
-                        @endforeach
+                </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="is_active" class="form-label">الحالة</label>
+                    <select class="form-select" id="is_active" name="is_active">
+                        <option value="1">نشط</option>
+                        <option value="0">غير نشط</option>
                     </select>
                 </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">المستوى</label>
-                    <select name="start_level" class="filter-select">
-                        <option value="">جميع المستويات</option>
-                        @foreach($filterOptions['levels'] as $level)
-                            <option value="{{ $level->value }}" {{ request('start_level') === $level->value ? 'selected' : '' }}>
-                                {{ $level->getLocalizedName() }}
-                            </option>
-                        @endforeach
-                    </select>
                 </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">إكمال الملف الشخصي</label>
-                    <select name="profile_completed" class="filter-select">
-                        <option value="">جميع المستخدمين</option>
-                        <option value="completed" {{ request('profile_completed') === 'completed' ? 'selected' : '' }}>مكتمل</option>
-                        <option value="incomplete" {{ request('profile_completed') === 'incomplete' ? 'selected' : '' }}>غير مكتمل</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">أخذ الاستبيان</label>
-                    <select name="questionnaire_taken" class="filter-select">
-                        <option value="">جميع المستخدمين</option>
-                        <option value="taken" {{ request('questionnaire_taken') === 'taken' ? 'selected' : '' }}>أخذ الاستبيان</option>
-                        <option value="not_taken" {{ request('questionnaire_taken') === 'not_taken' ? 'selected' : '' }}>لم يأخذ الاستبيان</option>
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">المدينة</label>
-                    <select name="city_id" class="filter-select">
-                        <option value="">جميع المدن</option>
-                        @foreach($filterOptions['cities'] as $city)
-                            <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
-                                {{ $city->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">من تاريخ</label>
-                    <input type="date" name="date_from" class="filter-input" value="{{ request('date_from') }}">
-                </div>
-                
-                <div class="filter-group">
-                    <label class="filter-label">إلى تاريخ</label>
-                    <input type="date" name="date_to" class="filter-input" value="{{ request('date_to') }}">
-                </div>
-            </div>
-            
-            <div class="filters-actions">
-                <button type="submit" class="btn-filter">
-                    <i class="fa fa-search"></i>
-                    تطبيق الفلاتر
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save me-2"></i>
+                    حفظ
                 </button>
-                <a href="{{ route('admin.users.index') }}" class="btn-clear">
-                    <i class="fa fa-times"></i>
-                    مسح الفلاتر
-                </a>
+                </div>
+        </form>
+                </div>
+                
+    <!-- Edit Modal Template -->
+    <div id="editModalTemplate">
+        <form id="editUserForm" method="POST" dir="rtl">
+            @csrf
+            @method('PUT')
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="edit_full_name" class="form-label">الاسم الكامل <span class="text-danger">*</span></label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="edit_full_name" 
+                           name="full_name" 
+                           placeholder="أدخل الاسم الكامل"
+                           required>
+                </div>
+                <div class="col-md-6">
+                    <label for="edit_email" class="form-label">البريد الإلكتروني</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="edit_email" 
+                           name="email"
+                           placeholder="example@email.com">
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="edit_phone" class="form-label">رقم الهاتف <span class="text-danger">*</span></label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="edit_phone" 
+                           name="phone" 
+                           placeholder="+966XXXXXXXXX"
+                           required>
+                </div>
+                <div class="col-md-6">
+                    <label for="edit_country_id" class="form-label">الدولة</label>
+                    <select class="form-select" id="edit_country_id" name="country_id">
+                        <option value="">اختر الدولة</option>
+                        @foreach($countries as $country)
+                            <option value="{{ $country->id }}">{{ $country->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="edit_is_active" class="form-label">الحالة</label>
+                    <select class="form-select" id="edit_is_active" name="is_active">
+                        <option value="1">نشط</option>
+                        <option value="0">غير نشط</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save me-2"></i>
+                    حفظ
+                </button>
             </div>
         </form>
     </div>
 
-    <!-- Bulk Actions -->
-    <div class="bulk-actions" id="bulkActions">
-        <h3 class="bulk-actions-title">
-            <i class="fa fa-tasks"></i>
-            الإجراءات الجماعية (<span id="selectedCount">0</span> مستخدم محدد)
-        </h3>
-        <div class="bulk-actions-buttons">
-            <button type="button" class="btn-bulk activate" onclick="bulkAction('activate')">
-                <i class="fa fa-check"></i>
-                تفعيل المحددين
-            </button>
-            <button type="button" class="btn-bulk deactivate" onclick="bulkAction('deactivate')">
-                <i class="fa fa-pause"></i>
-                إيقاف المحددين
-            </button>
-            <button type="button" class="btn-bulk" onclick="bulkAction('delete')">
-                <i class="fa fa-trash"></i>
-                حذف المحددين
-            </button>
+    <!-- Show Modal Template -->
+    <div id="showModalTemplate">
+        <div dir="rtl">
+            <h5 class="mb-4" style="color: #38bdf8; font-weight: 700;">معلومات المستخدم</h5>
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">الاسم الكامل</label>
+                    <div class="info-box">
+                        <p class="text-white mb-0" id="show_full_name"></p>
         </div>
     </div>
-
-    <!-- Alert Messages -->
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <div class="info-box">
+                        <p class="text-white mb-0" id="show_email"></p>
         </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
-
-    <!-- Users Table -->
-    <div class="users-table">
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                        </th>
-                        <th>المستخدم</th>
-                        <th>الحالة</th>
-                        <th>المعلومات الأكاديمية</th>
-                        <th>تاريخ التسجيل</th>
-                        <th>تفعيل/إيقاف</th>
-                        <th>الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($users as $user)
-                    <tr>
-                        <td>
-                            <input type="checkbox" class="user-checkbox" value="{{ $user->id }}" onchange="updateBulkActions()">
-                        </td>
-                        <td>
-                            <div class="user-info">
-                                <img src="{{ $user->image ? asset($user->image) : asset('defaults/profile.webp') }}" 
-                                     alt="User Avatar" class="user-avatar">
-                                <div class="user-details">
-                                    <h6 class="user-name">{{ $user->name }}</h6>
                                 </div>
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">رقم الهاتف</label>
+                    <div class="info-box">
+                        <p class="text-white mb-0" id="show_phone"></p>
                             </div>
-                        </td>
-                        <td>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="status-badge {{ $user->is_verified ? 'status-verified' : 'status-unverified' }}">
-                                    {{ $user->is_verified ? 'مؤكد' : 'غير مؤكد' }}
-                                </span>
-                                @if($user->questionnaire_taken)
-                                    <span class="status-badge status-verified">أخذ الاستبيان</span>
-                                @endif
                             </div>
-                        </td>
-                        <td>
-                            <div class="academic-info">
-                                <span class="academic-level">{{ $user->start_level->getLocalizedName() }}</span>
-                                <span class="academic-details">{{ $user->section->getLocalizedName() }}</span>
-                                @if($user->city)
-                                    <span class="academic-details">{{ $user->city->name }}</span>
-                                @endif
-                                @if($user->school)
-                                    <span class="academic-details">{{ $user->school->name }}</span>
-                                @endif
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">عدد الاشتراكات النشطة</label>
+                    <div class="info-box">
+                        <p class="text-white mb-0" id="show_subscriptions_count"></p>
                             </div>
-                        </td>
-                        <td>{{ $user->created_at->format('Y/m/d') }}</td>
-                        <td>
-                            <form action="{{ route('admin.users.toggle', $user->id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                <button type="submit" class="btn-toggle{{ !$user->is_active ? ' activate' : '' }}" style="{{ !$user->is_active ? 'background: linear-gradient(135deg, #10b981 0%, #059669 100%);' : '' }}" title="{{ $user->is_active ? 'إيقاف' : 'تفعيل' }}">
-                                    <i class="fa fa-{{ $user->is_active ? 'pause' : 'play' }}"></i>
-                                    {{ $user->is_active ? 'إيقاف' : 'تفعيل' }}
-                                </button>
-                            </form>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <a href="{{ route('admin.users.show', $user->id) }}" class="btn-view" title="عرض التفاصيل">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                                <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-edit" title="تعديل">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-delete" title="حذف">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
                             </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <i class="fa fa-users"></i>
-                                <h4>لا يوجد مستخدمين</h4>
-                                <p>لم يتم العثور على مستخدمين مطابقين للفلاتر المحددة</p>
                             </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <div class="row mb-4" id="show_country_row" style="display: none;">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">الدولة</label>
+                    <div class="info-box">
+                        <p class="text-white mb-0" id="show_country"></p>
         </div>
     </div>
-
-    <!-- Custom Pagination -->
-    @if($users->hasPages())
-    <div class="pagination-container">
-        <ul class="custom-pagination">
-            {{-- Previous Page Link --}}
-            @if ($users->onFirstPage())
-                <li class="page-item disabled">
-                    <span class="page-link">السابق</span>
-                </li>
-            @else
-                <li class="page-item">
-                    <a class="page-link" href="{{ $users->previousPageUrl() }}" rel="prev">السابق</a>
-                </li>
-            @endif
-
-            {{-- Pagination Elements --}}
-            @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
-                @if ($page == $users->currentPage())
-                    <li class="page-item active">
-                        <span class="page-link">{{ $page }}</span>
-                    </li>
-                @else
-                    <li class="page-item">
-                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                    </li>
-                @endif
-            @endforeach
-
-            {{-- Next Page Link --}}
-            @if ($users->hasMorePages())
-                <li class="page-item">
-                    <a class="page-link" href="{{ $users->nextPageUrl() }}" rel="next">التالي</a>
-                </li>
-            @else
-                <li class="page-item disabled">
-                    <span class="page-link">التالي</span>
-                </li>
-            @endif
-        </ul>
     </div>
-    @endif
+            <div class="mb-4" id="show_workshops_section">
+                <label class="form-label">ورش العمل المشترك بها</label>
+                <ul class="workshop-list" id="show_workshops_list"></ul>
+                <p class="text-white" id="show_no_workshops" style="display: none;">لا توجد اشتراكات نشطة</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
 @section('scripts')
 <script>
-let selectedUsers = [];
+let currentTab = '{{ $tab }}';
 
-function toggleSelectAll() {
-    const selectAll = document.getElementById('selectAll');
-    const checkboxes = document.querySelectorAll('.user-checkbox');
-    
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = selectAll.checked;
-    });
-    
-    updateBulkActions();
+function switchTab(tab) {
+    currentTab = tab;
+    const url = new URL(window.location);
+    url.searchParams.set('tab', tab);
+    url.searchParams.delete('page');
+    window.location.href = url.toString();
 }
 
-function updateBulkActions() {
-    const checkboxes = document.querySelectorAll('.user-checkbox:checked');
-    const bulkActions = document.getElementById('bulkActions');
-    const selectedCount = document.getElementById('selectedCount');
-    
-    selectedUsers = Array.from(checkboxes).map(cb => cb.value);
-    selectedCount.textContent = selectedUsers.length;
-    
-    if (selectedUsers.length > 0) {
-        bulkActions.classList.add('show');
+function handleSearch(event) {
+    if (event.key === 'Enter') {
+        const search = event.target.value;
+        const url = new URL(window.location);
+        if (search) {
+            url.searchParams.set('search', search);
+        } else {
+            url.searchParams.delete('search');
+        }
+        url.searchParams.set('tab', currentTab);
+        url.searchParams.delete('page');
+        window.location.href = url.toString();
+    }
+}
+
+const baseUrl = '{{ url("users") }}';
+
+function openCreateModal() {
+    const template = document.getElementById('createModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('userModalLabel').textContent = 'إضافة مستخدم جديد';
+    const modal = new bootstrap.Modal(document.getElementById('userModal'));
+    modal.show();
+}
+
+function openShowModal(userId) {
+    fetch(`${baseUrl}/${userId}/show`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const template = document.getElementById('showModalTemplate');
+                const content = template.innerHTML;
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('userModalLabel').textContent = 'تفاصيل المستخدم';
+                
+                // Populate data
+                const user = data.user;
+                document.getElementById('show_full_name').textContent = user.full_name || '-';
+                document.getElementById('show_email').textContent = user.email || '-';
+                
+                if (user.phone) {
+                    const phoneHtml = `<a href="https://wa.me/${user.phone.replace(/\D/g, '')}" target="_blank" class="whatsapp-link"><i class="fab fa-whatsapp"></i> ${user.phone}</a>`;
+                    document.getElementById('show_phone').innerHTML = phoneHtml;
     } else {
-        bulkActions.classList.remove('show');
-    }
-    
-    // Update select all checkbox
-    const selectAll = document.getElementById('selectAll');
-    const allCheckboxes = document.querySelectorAll('.user-checkbox');
-    selectAll.checked = selectedUsers.length === allCheckboxes.length;
-    selectAll.indeterminate = selectedUsers.length > 0 && selectedUsers.length < allCheckboxes.length;
+                    document.getElementById('show_phone').textContent = '-';
+                }
+                
+                document.getElementById('show_subscriptions_count').textContent = user.active_subscriptions_count || 0;
+                
+                if (user.country) {
+                    document.getElementById('show_country').textContent = user.country.name || '-';
+                    document.getElementById('show_country_row').style.display = 'block';
+                } else {
+                    document.getElementById('show_country_row').style.display = 'none';
+                }
+                
+                // Populate workshops
+                const workshopsList = document.getElementById('show_workshops_list');
+                const noWorkshops = document.getElementById('show_no_workshops');
+                workshopsList.innerHTML = '';
+                
+                if (user.subscriptions && user.subscriptions.length > 0) {
+                    user.subscriptions.forEach(subscription => {
+                        if (subscription.workshop) {
+                            const li = document.createElement('li');
+                            li.className = 'workshop-item';
+                            li.textContent = subscription.workshop.title;
+                            workshopsList.appendChild(li);
+                        }
+                    });
+                    if (workshopsList.children.length === 0) {
+                        noWorkshops.style.display = 'block';
+                    }
+                } else {
+                    noWorkshops.style.display = 'block';
+                }
+                
+                const modal = new bootstrap.Modal(document.getElementById('userModal'));
+                modal.show();
+            }
+        });
 }
 
-function bulkAction(action) {
-    if (selectedUsers.length === 0) {
-        alert('يرجى اختيار مستخدم واحد على الأقل');
-        return;
-    }
-    
-    let message = '';
-    switch (action) {
-        case 'delete':
-            message = `هل أنت متأكد من حذف ${selectedUsers.length} مستخدم؟`;
-            break;
-        case 'activate':
-            message = `هل أنت متأكد من تفعيل ${selectedUsers.length} مستخدم؟`;
-            break;
-        case 'deactivate':
-            message = `هل أنت متأكد من إيقاف ${selectedUsers.length} مستخدم؟`;
-            break;
-    }
-    
-    if (confirm(message)) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '{{ route("admin.users.bulk-action") }}';
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = '{{ csrf_token() }}';
-        
-        const actionField = document.createElement('input');
-        actionField.type = 'hidden';
-        actionField.name = 'action';
-        actionField.value = action;
-        
-        selectedUsers.forEach(userId => {
-            const userField = document.createElement('input');
-            userField.type = 'hidden';
-            userField.name = 'user_ids[]';
-            userField.value = userId;
-            form.appendChild(userField);
+function openEditModal(userId) {
+    fetch(`${baseUrl}/${userId}/edit`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const template = document.getElementById('editModalTemplate');
+                const content = template.innerHTML;
+                document.getElementById('modalContent').innerHTML = content;
+                document.getElementById('userModalLabel').textContent = 'تعديل المستخدم';
+                
+                // Set form action and populate data
+                const form = document.getElementById('editUserForm');
+                form.action = `${baseUrl}/${userId}`;
+                
+                const user = data.user;
+                document.getElementById('edit_full_name').value = user.full_name || '';
+                document.getElementById('edit_email').value = user.email || '';
+                document.getElementById('edit_phone').value = user.phone || '';
+                document.getElementById('edit_country_id').value = user.country_id || '';
+                document.getElementById('edit_is_active').value = user.is_active ? '1' : '0';
+                
+                const modal = new bootstrap.Modal(document.getElementById('userModal'));
+                modal.show();
+            }
         });
-        
-        form.appendChild(csrfToken);
-        form.appendChild(actionField);
-        document.body.appendChild(form);
-        form.submit();
+}
+
+function deleteUser(userId) {
+    if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+        fetch(`${baseUrl}/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'حدث خطأ أثناء حذف المستخدم');
+            }
+        });
     }
 }
+
+function restoreUser(userId) {
+    if (confirm('هل أنت متأكد من استعادة هذا المستخدم؟')) {
+        fetch(`${baseUrl}/${userId}/restore`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'حدث خطأ أثناء استعادة المستخدم');
+            }
+        });
+    }
+}
+
+function permanentlyDeleteUser(userId) {
+    if (confirm('هل أنت متأكد من الحذف النهائي لهذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء!')) {
+        fetch(`${baseUrl}/${userId}/permanent`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'حدث خطأ أثناء حذف المستخدم');
+            }
+        });
+    }
+}
+
+// Handle form submissions
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('userModal');
+    if (modal) {
+        modal.addEventListener('submit', function(e) {
+            if (e.target.tagName === 'FORM') {
+                e.preventDefault();
+                const form = e.target;
+                const formData = new FormData(form);
+                const url = form.action;
+                const method = form.method.toUpperCase();
+
+                fetch(url, {
+                    method: method,
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        bootstrap.Modal.getInstance(modal).hide();
+                        location.reload();
+                    } else {
+                        alert(data.message || 'حدث خطأ');
+                    }
+                });
+            }
+        });
+    }
+});
 </script>
 @endsection

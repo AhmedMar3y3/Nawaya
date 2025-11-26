@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Requests\Admin\Setting;
 
 use App\Http\Requests\BaseRequest;
@@ -8,29 +9,39 @@ class UpdateSettingsRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'about_app'           => 'nullable|string',
-            'privacy_policy'      => 'nullable|string',
-            'terms_of_use'        => 'nullable|string',
-            'telegram_channel'    => 'nullable|url|regex:/^https:\/\/t\.me\/[a-zA-Z0-9_]+$/',
-            'referral_ord_users'  => 'nullable|integer|min:0',
-            'referral_subs_users' => 'nullable|integer|min:0',
-            'max_free_restores'   => 'nullable|integer|min:0|max:10',
-            'per_of_easy'         => 'nullable|integer|min:0|max:100',
-            'per_of_medium'       => 'nullable|integer|min:0|max:100',
-            'per_of_hard'         => [
-                'nullable',
-                'integer',
-                'min:0',
-                'max:100',
-                function ($attribute, $value, $fail) {
-                    $easy   = (int) $this->input('per_of_easy', 0);
-                    $medium = (int) $this->input('per_of_medium', 0);
-                    $hard   = (int) $value;
-                    if ($easy + $medium + $hard !== 100) {
-                        $fail('يجب أن يكون مجموع نسب الصعوبة السهلة والمتوسطة والصعبة يساوي 100.');
-                    }
-                },
-            ],
+
+            // Main settings
+            'welcome'                   => 'nullable|string',
+            'logo'                      => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'logo_url'                  => 'nullable|string',
+            'whatsapp'                  => 'nullable|string',
+
+            // Invoice settings
+            'address'                   => 'nullable|string',
+            'phone_number'              => 'nullable|string',
+            'tax_number'                => 'nullable|string',
+
+            // Workshop settings
+            'workshop_policy'           => 'nullable|string',
+            'workshop_returning_policy' => 'nullable|string',
+
+            // Socialmedia settings
+            'facebook'                  => 'nullable|string',
+            'instgram'                  => 'nullable|string',
+            'tiktok'                    => 'nullable|string',
+            'twitter'                   => 'nullable|string',
+            'snapchat'                  => 'nullable|string',
+
+            // Bank account settings
+            'account_name'              => 'nullable|string',
+            'bank_name'                 => 'nullable|string',
+            'IBAN_number'               => 'nullable|string',
+            'account_number'            => 'nullable|string',
+            'swift'                     => 'nullable|string',
+
+            // Payment settings
+            'online_payment'            => 'nullable|boolean',
+            'bank_transfer'             => 'nullable|boolean',
         ];
     }
 }
