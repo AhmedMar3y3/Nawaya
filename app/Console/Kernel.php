@@ -13,6 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        
+        // Auto-convert expired online/onsite_online workshops to recorded
+        $schedule->call(function () {
+            app(\App\Services\Admin\WorkshopService::class)->convertExpiredWorkshops();
+        })->daily();
     }
 
     /**

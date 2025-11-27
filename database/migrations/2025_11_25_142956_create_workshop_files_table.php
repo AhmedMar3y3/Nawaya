@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
             $table->string('title');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

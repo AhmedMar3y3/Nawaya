@@ -81,6 +81,24 @@
             </a>
         </li>
 
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.workshops.index') }}">
+                <span class="menu-title me-2">ورش العمل</span>
+                <span class="menu-icon">
+                    <i class="fa fa-graduation-cap"></i>
+                </span>
+            </a>
+        </li>
+
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.products.index') }}">
+                <span class="menu-title me-2">إدارة البوتيك</span>
+                <span class="menu-icon">
+                    <i class="fa fa-shopping-bag"></i>
+                </span>
+            </a>
+        </li>
+
         {{-- <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.subscriptions.index') }}">
                 <span class="menu-title me-2">الاشتراكات</span>

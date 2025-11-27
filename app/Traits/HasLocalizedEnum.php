@@ -8,14 +8,27 @@ trait HasLocalizedEnum
         $enumName = strtolower(class_basename($this));
         $key      = $this->value;
 
-        $translationKey = "enums.{$enumName}s.{$key}";
+        // Try with underscore format first (workshop_type -> workshop_types)
+        $enumNameWithUnderscore = str_replace('type', '_types', $enumName);
+        $translationKey = "enums.{$enumNameWithUnderscore}.{$key}";
         $translation    = __($translationKey, [], 'ar');
+
+        // If not found, try without underscore format
+        if ($translation === $translationKey) {
+            $translationKey = "enums.{$enumName}s.{$key}";
+            $translation    = __($translationKey, [], 'ar');
+        }
 
         if ($translation === $translationKey) {
             return $this->getFallbackName();
         }
 
         return $translation;
+    }
+
+    public function localized(): string
+    {
+        return $this->getLocalizedName();
     }
 
     private function getFallbackName(): string
@@ -45,6 +58,16 @@ trait HasLocalizedEnum
             'questionkind'           => [
                 'verbal'   => 'لفظي',
                 'quantitative' => 'كمّي',
+            ],
+            'workshoptype' => [
+                'online'        => 'أونلاين',
+                'onsite'        => 'حضوري',
+                'online_onsite' => 'أونلاين و حضوري',
+                'recorded'      => 'مسجلة',
+            ],
+            'workshopattachmenttype' => [
+                'image' => 'صورة',
+                'video' => 'ملف فيديو',
             ],
         ];
 

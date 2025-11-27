@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\WorkshopType;
+use App\Enums\Workshop\WorkshopType;
 use App\Enums\Subscription\SubscriptionStatus;
 
 class Workshop extends Model
@@ -32,9 +32,6 @@ class Workshop extends Model
         'country_id',
         'hotel',
         'hall',
-
-        // Recorded cases
-        'recording_price',
     ];
 
     protected $casts = [
@@ -43,9 +40,6 @@ class Workshop extends Model
         'type' => WorkshopType::class,
         'start_date' => 'date',
         'end_date' => 'date',
-        'start_time' => 'time',
-        'end_time' => 'time',
-        'recording_price' => 'double',
     ];
 
     public function country()

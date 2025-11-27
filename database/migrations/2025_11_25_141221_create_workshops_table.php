@@ -26,16 +26,16 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
-            $table->string('online_link')->nullable();
-
+            
             // Onsite & Onsite_Online cases
             $table->string('city')->nullable();
             $table->foreignId('country_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('hotel')->nullable();
             $table->string('hall')->nullable();
+            
+            // Online & Onsite_Online cases only
+            $table->string('online_link')->nullable();
 
-            // Recorded cases
-            $table->double('recording_price')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

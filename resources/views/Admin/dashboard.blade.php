@@ -606,7 +606,7 @@
         <!-- Welcome Section -->
         <div class="welcome-section">
             <h1 class="welcome-title">{{ $greeting }}، {{ $admin->name }}</h1>
-            <p class="welcome-subtitle">مرحباً بك في لوحة التحكم الإدارية - قدراتو</p>
+            <p class="welcome-subtitle">مرحباً بك في لوحة التحكم الإدارية - نوايا</p>
 
             <div class="admin-info">
                 <div class="admin-avatar">

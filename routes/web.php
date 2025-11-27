@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SupportMessageController;
+use App\Http\Controllers\Admin\ProductController;
 
 
 // public routes //
@@ -58,5 +59,33 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::post('/'           , [\App\Http\Controllers\Admin\PartnerController::class, 'store'])->name('store');
         Route::match(['put', 'post'], '/{id}', [\App\Http\Controllers\Admin\PartnerController::class, 'update'])->name('update');
         Route::delete('/{id}'     , [\App\Http\Controllers\Admin\PartnerController::class, 'destroy'])->name('destroy');
+    });
+
+    // Workshops Routes
+    Route::prefix('workshops')->name('admin.workshops.')->group(function () {
+        Route::get('/'                    , [\App\Http\Controllers\Admin\WorkshopController::class, 'index'])->name('index');
+        Route::get('/create'              , [\App\Http\Controllers\Admin\WorkshopController::class, 'create'])->name('create');
+        Route::post('/'                   , [\App\Http\Controllers\Admin\WorkshopController::class, 'store'])->name('store');
+        Route::get('/export/excel'        , [\App\Http\Controllers\Admin\WorkshopController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/{id}/show'           , [\App\Http\Controllers\Admin\WorkshopController::class, 'show'])->name('show');
+        Route::get('/{id}/edit'           , [\App\Http\Controllers\Admin\WorkshopController::class, 'edit'])->name('edit');
+        Route::put('/{id}'                , [\App\Http\Controllers\Admin\WorkshopController::class, 'update'])->name('update');
+        Route::delete('/{id}'             , [\App\Http\Controllers\Admin\WorkshopController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/restore'       , [\App\Http\Controllers\Admin\WorkshopController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/permanent'   , [\App\Http\Controllers\Admin\WorkshopController::class, 'permanentlyDelete'])->name('permanent-delete');
+        Route::post('/{id}/toggle-status' , [\App\Http\Controllers\Admin\WorkshopController::class, 'toggleStatus'])->name('toggle-status');
+    });
+
+    // Products Routes (Boutique Management)
+    Route::prefix('products')->name('admin.products.')->group(function () {
+        Route::get('/'                    , [ProductController::class, 'index'])->name('index');
+        Route::get('/create'              , [ProductController::class, 'create'])->name('create');
+        Route::post('/'                   , [ProductController::class, 'store'])->name('store');
+        Route::get('/{id}/show'           , [ProductController::class, 'show'])->name('show');
+        Route::get('/{id}/edit'           , [ProductController::class, 'edit'])->name('edit');
+        Route::put('/{id}'                , [ProductController::class, 'update'])->name('update');
+        Route::delete('/{id}'             , [ProductController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/restore'       , [ProductController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/permanent'   , [ProductController::class, 'permanentlyDelete'])->name('permanent-delete');
     });
 });
