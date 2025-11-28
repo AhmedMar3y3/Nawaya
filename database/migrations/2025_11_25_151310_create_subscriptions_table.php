@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('full_name')->nullable();
             $table->string('phone')->nullable()->index();
             $table->foreignId('country_id')->nullable()->constrained()->onDelete('cascade');
+            $table->text('message')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

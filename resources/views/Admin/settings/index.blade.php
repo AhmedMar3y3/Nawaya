@@ -1306,8 +1306,15 @@
                         </div>
                         </div>
                     </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button type="submit" class="btn-save" id="saveGeneralBtn">
+                            <i class="fas fa-save"></i>
+                            حفظ الإعدادات العامة
+                        </button>
+                    </div>
+                    
                 </div>
-
             <!-- Payment and Bank Account Settings Tab -->
             <div class="tab-content" id="payment-settings">
                 <div class="settings-grid">
@@ -1414,6 +1421,7 @@
                         </div>
 
                         <div class="form-group">
+                            <input type="hidden" name="online_payment" value="0">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="online_payment" name="online_payment" value="1"
                                     {{ isset($data['online_payment']) && $data['online_payment'] == '1' ? 'checked' : '' }}>
@@ -1429,6 +1437,7 @@
                     </div>
 
                         <div class="form-group">
+                            <input type="hidden" name="bank_transfer" value="0">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="bank_transfer" name="bank_transfer" value="1"
                                     {{ isset($data['bank_transfer']) && $data['bank_transfer'] == '1' ? 'checked' : '' }}>
@@ -1443,6 +1452,13 @@
                             </div>
                         </div>
                 </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button type="submit" class="btn-save" id="savePaymentBtn">
+                        <i class="fas fa-save"></i>
+                        حفظ إعدادات الدفع
+                    </button>
                 </div>
             </div>
 
@@ -1690,7 +1706,8 @@
             });
 
             const form = document.getElementById('settingsForm');
-            const saveBtn = document.getElementById('saveBtn');
+            const saveGeneralBtn = document.getElementById('saveGeneralBtn');
+            const savePaymentBtn = document.getElementById('savePaymentBtn');
 
             form.addEventListener('submit', function(e) {
                 Object.keys(editors).forEach(function(id) {
@@ -1699,8 +1716,13 @@
                     }
                 });
 
-                saveBtn.disabled = true;
-                saveBtn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+                const clickedBtn = e.submitter || (saveGeneralBtn && saveGeneralBtn.contains(document.activeElement) ? saveGeneralBtn : savePaymentBtn);
+                
+                if (clickedBtn) {
+                    clickedBtn.disabled = true;
+                    clickedBtn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
+                }
+                
                 form.classList.add('loading');
             });
 

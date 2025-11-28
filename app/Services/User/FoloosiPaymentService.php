@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Services\User;
+
+use App\Models\Order;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class FoloosiPaymentService
+{
+    private string $secretKey;
+    private string $baseUrl;
+
+    public function __construct()
+    {
+        $this->secretKey = config('services.foloosi.secret_key');
+        $this->baseUrl   = config('services.foloosi.base_url', 'https://api.foloosi.com');
+    }
+
+    public function createPayment(Order $order): array
+    {
+        $payload = [
+            'amount'           => number_format($order->total_price, 2, '.', ''), // Must be string with 2 decimals
+            'currency'         => 'AED',
+            'description'      => 'Order #' . $order->id . ' - ' . config('app.name'),
+            'link_type'        => 'single',
+            'customer_name'    => $order->user->name ?? 'Customer',
+            'customer_email'   => $order->user->email,
+            'customer_mobile'  => $order->user->phone ?? '',
+            'phone_code'       => $order->user->country->code ?? '',
+            'notify_email'     => 'No',
+            'notify_sms'       => 'No',
+            'expire_date'     => now()->addDays(7)->format('Y-m-d H:i:s'),
+        ];
+
+        try {
+            $response = Http::withHeaders([
+                'secret_key'     => $this->secretKey,
+                'Content-Type'   => 'application/json',
+                'Accept'         => 'application/json',
+            ])->post("{$this->baseUrl}/merchant/v1/payment-links/create", $payload);
+
+            Log::info('Foloosi Create Payment Link Response', [
+                'order_id' => $order->id,
+                'status'   => $response->status(),
+                'body'     => $response->body(),
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (
+                    isset($data['message']) &&
+                    str_contains($data['message'], 'Payment link created successfully') &&
+                    isset($data['data']['payment_link_reference'])
+                ) {
+                    $reference   = $data['data']['payment_link_reference'];
+                    $paymentUrl  = "https://foloosi.com/v1/pay/{$reference}";
+
+                    $order->update([
+                        'invoice_id'   => $reference,
+                        'invoice_url'  => $paymentUrl,
+                    ]);
+
+                    return [
+                        'invoice_id'   => $reference,
+                        'invoice_url'  => $paymentUrl,
+                    ];
+                }
+
+                throw new \Exception($data['message'] ?? 'Unknown response from Foloosi');
+            }
+
+            $errorMessage = $response->json('message') ?? $response->body();
+            throw new \Exception("Foloosi API Error [{$response->status()}]: {$errorMessage}");
+
+        } catch (\Exception $e) {
+            Log::error('Foloosi Payment Link Creation Failed', [
+                'order_id' => $order->id,
+                'error'    => $e->getMessage(),
+                'trace'    => $e->getTraceAsString(),
+            ]);
+
+            throw new \Exception('فشل في إنشاء رابط الدفع: ' . $e->getMessage());
+        }
+    }
+
+    public function verifyPayment(string $referenceId): array
+    {
+        try {
+            $response = Http::withHeaders([
+                'secret_key'   => $this->secretKey,
+                'Content-Type' => 'application/json',
+            ])->get("{$this->baseUrl}/merchant/v1/payment-links/details/{$referenceId}");
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                $status = $data['data']['payment_status'] ?? 'unknown';
+
+                return [
+                    'paid'      => $status === 'paid',
+                    'status'    => $status,
+                    'amount'    => $data['data']['amount'] ?? null,
+                    'reference' => $referenceId,
+                ];
+            }
+
+            return [
+                'paid'   => false,
+                'status' => 'failed',
+                'error'  => $response->json('message') ?? 'Verification failed',
+            ];
+        } catch (\Exception $e) {
+            Log::error('Foloosi Verification Failed', [
+                'reference_id' => $referenceId,
+                'error'        => $e->getMessage(),
+            ]);
+
+            return ['paid' => false, 'status' => 'error'];
+        }
+    }
+}

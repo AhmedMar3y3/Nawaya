@@ -16,32 +16,11 @@ class SettingController extends Controller
 
     public function update(UpdateSettingsRequest $request)
     {
-        $data = $request->validated();
-        
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $logoPath = $logo->store('settings', 'public');
-            $logoUrl = asset('storage/' . $logoPath);
+         foreach ($request->validated() as $key => $value) {
             Setting::updateOrCreate(
-                ['key' => 'logo'],
-                ['value' => $logoUrl]
+                ['key' => $key],
+                ['value' => $value]
             );
-            unset($data['logo']);
-        } elseif (isset($data['logo_url']) && $data['logo_url']) {
-            Setting::updateOrCreate(
-                ['key' => 'logo'],
-                ['value' => $data['logo_url']]
-            );
-            unset($data['logo_url']);
-        }
-        
-        foreach ($data as $key => $value) {
-            if ($key !== 'logo' && $key !== 'logo_url') {
-                Setting::updateOrCreate(
-                    ['key' => $key],
-                    ['value' => $value]
-                );
-            }
         }
         
         return redirect()->route('admin.settings.index')->with('success', 'تم تحديث الإعدادات بنجاح.');

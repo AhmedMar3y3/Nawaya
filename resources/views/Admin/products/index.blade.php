@@ -1,71 +1,9 @@
 @extends('Admin.layout')
 
-@push('head')
-<style>
-    /* Critical CSS - Load immediately to prevent white flash */
-    html, body {
-        background: #0F172A !important;
-    }
-</style>
-<script>
-    // Set background immediately before page loads to prevent white flash
-    (function() {
-        document.documentElement.style.backgroundColor = '#0F172A';
-        document.body.style.backgroundColor = '#0F172A';
-    })();
-</script>
-@endpush
-
 @section('styles')
 <style>
-    /* Prevent white flash - apply immediately */
-    html {
-        background: #0F172A !important;
-    }
-    
-    body {
-        background: #0F172A !important;
-        opacity: 0;
-        transition: opacity 0.2s ease-in;
-    }
-    
-    body.loaded {
-        opacity: 1;
-    }
-    
-    /* Loading overlay to prevent white flash */
-    .page-loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #0F172A;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.3s ease-out;
-    }
-    
-    .page-loading-overlay.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-    
     .products-container {
         padding: 2rem 0;
-        background: transparent;
-        min-height: 100vh;
-    }
-    
-    #sectionTabContent {
-        background: transparent;
-        min-height: 300px;
-    }
-    
-    #sectionTabContent .tab-pane {
-        background: transparent;
     }
     
     .page-header {
@@ -126,34 +64,6 @@
         color: #fff;
     }
     
-    /* Fix white flash/lag on tab switching */
-    .tab-content {
-        background: transparent;
-        min-height: 200px;
-    }
-    
-    .tab-pane {
-        background: transparent;
-        opacity: 0;
-        transition: opacity 0.2s ease-in-out;
-    }
-    
-    .tab-pane.active {
-        opacity: 1;
-    }
-    
-    .tab-pane.fade {
-        transition: opacity 0.15s linear;
-    }
-    
-    .tab-pane.fade:not(.show) {
-        opacity: 0;
-    }
-    
-    .tab-pane.fade.show {
-        opacity: 1;
-    }
-    
     /* Sub-tabs (Active/Deleted) - Smaller and Different Design */
     .sub-tabs-container {
         border-radius: 10px;
@@ -176,7 +86,6 @@
         color: #64748b;
         background: transparent;
         border: 1px solid transparent;
-        transition: all 0.2s ease;
     }
     
     .sub-tabs-container .nav-link:hover {
@@ -190,16 +99,6 @@
         color: #a78bfa;
         border-color: rgba(139, 92, 246, 0.4);
         box-shadow: 0 2px 6px rgba(139, 92, 246, 0.15);
-    }
-    
-    /* Prevent white flash in sub-tabs content */
-    #productsTabContent {
-        background: transparent;
-        min-height: 100px;
-    }
-    
-    #productsTabContent .tab-pane {
-        background: transparent;
     }
     
     .search-export-section {
@@ -665,127 +564,35 @@
         border-radius: 8px;
     }
     
-    /* Improved File Upload UI */
-    .file-upload-area {
-        border: 2px dashed rgba(255,255,255,0.2);
-        border-radius: 8px;
-        padding: 1.5rem;
-        text-align: center;
-        background: rgba(255,255,255,0.02);
-        cursor: pointer;
-        transition: all 0.2s ease;
+    .file-input-wrapper {
         position: relative;
-    }
-    
-    .file-upload-area:hover {
-        border-color: #38bdf8;
-        background: rgba(56, 189, 248, 0.05);
-    }
-    
-    .file-upload-area.has-image {
-        border: none;
-        padding: 0;
-        background: transparent;
-        cursor: default;
-    }
-    
-    .file-upload-icon {
-        font-size: 2rem;
-        color: #64748b;
-        margin-bottom: 0.5rem;
-    }
-    
-    .file-upload-text {
-        color: #94a3b8;
-        font-size: 0.875rem;
-        margin: 0;
-    }
-    
-    .file-input-hidden {
-        position: absolute;
-        width: 0;
-        height: 0;
-        opacity: 0;
         overflow: hidden;
-    }
-    
-    .image-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.75rem;
-        justify-content: center;
-    }
-    
-    .btn-upload-image {
-        background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
-        color: white;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .btn-upload-image:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(56, 189, 248, 0.3);
-    }
-    
-    .btn-remove-image {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
-        color: white;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .btn-remove-image:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-    }
-    
-    .image-preview-wrapper {
-        position: relative;
         display: inline-block;
         width: 100%;
     }
     
-    .image-preview-wrapper .remove-overlay {
-        position: absolute;
-        top: 0.5rem;
-        left: 0.5rem;
-        background: rgba(0,0,0,0.7);
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .file-input-label {
+        display: block;
+        padding: 0.625rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        color: #94a3b8;
         cursor: pointer;
+        text-align: center;
         transition: all 0.2s ease;
-        z-index: 10;
-    }
-    
-    .image-preview-wrapper .remove-overlay:hover {
-        background: rgba(239, 68, 68, 0.9);
-        transform: scale(1.1);
-    }
-    
-    .image-preview-wrapper .remove-overlay i {
-        color: white;
         font-size: 0.875rem;
+    }
+    
+    .file-input-label:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: #38bdf8;
+        color: #fff;
+    }
+    
+    .file-input {
+        position: absolute;
+        left: -9999px;
     }
     
     /* Info Box for Show Modal */
@@ -800,19 +607,88 @@
         color: #fff;
         font-size: 0.9rem;
     }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .loading-overlay.active {
+        display: flex;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(56, 189, 248, 0.2);
+        border-top-color: #38bdf8;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+        color: #94a3b8;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .products-container {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .products-container.loaded {
+        opacity: 1;
+    }
+
+    .tab-pane {
+        display: none;
+    }
+
+    .tab-pane.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    html, body {
+        background: #0F172A !important;
+        min-height: 100vh;
+    }
 </style>
 @endsection
 
 @section('main')
-<!-- Loading Overlay to prevent white flash -->
-<div class="page-loading-overlay" id="pageLoadingOverlay">
-    <div style="color: #94a3b8; font-size: 1rem;">
-        <i class="fa fa-spinner fa-spin" style="margin-left: 0.5rem;"></i>
-        جاري التحميل...
-    </div>
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">جاري التحميل...</div>
 </div>
 
-<div class="products-container" dir="rtl">
+<div class="products-container" dir="rtl" id="productsContainer">
 
     <!-- Main Section Tabs (Products/Orders) -->
     <div class="tabs-container">
@@ -858,7 +734,7 @@
                                 data-bs-target="#active-products" 
                                 type="button" 
                                 role="tab"
-                                onclick="switchTab('active'); return false;">
+                                onclick="switchTab('active')">
                             المنتجات الموجودة
                         </button>
                     </li>
@@ -869,7 +745,7 @@
                                 data-bs-target="#deleted-products" 
                                 type="button" 
                                 role="tab"
-                                onclick="switchTab('deleted'); return false;">
+                                onclick="switchTab('deleted')">
                             المنتجات المحذوفة
                         </button>
                     </li>
@@ -896,26 +772,119 @@
                 <div class="tab-pane fade {{ $tab === 'active' ? 'show active' : '' }}" 
                      id="active-products" 
                      role="tabpanel">
-                    @include('Admin.products.partials.products-table', ['products' => $activeProducts, 'isDeleted' => false])
+                    @if(isset($products) && $products)
+                        @include('Admin.products.partials.products-table', ['products' => $products, 'isDeleted' => false])
+                    @else
+                        <div class="empty-state">
+                            <i class="fa fa-box" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h4>لا توجد منتجات</h4>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Deleted Products Tab -->
                 <div class="tab-pane fade {{ $tab === 'deleted' ? 'show active' : '' }}" 
                      id="deleted-products" 
                      role="tabpanel">
-                    @include('Admin.products.partials.products-table', ['products' => $deletedProducts, 'isDeleted' => true])
+                    @if(isset($products) && $products)
+                        @include('Admin.products.partials.products-table', ['products' => $products, 'isDeleted' => true])
+                    @else
+                        <div class="empty-state">
+                            <i class="fa fa-box" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h4>لا توجد منتجات</h4>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- Orders Section (Placeholder for future) -->
+        <!-- Orders Section -->
         <div class="tab-pane fade {{ $section === 'orders' ? 'show active' : '' }}" 
              id="orders-section" 
              role="tabpanel">
-            <div class="empty-state">
-                <i class="fa fa-shopping-cart" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                <h4>قريباً</h4>
-                <p>سيتم إضافة إدارة الطلبات قريباً</p>
+            
+            <!-- Orders Sub-tabs (Pending/Completed/Trashed) -->
+            <div class="sub-tabs-container">
+                <ul class="nav nav-tabs" id="ordersTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $tab === 'pending' ? 'active' : '' }}" 
+                                id="pending-orders-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#pending-orders" 
+                                type="button" 
+                                role="tab"
+                                onclick="switchTab('pending')">
+                            الطلبات المعلقة
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $tab === 'completed' ? 'active' : '' }}" 
+                                id="completed-orders-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#completed-orders" 
+                                type="button" 
+                                role="tab"
+                                onclick="switchTab('completed')">
+                            الطلبات المكتملة
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {{ $tab === 'trashed' ? 'active' : '' }}" 
+                                id="trashed-orders-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#trashed-orders" 
+                                type="button" 
+                                role="tab"
+                                onclick="switchTab('trashed')">
+                            الطلبات المحذوفة
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Orders Tab Content -->
+            <div class="tab-content" id="ordersTabContent">
+                <!-- Pending Orders Tab -->
+                <div class="tab-pane fade {{ $tab === 'pending' ? 'show active' : '' }}" 
+                     id="pending-orders" 
+                     role="tabpanel">
+                    @if(isset($orders) && $orders)
+                        @include('Admin.products.partials.orders-table', ['orders' => $orders, 'tab' => 'pending'])
+                    @else
+                        <div class="empty-state">
+                            <i class="fa fa-shopping-cart" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h4>لا توجد طلبات</h4>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Completed Orders Tab -->
+                <div class="tab-pane fade {{ $tab === 'completed' ? 'show active' : '' }}" 
+                     id="completed-orders" 
+                     role="tabpanel">
+                    @if(isset($orders) && $orders)
+                        @include('Admin.products.partials.orders-table', ['orders' => $orders, 'tab' => 'completed'])
+                    @else
+                        <div class="empty-state">
+                            <i class="fa fa-shopping-cart" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h4>لا توجد طلبات</h4>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Trashed Orders Tab -->
+                <div class="tab-pane fade {{ $tab === 'trashed' ? 'show active' : '' }}" 
+                     id="trashed-orders" 
+                     role="tabpanel">
+                    @if(isset($orders) && $orders)
+                        @include('Admin.products.partials.orders-table', ['orders' => $orders, 'tab' => 'trashed'])
+                    @else
+                        <div class="empty-state">
+                            <i class="fa fa-shopping-cart" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h4>لا توجد طلبات</h4>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -934,39 +903,75 @@
             </div>
         </div>
     </div>
+
+    <!-- Order Items Modal -->
+    <div class="modal fade" id="orderItemsModal" tabindex="-1" aria-labelledby="orderItemsModalLabel" aria-hidden="true" dir="rtl">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderItemsModalLabel">عناصر الطلب</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="orderItemsContent">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true" dir="rtl">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userDetailsModalLabel">تفاصيل المستخدم</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="userDetailsContent">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-const baseUrl = '{{ route("admin.products.index") }}';
+const baseUrlProducts = '{{ route("admin.products.index") }}';
+const baseUrlOrders = '{{ route("admin.orders.index") }}';
+
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+    document.getElementById('productsContainer').classList.remove('loaded');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+    document.getElementById('productsContainer').classList.add('loaded');
+}
 
 function switchSection(section) {
-    // Only reload for main tabs (Products/Orders) since Orders needs different data
+    showLoading();
     if (section === 'orders') {
-        showLoadingOverlay();
-        setTimeout(() => {
-            window.location.href = `${baseUrl}?section=${section}&tab={{ $tab }}&search={{ request('search') }}`;
-        }, 100);
+        window.location.href = `${baseUrlOrders}?section=${section}&tab=pending&search={{ request('search') }}`;
     } else {
-        // For products section, just update URL without reload if already on products
-        if ('{{ $section }}' === 'products') {
-            // Already on products, no need to reload
-            return;
-        }
-        showLoadingOverlay();
-        setTimeout(() => {
-            window.location.href = `${baseUrl}?section=${section}&tab={{ $tab }}&search={{ request('search') }}`;
-        }, 100);
+        window.location.href = `${baseUrlProducts}?section=${section}&tab=active&search={{ request('search') }}`;
     }
 }
 
 function switchTab(tab) {
-    // Bootstrap tabs will handle the visual switch automatically via data-bs-toggle
-    // URL will be updated by the event listener, no page reload needed
-    // Both active and deleted products are already loaded in the page
+    showLoading();
+    const section = '{{ $section }}';
+    const search = '{{ request('search') }}';
+    if (section === 'orders') {
+        window.location.href = `${baseUrlOrders}?section=${section}&tab=${tab}&search=${search}`;
+    } else {
+        window.location.href = `${baseUrlProducts}?section=${section}&tab=${tab}&search=${search}`;
+    }
 }
 
 function handleSearch(event) {
     if (event.key === 'Enter') {
+        showLoading();
         const search = event.target.value;
         window.location.href = `${baseUrl}?section={{ $section }}&tab={{ $tab }}&search=${search}`;
     }
@@ -1040,32 +1045,26 @@ function openCreateModal() {
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <label class="form-label">صورة المنتج <span class="text-danger">*</span></label>
-                                <input type="file" 
-                                       id="image" 
-                                       name="image" 
-                                       class="file-input-hidden" 
-                                       accept="image/*" 
-                                       required 
-                                       onchange="handleImageSelect(this, 'createImagePreview', 'createImageFile')">
-                                <div class="file-upload-area" id="createImageUploadArea" onclick="document.getElementById('image').click()">
-                                    <div class="file-upload-icon">
-                                        <i class="fa fa-cloud-upload-alt"></i>
-                                    </div>
-                                    <p class="file-upload-text">انقر أو اسحب الصورة هنا</p>
-                                    <p class="file-upload-text" style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.7;">PNG, JPG, GIF حتى 2MB</p>
+                                <label for="image" class="form-label">صورة المنتج <span class="text-danger">*</span></label>
+                                <div class="file-input-wrapper">
+                                    <label for="image" class="file-input-label">
+                                        <i class="fa fa-upload"></i>
+                                        <span>اختر الصورة</span>
+                                    </label>
+                                    <input type="file" 
+                                           id="image" 
+                                           name="image" 
+                                           class="file-input" 
+                                           accept="image/*" 
+                                           required 
+                                           onchange="previewImage(this, 'createImagePreview')">
                                 </div>
-                                <div class="image-preview-container" id="createImagePreviewContainer" style="display: none;">
-                                    <div class="image-preview-wrapper">
-                                        <div class="remove-overlay" onclick="removeImage('createImagePreview', 'createImageFile', 'createImageUploadArea', 'image')" title="إزالة الصورة">
-                                            <i class="fa fa-times"></i>
-                                        </div>
-                                        <div class="image-preview-placeholder has-image" id="createImagePreview">
-                                            <!-- Image will be inserted here -->
-                                        </div>
+                                <div class="image-preview-container">
+                                    <div class="image-preview-placeholder" id="createImagePreview">
+                                        <i class="fa fa-image" style="font-size: 2.5rem; opacity: 0.3;"></i>
+                                        <span style="font-size: 0.85rem;">معاينة الصورة</span>
                                     </div>
                                 </div>
-                                <input type="hidden" id="createImageFile" name="remove_image" value="0">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -1156,31 +1155,24 @@ function openEditModal(productId) {
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <label class="form-label">صورة المنتج</label>
-                                <input type="file" 
-                                       id="edit_image" 
-                                       name="image" 
-                                       class="file-input-hidden" 
-                                       accept="image/*" 
-                                       onchange="handleImageSelect(this, 'editImagePreview', 'editImageFile')">
-                                <div class="file-upload-area" id="editImageUploadArea" onclick="document.getElementById('edit_image').click()" style="display: none;">
-                                    <div class="file-upload-icon">
-                                        <i class="fa fa-cloud-upload-alt"></i>
-                                    </div>
-                                    <p class="file-upload-text">انقر أو اسحب الصورة هنا</p>
-                                    <p class="file-upload-text" style="font-size: 0.75rem; margin-top: 0.25rem; opacity: 0.7;">PNG, JPG, GIF حتى 2MB</p>
+                                <label for="edit_image" class="form-label">صورة المنتج (اختياري)</label>
+                                <div class="file-input-wrapper">
+                                    <label for="edit_image" class="file-input-label">
+                                        <i class="fa fa-upload"></i>
+                                        <span>اختر صورة جديدة</span>
+                                    </label>
+                                    <input type="file" 
+                                           id="edit_image" 
+                                           name="image" 
+                                           class="file-input" 
+                                           accept="image/*" 
+                                           onchange="previewImage(this, 'editImagePreview')">
                                 </div>
-                                <div class="image-preview-container" id="editImagePreviewContainer">
-                                    <div class="image-preview-wrapper">
-                                        <div class="remove-overlay" onclick="removeImage('editImagePreview', 'editImageFile', 'editImageUploadArea', 'edit_image')" title="إزالة الصورة">
-                                            <i class="fa fa-times"></i>
-                                        </div>
-                                        <div class="image-preview-placeholder has-image" id="editImagePreview">
-                                            <img src="${product.image}" alt="Current Image" onerror="handleImageError('editImagePreview', 'editImageUploadArea')">
-                                        </div>
+                                <div class="image-preview-container">
+                                    <div class="image-preview-placeholder has-image" id="editImagePreview">
+                                        <img src="${product.image}" alt="Current Image" onerror="this.parentElement.classList.remove('has-image'); this.parentElement.innerHTML='<i class=\\'fa fa-image\\' style=\\'font-size: 2.5rem; opacity: 0.3;\\'></i><span style=\\'font-size: 0.85rem;\\'>معاينة الصورة</span>';">
                                     </div>
                                 </div>
-                                <input type="hidden" id="editImageFile" name="remove_image" value="0">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -1192,13 +1184,6 @@ function openEditModal(productId) {
                 
                 document.getElementById('modalContent').innerHTML = formHtml;
                 document.getElementById('productModalLabel').textContent = 'تعديل المنتج';
-                
-                // Initialize edit modal - hide upload area if image exists
-                const editPreview = document.getElementById('editImagePreview');
-                const editUploadArea = document.getElementById('editImageUploadArea');
-                if (editPreview && editPreview.querySelector('img') && editUploadArea) {
-                    editUploadArea.style.display = 'none';
-                }
                 
                 const modal = new bootstrap.Modal(document.getElementById('productModal'));
                 modal.show();
@@ -1309,82 +1294,42 @@ function toggleEditOwnerFields() {
     }
 }
 
-function handleImageSelect(input, previewId, hiddenInputId) {
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    const label = input.previousElementSibling;
+    
     if (input.files && input.files[0]) {
         const file = input.files[0];
+        const span = label.querySelector('span');
+        if (span) {
+            span.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+        } else {
+            label.innerHTML = `<i class="fa fa-upload"></i> <span>${file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name}</span>`;
+        }
         const reader = new FileReader();
         reader.onload = function(e) {
-            const preview = document.getElementById(previewId);
-            const previewContainer = document.getElementById(previewId + 'Container');
-            const uploadArea = document.getElementById(previewId.replace('Preview', 'UploadArea'));
-            
             preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
             preview.classList.add('has-image');
-            
-            if (previewContainer) {
-                previewContainer.style.display = 'block';
-            }
-            if (uploadArea) {
-                uploadArea.style.display = 'none';
-            }
-            
-            // Reset remove flag
-            const hiddenInput = document.getElementById(hiddenInputId);
-            if (hiddenInput) {
-                hiddenInput.value = '0';
-            }
         };
         reader.readAsDataURL(file);
-    }
-}
-
-function removeImage(previewId, hiddenInputId, uploadAreaId, fileInputId) {
-    const preview = document.getElementById(previewId);
-    const previewContainer = document.getElementById(previewId + 'Container');
-    const uploadArea = document.getElementById(uploadAreaId);
-    const fileInput = document.getElementById(fileInputId);
-    const hiddenInput = document.getElementById(hiddenInputId);
-    
-    // Clear preview
-    preview.innerHTML = '';
-    preview.classList.remove('has-image');
-    
-    // Show upload area
-    if (uploadArea) {
-        uploadArea.style.display = 'block';
-    }
-    if (previewContainer) {
-        previewContainer.style.display = 'none';
-    }
-    
-    // Clear file input
-    if (fileInput) {
-        fileInput.value = '';
-    }
-    
-    // Set remove flag (for edit mode)
-    if (hiddenInput) {
-        hiddenInput.value = '1';
-    }
-}
-
-function handleImageError(previewId, uploadAreaId) {
-    const preview = document.getElementById(previewId);
-    const uploadArea = document.getElementById(uploadAreaId);
-    
-    preview.classList.remove('has-image');
-    preview.innerHTML = `
-        <i class="fa fa-image" style="font-size: 2.5rem; opacity: 0.3;"></i>
-        <span style="font-size: 0.85rem;">خطأ في تحميل الصورة</span>
-    `;
-    
-    if (uploadArea) {
-        uploadArea.style.display = 'block';
+    } else {
+        preview.innerHTML = `
+            <i class="fa fa-image" style="font-size: 2.5rem; opacity: 0.3;"></i>
+            <span style="font-size: 0.85rem;">معاينة الصورة</span>
+        `;
+        preview.classList.remove('has-image');
+        const span = label.querySelector('span');
+        if (span) {
+            span.textContent = 'اختر الصورة';
+        } else {
+            label.innerHTML = '<i class="fa fa-upload"></i> <span>اختر الصورة</span>';
+        }
     }
 }
 
 function deleteProduct(productId) {
     if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+        showLoading();
         fetch(`{{ route('admin.products.index') }}/${productId}`, {
             method: 'DELETE',
             headers: {
@@ -1395,19 +1340,22 @@ function deleteProduct(productId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showLoadingOverlay();
-                setTimeout(() => {
-                    location.reload();
-                }, 100);
+                location.reload();
             } else {
+                hideLoading();
                 alert(data.message || 'حدث خطأ أثناء حذف المنتج');
             }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء حذف المنتج');
         });
     }
 }
 
 function restoreProduct(productId) {
     if (confirm('هل أنت متأكد من استعادة هذا المنتج؟')) {
+        showLoading();
         fetch(`{{ route('admin.products.index') }}/${productId}/restore`, {
             method: 'POST',
             headers: {
@@ -1418,19 +1366,22 @@ function restoreProduct(productId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showLoadingOverlay();
-                setTimeout(() => {
-                    location.reload();
-                }, 100);
+                location.reload();
             } else {
+                hideLoading();
                 alert(data.message || 'حدث خطأ أثناء استعادة المنتج');
             }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء استعادة المنتج');
         });
     }
 }
 
 function permanentlyDeleteProduct(productId) {
     if (confirm('هل أنت متأكد من حذف هذا المنتج نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        showLoading();
         fetch(`{{ route('admin.products.index') }}/${productId}/permanent`, {
             method: 'DELETE',
             headers: {
@@ -1441,60 +1392,22 @@ function permanentlyDeleteProduct(productId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showLoadingOverlay();
-                setTimeout(() => {
-                    location.reload();
-                }, 100);
+                location.reload();
             } else {
+                hideLoading();
                 alert(data.message || 'حدث خطأ أثناء حذف المنتج');
             }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء حذف المنتج');
         });
     }
 }
 
-// Functions to handle loading overlay
-function showLoadingOverlay() {
-    const overlay = document.getElementById('pageLoadingOverlay');
-    if (overlay) {
-        overlay.classList.remove('hidden');
-    }
-}
-
-function hideLoadingOverlay() {
-    const overlay = document.getElementById('pageLoadingOverlay');
-    if (overlay) {
-        overlay.classList.add('hidden');
-    }
-}
-
-// Handle Bootstrap tab events for smooth switching without page reload
 document.addEventListener('DOMContentLoaded', function() {
-    // Hide loading overlay and show body
-    hideLoadingOverlay();
-    document.body.classList.add('loaded');
+    hideLoading();
     
-    // Handle page visibility to prevent flash on back/forward
-    if (document.visibilityState === 'visible') {
-        hideLoadingOverlay();
-    }
-    // Handle sub-tabs (Active/Deleted) - no page reload needed
-    const productsTabs = document.querySelectorAll('#productsTabs button[data-bs-toggle="tab"]');
-    productsTabs.forEach(tab => {
-        tab.addEventListener('shown.bs.tab', function(event) {
-            const targetTab = event.target.getAttribute('data-bs-target');
-            let tabValue = 'active';
-            if (targetTab === '#deleted-products') {
-                tabValue = 'deleted';
-            }
-            // Update URL without reload
-            const url = new URL(window.location);
-            url.searchParams.set('tab', tabValue);
-            url.searchParams.delete('page');
-            window.history.pushState({}, '', url);
-        });
-    });
-    
-    // Handle form submissions
     const modal = document.getElementById('productModal');
     if (modal) {
         modal.addEventListener('submit', function(e) {
@@ -1504,6 +1417,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formData = new FormData(form);
                 const url = form.action;
                 const method = form.method.toUpperCase();
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>جاري المعالجة...';
 
                 fetch(url, {
                     method: method,
@@ -1516,21 +1434,249 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.success) {
                         bootstrap.Modal.getInstance(modal).hide();
-                        showLoadingOverlay();
-                        setTimeout(() => {
-                            location.reload();
-                        }, 100);
+                        showLoading();
+                        location.reload();
                     } else {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
                         alert(data.message || 'حدث خطأ');
                     }
                 })
                 .catch(error => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
                     alert('حدث خطأ أثناء معالجة الطلب');
                 });
             }
         });
     }
 });
+
+function openOrderItemsModal(orderId) {
+    fetch(`{{ route('admin.orders.items', ':id') }}`.replace(':id', orderId))
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.order && data.order.items) {
+                const items = Array.isArray(data.order.items) ? data.order.items : [];
+                const itemsHtml = `
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>اسم المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${items.length > 0 ? items.map(item => `
+                                    <tr>
+                                        <td>${item.product_title || 'غير متوفر'}</td>
+                                        <td>${item.quantity || 0}</td>
+                                        <td>${item.price || 0} د.إ</td>
+                                        <td>${item.total_price || 0} د.إ</td>
+                                    </tr>
+                                `).join('') : '<tr><td colspan="4" class="text-center">لا توجد عناصر</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                document.getElementById('orderItemsContent').innerHTML = itemsHtml;
+                const modal = new bootstrap.Modal(document.getElementById('orderItemsModal'));
+                modal.show();
+            } else {
+                alert(data.message || 'حدث خطأ');
+            }
+        })
+        .catch(error => {
+            alert('حدث خطأ أثناء جلب بيانات الطلب');
+        });
+}
+
+function openUserDetailsModal(orderId) {
+    fetch(`{{ route('admin.orders.user', ':id') }}`.replace(':id', orderId))
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.user) {
+                const user = data.user;
+                const completedOrders = Array.isArray(user.completed_orders) ? user.completed_orders : [];
+                const ordersHtml = completedOrders.length > 0 
+                    ? completedOrders.map(order => `
+                        <tr>
+                            <td>${order.id || '-'}</td>
+                            <td>${order.total_price || 0} د.إ</td>
+                            <td>${order.payment_type === 'online' ? 'دفع إلكتروني' : 'تحويل بنكي'}</td>
+                            <td>${order.items_count || 0}</td>
+                            <td>${order.created_at || '-'}</td>
+                        </tr>
+                    `).join('')
+                    : '<tr><td colspan="5" class="text-center">لا توجد طلبات مكتملة</td></tr>';
+
+                const content = `
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">الاسم الكامل</label>
+                            <div class="info-box">${user.full_name}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">البريد الإلكتروني</label>
+                            <div class="info-box">${user.email || 'غير متوفر'}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">رقم الهاتف</label>
+                            <div class="info-box">
+                                ${user.phone ? `<a href="https://wa.me/${user.phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-action btn-view" style="text-decoration: none;"><i class="fab fa-whatsapp"></i> ${user.phone}</a>` : 'غير متوفر'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">تاريخ التسجيل</label>
+                            <div class="info-box">${user.created_at}</div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <label class="form-label">الطلبات المكتملة</label>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>رقم الطلب</th>
+                                            <th>السعر الإجمالي</th>
+                                            <th>نوع الدفع</th>
+                                            <th>عدد العناصر</th>
+                                            <th>التاريخ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${ordersHtml}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('userDetailsContent').innerHTML = content;
+                const modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+                modal.show();
+            } else {
+                alert(data.message || 'حدث خطأ');
+            }
+        })
+        .catch(error => {
+            alert('حدث خطأ أثناء جلب بيانات المستخدم');
+        });
+}
+
+function markOrderCompleted(orderId) {
+    if (confirm('هل أنت متأكد من إكمال هذا الطلب؟')) {
+        showLoading();
+        fetch(`{{ route('admin.orders.complete', ':id') }}`.replace(':id', orderId), {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                hideLoading();
+                alert(data.message || 'حدث خطأ');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء تحديث حالة الطلب');
+        });
+    }
+}
+
+function deleteOrder(orderId) {
+    if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+        showLoading();
+        fetch(`{{ route('admin.orders.destroy', ':id') }}`.replace(':id', orderId), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                hideLoading();
+                alert(data.message || 'حدث خطأ');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء حذف الطلب');
+        });
+    }
+}
+
+function restoreOrder(orderId) {
+    if (confirm('هل أنت متأكد من استعادة هذا الطلب؟')) {
+        showLoading();
+        fetch(`{{ route('admin.orders.restore', ':id') }}`.replace(':id', orderId), {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                hideLoading();
+                alert(data.message || 'حدث خطأ');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء استعادة الطلب');
+        });
+    }
+}
+
+function permanentlyDeleteOrder(orderId) {
+    if (confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        showLoading();
+        fetch(`{{ route('admin.orders.permanent', ':id') }}`.replace(':id', orderId), {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                hideLoading();
+                alert(data.message || 'حدث خطأ');
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            alert('حدث خطأ أثناء حذف الطلب');
+        });
+    }
+}
 </script>
 @endsection
 

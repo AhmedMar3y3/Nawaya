@@ -3,9 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\SupportMessageController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\DR_HopeController;
+use App\Http\Controllers\Admin\WorkshopController;
+use App\Http\Controllers\Admin\SupportMessageController;
 
 
 // public routes //
@@ -14,6 +18,7 @@ Route::post('/login-admin',[AuthController::class, 'loginUser'])->name('loginUse
 
 // protected routes //
 Route::middleware(['auth.admin'])->group(function () {
+
     Route::post('/logout'  ,[AuthController::class, 'logout'])->name('admin.logout'); 
     Route::get('/dashboard',[AuthController::class, 'dashboard'])->name('admin.dashboard');
     
@@ -45,35 +50,35 @@ Route::middleware(['auth.admin'])->group(function () {
 
     // DR Hope Routes
     Route::prefix('dr-hope')->name('admin.dr-hope.')->group(function () {
-        Route::get('/{type}'     , [\App\Http\Controllers\Admin\DR_HopeController::class, 'getByType'])->name('getByType');
-        Route::get('/{id}/show'   , [\App\Http\Controllers\Admin\DR_HopeController::class, 'show'])->name('show');
-        Route::post('/'           , [\App\Http\Controllers\Admin\DR_HopeController::class, 'store'])->name('store');
-        Route::match(['put', 'post'], '/{id}', [\App\Http\Controllers\Admin\DR_HopeController::class, 'update'])->name('update');
-        Route::delete('/{id}'     , [\App\Http\Controllers\Admin\DR_HopeController::class, 'destroy'])->name('destroy');
+        Route::get('/{type}'      , [DR_HopeController::class, 'getByType'])->name('getByType');
+        Route::get('/{id}/show'   , [DR_HopeController::class, 'show'])->name('show');
+        Route::post('/'           , [DR_HopeController::class, 'store'])->name('store');
+        Route::match(['put', 'post'], '/{id}', [DR_HopeController::class, 'update'])->name('update');
+        Route::delete('/{id}'     , [DR_HopeController::class, 'destroy'])->name('destroy');
     });
 
     // Partners Routes
     Route::prefix('partners')->name('admin.partners.')->group(function () {
-        Route::get('/'           , [\App\Http\Controllers\Admin\PartnerController::class, 'index'])->name('index');
-        Route::get('/{id}/show'   , [\App\Http\Controllers\Admin\PartnerController::class, 'show'])->name('show');
-        Route::post('/'           , [\App\Http\Controllers\Admin\PartnerController::class, 'store'])->name('store');
-        Route::match(['put', 'post'], '/{id}', [\App\Http\Controllers\Admin\PartnerController::class, 'update'])->name('update');
-        Route::delete('/{id}'     , [\App\Http\Controllers\Admin\PartnerController::class, 'destroy'])->name('destroy');
+        Route::get('/'            , [PartnerController::class, 'index'])->name('index');
+        Route::get('/{id}/show'   , [PartnerController::class, 'show'])->name('show');
+        Route::post('/'           , [PartnerController::class, 'store'])->name('store');
+        Route::match(['put', 'post'], '/{id}', [PartnerController::class, 'update'])->name('update');
+        Route::delete('/{id}'     , [PartnerController::class, 'destroy'])->name('destroy');
     });
 
     // Workshops Routes
     Route::prefix('workshops')->name('admin.workshops.')->group(function () {
-        Route::get('/'                    , [\App\Http\Controllers\Admin\WorkshopController::class, 'index'])->name('index');
-        Route::get('/create'              , [\App\Http\Controllers\Admin\WorkshopController::class, 'create'])->name('create');
-        Route::post('/'                   , [\App\Http\Controllers\Admin\WorkshopController::class, 'store'])->name('store');
-        Route::get('/export/excel'        , [\App\Http\Controllers\Admin\WorkshopController::class, 'exportExcel'])->name('export.excel');
-        Route::get('/{id}/show'           , [\App\Http\Controllers\Admin\WorkshopController::class, 'show'])->name('show');
-        Route::get('/{id}/edit'           , [\App\Http\Controllers\Admin\WorkshopController::class, 'edit'])->name('edit');
-        Route::put('/{id}'                , [\App\Http\Controllers\Admin\WorkshopController::class, 'update'])->name('update');
-        Route::delete('/{id}'             , [\App\Http\Controllers\Admin\WorkshopController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/restore'       , [\App\Http\Controllers\Admin\WorkshopController::class, 'restore'])->name('restore');
-        Route::delete('/{id}/permanent'   , [\App\Http\Controllers\Admin\WorkshopController::class, 'permanentlyDelete'])->name('permanent-delete');
-        Route::post('/{id}/toggle-status' , [\App\Http\Controllers\Admin\WorkshopController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/'                    , [WorkshopController::class, 'index'])->name('index');
+        Route::get('/create'              , [WorkshopController::class, 'create'])->name('create');
+        Route::post('/'                   , [WorkshopController::class, 'store'])->name('store');
+        Route::get('/export/excel'        , [WorkshopController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/{id}/show'           , [WorkshopController::class, 'show'])->name('show');
+        Route::get('/{id}/edit'           , [WorkshopController::class, 'edit'])->name('edit');
+        Route::put('/{id}'                , [WorkshopController::class, 'update'])->name('update');
+        Route::delete('/{id}'             , [WorkshopController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/restore'       , [WorkshopController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/permanent'   , [WorkshopController::class, 'permanentlyDelete'])->name('permanent-delete');
+        Route::post('/{id}/toggle-status' , [WorkshopController::class, 'toggleStatus'])->name('toggle-status');
     });
 
     // Products Routes (Boutique Management)
@@ -88,4 +93,15 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::post('/{id}/restore'       , [ProductController::class, 'restore'])->name('restore');
         Route::delete('/{id}/permanent'   , [ProductController::class, 'permanentlyDelete'])->name('permanent-delete');
     });
-});
+
+    // Orders Routes (Boutique Management)
+    Route::prefix('orders')->name('admin.orders.')->group(function () {
+        Route::get('/'                    , [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}/items'          , [OrderController::class, 'getOrderItems'])->name('items');
+        Route::get('/{id}/user'           , [OrderController::class, 'getUserDetails'])->name('user');
+        Route::post('/{id}/complete'      , [OrderController::class, 'markOrderCompleted'])->name('complete');
+        Route::delete('/{id}'             , [OrderController::class, 'deleteOrder'])->name('destroy');
+        Route::post('/{id}/restore'       , [OrderController::class, 'restoreOrder'])->name('restore');
+        Route::delete('/{id}/permanent'   , [OrderController::class, 'permanentlyDeleteOrder'])->name('permanent');
+    });
+    });

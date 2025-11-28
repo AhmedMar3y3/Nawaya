@@ -15,7 +15,7 @@ class UpdateWorkshopRequest extends FormRequest
         $type = $this->input('type') ?? $this->workshop?->type;
 
         return [
-            // الحقول الأساسية
+            // Common fields
             'title'                        => ['required', 'string', 'max:255'],
             'teacher'                      => ['required', 'string', 'max:255'],
             'teacher_percentage'           => ['nullable', 'numeric', 'min:0', 'max:100'],
@@ -23,17 +23,17 @@ class UpdateWorkshopRequest extends FormRequest
             'subject_of_discussion'        => ['required', 'string'],
             'type'                         => ['required', 'string', 'in:online,onsite,online_onsite,recorded'],
 
-            // Packages - اختياري في التعديل
+            // Packages
             'packages'                     => ['nullable', 'array'],
             'packages.*.id'                => ['nullable', 'integer', 'exists:workshop_packages,id'],
             'packages.*.title'             => ['required_with:packages.*', 'string', 'max:255'],
             'packages.*.price'             => ['required_with:packages.*', 'numeric', 'min:0'],
             'packages.*.is_offer'          => ['sometimes', 'nullable', 'in:1'],
-            'packages.*.offer_price'       => ['nullable', 'required_if:packages.*.is_offer,1', 'numeric', 'min:0', 'lt:packages.*.price'],
+            'packages.*.offer_price'       => ['nullable', 'required_if:packages.*.is_offer,1', 'numeric', 'min:0'],
             'packages.*.offer_expiry_date' => ['nullable', 'date'],
             'packages.*.features'          => ['nullable', 'string'],
 
-            // Attachments - ملف اختياري تمامًا
+            // Attachments
             'attachments'                  => ['nullable', 'array'],
             'attachments.*.id'             => ['nullable', 'integer', 'exists:workshop_attachments,id'],
             'attachments.*.type'           => ['required_with:attachments.*', 'in:audio,video'],
@@ -54,7 +54,7 @@ class UpdateWorkshopRequest extends FormRequest
                 'video/mp4',
                 'video/mpeg',
                 'video/x-m4v',
-                'application/octet-stream', // ← السحر الحقيقي
+                'application/octet-stream',
             ];
 
             $allowedExtensions = ['mp3', 'mp4'];
@@ -66,7 +66,6 @@ class UpdateWorkshopRequest extends FormRequest
     },
 ],
 
-            // Files - ملفات عادية (PDF, Word, إلخ)
             'files'                        => ['nullable', 'array'],
             'files.*.id'                   => ['nullable', 'integer', 'exists:workshop_files,id'],
             'files.*.title'                => ['required_with:files.*', 'string', 'max:255'],
@@ -78,7 +77,7 @@ class UpdateWorkshopRequest extends FormRequest
             'recordings.*.title'           => ['required_with:recordings.*', 'string', 'max:255'],
             'recordings.*.link'            => ['required_with:recordings.*', 'url', 'max:1000'],
 
-            // الحقول الخاصة بنوع الورشة
+            // Workshop type specific fields
             'start_date'                   => [in_array($type, ['online', 'onsite', 'online_onsite']) ? 'required' : 'nullable', 'date'],
             'start_time'                   => [in_array($type, ['online', 'onsite', 'online_onsite']) ? 'required' : 'nullable', 'date_format:H:i'],
             'end_date'                     => [$type === 'online_onsite' ? 'required' : 'nullable', 'date', 'after_or_equal:start_date'],

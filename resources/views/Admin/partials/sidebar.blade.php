@@ -18,7 +18,7 @@
             <a class="nav-link " id="profileDropdown" href="#" data-bs-toggle="dropdown">
                 <div class="navbar-profile d-flex gap-2" style="color: white">
 
-                    <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::guard('admin')->user()->name }}</p>
+                    <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::guard('admin')->user()?->name ?? 'Admin' }}</p>
                     <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                     <img class="img-xs rounded-circle" src="{{ asset('../../../assets/images/dashboard/avatar.png') }}"
                         alt="">
@@ -50,7 +50,7 @@
                 <div class="profile-pic d-flex align-items-center justify-content-end gap-2 w-100">
 
                     <div class="profile-name">
-                        <h5 class="mb-0 font-weight-normal">{{ Auth::guard('admin')->user()->name }}</h5>
+                        <h5 class="mb-0 font-weight-normal">{{ Auth::guard('admin')->user()?->name ?? 'Admin' }}</h5>
                         <span>online</span>
                     </div>
                     <div class="count-indicator">

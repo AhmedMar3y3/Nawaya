@@ -8,6 +8,7 @@ enum OrderStatus: string {
     use HasLocalizedEnum;
 
     case PENDING   = 'pending';
+    case PROCESSING = 'processing';
     case PAID      = 'paid';
     case COMPLETED = 'completed';
     case FAILED    = 'failed';

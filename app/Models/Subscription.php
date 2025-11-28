@@ -27,6 +27,7 @@ class Subscription extends Model
         'full_name',
         'phone',
         'country_id',
+        'message',
     ];
 
     protected $casts = [

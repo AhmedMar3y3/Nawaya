@@ -24,16 +24,16 @@ class DR_HOPE extends Model
 
     protected static $imageAttributes = ['image'];
 
-    public function scopeInstagram()
+    public function scopeInstagram($query)
     {
-        return $this->where('type', DrHope::INSTAGRAM);
+        return $query->where('type', DrHope::INSTAGRAM);
     }
-    public function scopeImage()
+    public function scopeImage($query)
     {
-        return $this->where('type', DrHope::IMAGE);
+        return $query->where('type', DrHope::IMAGE);
     }
-    public function scopeVideo()
+    public function scopeVideos($query)
     {
-        return $this->where('type', DrHope::VIDEO);
+        return $query->where('type', DrHope::VIDEO);
     }
 }

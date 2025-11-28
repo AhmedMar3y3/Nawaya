@@ -14,4 +14,6 @@ class Setting extends Model
         'key',
         'value',
     ];
+
+    protected static $imageAttributes = ['value'];
 }

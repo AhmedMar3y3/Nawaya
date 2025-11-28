@@ -865,6 +865,7 @@
         // CKEditor instances
         let subjectEditor = null;
         let editSubjectEditor = null;
+        const packageFeaturesEditors = new Map(); // Store CKEditor instances for package features
 
         // Dynamic form handling functions
         function initializeDynamicSections() {
@@ -915,6 +916,42 @@
                     console.error('Error initializing CKEditor:', error);
                 });
             }
+        }
+
+        function initializePackageFeaturesEditor(textareaId, featuresContent = '') {
+            const textarea = document.getElementById(textareaId);
+            if (!textarea || typeof ClassicEditor === 'undefined') {
+                return;
+            }
+
+            // Check if editor already exists for this textarea
+            if (packageFeaturesEditors.has(textareaId)) {
+                return; // Editor already initialized
+            }
+
+            ClassicEditor.create(textarea, {
+                language: 'ar',
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                    'blockQuote', 'insertTable', '|', 'undo', 'redo'
+                ]
+            }).then(editor => {
+                packageFeaturesEditors.set(textareaId, editor);
+                if (featuresContent) {
+                    editor.setData(featuresContent);
+                }
+            }).catch(error => {
+                console.error('Error initializing CKEditor for package features:', error);
+            });
+        }
+
+        function destroyPackageFeaturesEditors() {
+            packageFeaturesEditors.forEach((editor, textareaId) => {
+                editor.destroy().then(() => {
+                    packageFeaturesEditors.delete(textareaId);
+                }).catch(error => {
+                    console.error('Error destroying CKEditor:', error);
+                });
+            });
         }
 
         function handleTypeChange(event) {
@@ -1072,7 +1109,7 @@
                     <p class="mb-1"><strong>السعر:</strong> ${pkg.price || '-'}</p>
                     ${pkg.is_offer ? `<p class="mb-1"><strong>سعر العرض:</strong> ${pkg.offer_price || '-'}</p>` : ''}
                     ${pkg.offer_expiry_date ? `<p class="mb-1"><strong>تاريخ انتهاء العرض:</strong> ${pkg.offer_expiry_date}</p>` : ''}
-                    ${pkg.features ? `<p class="mb-0"><strong>المميزات:</strong> ${pkg.features}</p>` : ''}
+                    ${pkg.features ? `<div class="mb-0"><strong>المميزات:</strong><div>${pkg.features}</div></div>` : ''}
                 `;
                         showPackagesContainer.appendChild(item);
                     });
@@ -1208,6 +1245,9 @@
             // داخل populateEditForm
             const packagesContainer = document.getElementById('edit_packages_container');
             if (packagesContainer) {
+                // Destroy existing CKEditor instances for package features
+                destroyPackageFeaturesEditors();
+                
                 // ← الحل السحري: ما تمسحش بالـ innerHTML
                 while (packagesContainer.firstChild) {
                     packagesContainer.removeChild(packagesContainer.firstChild);
@@ -1217,6 +1257,11 @@
                     workshop.packages.forEach((pkg, index) => {
                         const item = createPackageItem(index, pkg, true);
                         packagesContainer.appendChild(item);
+                        // Initialize CKEditor for package features after a short delay
+                        setTimeout(() => {
+                            const textareaId = `edit_package_features_${index}`;
+                            initializePackageFeaturesEditor(textareaId, pkg.features || '');
+                        }, 300);
                     });
                 } else {
                     addPackageItem(); // أو خلّيه فاضي، حسب رغبتك
@@ -1403,6 +1448,11 @@
             if (item) {
                 container.appendChild(item);
                 console.log('Package item added successfully to:', container.id);
+                // Initialize CKEditor for the new package features field
+                setTimeout(() => {
+                    const textareaId = `${isEdit ? 'edit_' : ''}package_features_${index}`;
+                    initializePackageFeaturesEditor(textareaId);
+                }, 300);
             } else {
                 console.error('Failed to create package item');
             }
@@ -1413,7 +1463,20 @@
         }
 
         function removePackageItem(button) {
-            button.closest('.dynamic-item').remove();
+            const item = button.closest('.dynamic-item');
+            // Find and destroy CKEditor instance for this package's features field
+            const featuresTextarea = item.querySelector('.package-features-editor');
+            if (featuresTextarea && featuresTextarea.id) {
+                const editor = packageFeaturesEditors.get(featuresTextarea.id);
+                if (editor) {
+                    editor.destroy().then(() => {
+                        packageFeaturesEditors.delete(featuresTextarea.id);
+                    }).catch(error => {
+                        console.error('Error destroying CKEditor:', error);
+                    });
+                }
+            }
+            item.remove();
         }
 
         function createPackageItem(index, data = null, isEdit = false) {
@@ -1454,7 +1517,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label">المميزات</label>
-            <textarea class="form-control" name="packages[${index}][features]" rows="3" placeholder="أدخل مميزات الحزمة (كل ميزة في سطر)">${data?.features || ''}</textarea>
+            <textarea class="form-control package-features-editor" id="${isEdit ? 'edit_' : ''}package_features_${index}" name="packages[${index}][features]" rows="3" placeholder="أدخل مميزات الحزمة">${data?.features || ''}</textarea>
         </div>
     `;
     return item;
@@ -1765,10 +1828,21 @@
 
                 const formData = new FormData(form);
 
-                // Set CKEditor content
+                // Set CKEditor content for subject_of_discussion
                 if (editor) {
                     formData.set('subject_of_discussion', subjectContent);
                 }
+
+                // Collect CKEditor content from all package features fields
+                packageFeaturesEditors.forEach((featuresEditor, textareaId) => {
+                    const featuresContent = featuresEditor.getData();
+                    // Extract the index from textareaId (e.g., "package_features_0" or "edit_package_features_0")
+                    const match = textareaId.match(/(?:edit_)?package_features_(\d+)/);
+                    if (match) {
+                        const packageIndex = match[1];
+                        formData.set(`packages[${packageIndex}][features]`, featuresContent);
+                    }
+                });
 
                 // For PUT requests, Laravel needs _method field
                 if (formId.includes('edit')) {

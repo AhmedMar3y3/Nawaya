@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Product;
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Product\ProductFilterRequest;
+use App\Services\Admin\ProductService;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
-use App\Models\Product;
-use App\Services\Admin\ProductService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use App\Http\Requests\Admin\Product\ProductFilterRequest;
 
 class ProductController extends Controller
 {
@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function index(ProductFilterRequest $request): View
     {
         $tab     = $request->get('tab', 'active');
-        $section = $request->get('section', 'products'); // products or orders
+        $section = $request->get('section', 'products');
 
         $activeProducts  = $this->productService->getProductsWithFilters($request, 15, false);
         $deletedProducts = $this->productService->getProductsWithFilters($request, 15, true);

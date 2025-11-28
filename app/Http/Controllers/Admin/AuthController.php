@@ -31,7 +31,6 @@ class AuthController extends Controller
    public function dashboard()
     {
         $admin = Auth::guard('admin')->user();
-        
         $hour = now()->hour;
         if ($hour >= 5 && $hour < 12) {
             $greeting = 'صباح الخير';
