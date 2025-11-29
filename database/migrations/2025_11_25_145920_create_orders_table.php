@@ -18,7 +18,7 @@ return new class extends Migration
             $table->double('total_price');
             $table->string('status')->default(OrderStatus::PENDING->value)->index();
             $table->string('payment_type')->index();
-            $table->string('invoice_id')->nullable();
+            $table->string('invoice_id')->nullable()->index();
             $table->string('invoice_url')->nullable();
             $table->softDeletes();
             $table->timestamps();

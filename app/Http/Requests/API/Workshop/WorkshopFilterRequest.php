@@ -18,3 +18,4 @@ class WorkshopFilterRequest extends BaseRequest
     }
 }
 
+

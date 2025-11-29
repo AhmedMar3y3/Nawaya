@@ -8,6 +8,7 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\DrHopeController;
 use App\Http\Controllers\User\PaymentController;
 use App\Http\Controllers\User\WorkshopController;
+use App\Http\Controllers\User\SubscriptionController;
 
 // Auth routes
 Route::post('/register'    , [AuthController::class, 'register']);
@@ -51,6 +52,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('orders')->group(function () {
         Route::get('/summary'          , [OrderController::class, 'orderSummary']);
         Route::post('/create'          , [OrderController::class, 'store']);
-    });  
+    });
+
+    // Subscription routes
+    Route::prefix('subscriptions')->group(function () {
+        Route::post('/create'          , [SubscriptionController::class, 'create']);
+        Route::post('/process-payment' , [SubscriptionController::class, 'processPayment']);
+    });
 });
-Route::post('/foloosi/callback', [PaymentController::class, 'foloosiCallback']);
+
+// Payment callback routes (public, no auth required)
+Route::post('/foloosi/callback', [PaymentController::class, 'foloosiWebhook'])->name('foloosi.callback');
+// Route::post('/orders/foloosi/callback', [PaymentController::class, 'foloosiCallback']);
+// Route::post('/subscriptions/foloosi/callback', [PaymentController::class, 'foloosiSubscriptionCallback']);

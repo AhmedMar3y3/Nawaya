@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->text('subject_of_discussion');
             $table->boolean('is_active')->default(true);
-            $table->string('type');
+            $table->string('type')->index();
             
             // Online & Onsite & Onsite_Online cases
             $table->date('start_date')->nullable();

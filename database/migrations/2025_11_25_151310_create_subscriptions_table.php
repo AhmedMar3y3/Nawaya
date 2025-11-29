@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
             $table->double('price');
             $table->string('status')->default(SubscriptionStatus::PENDING->value)->index();
-            $table->string('payment_type')->index();
-            $table->string('invoice_id')->nullable();
+            $table->string('payment_type')->nullable()->index();
+            $table->string('invoice_id')->nullable()->index();
             $table->string('invoice_url')->nullable();
 
             // Gift flow
