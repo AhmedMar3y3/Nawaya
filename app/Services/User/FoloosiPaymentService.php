@@ -11,17 +11,19 @@ class FoloosiPaymentService
 {
     private string $secretKey;
     private string $baseUrl;
+    private string $callbackUrl;
 
     public function __construct()
     {
         $this->secretKey = config('services.foloosi.secret_key');
         $this->baseUrl   = config('services.foloosi.base_url', 'https://api.foloosi.com');
+        $this->callbackUrl = config('services.foloosi.callback_url');
     }
 
     public function createPayment(Order $order): array
     {
         $payload = [
-            'amount'           => number_format($order->total_price, 2, '.', ''), // Must be string with 2 decimals
+            'amount'           => number_format($order->total_price, 2, '.', ''),
             'currency'         => 'AED',
             'description'      => 'Order #' . $order->id . ' - ' . config('app.name'),
             'link_type'        => 'single',
@@ -31,7 +33,7 @@ class FoloosiPaymentService
             'phone_code'       => $order->user->country->code ?? '',
             'notify_email'     => 'No',
             'notify_sms'       => 'No',
-            'expire_date'     => now()->addDays(7)->format('Y-m-d H:i:s'),
+            'expire_date'      => now()->addDays(7)->format('Y-m-d H:i:s'),
         ];
 
         try {
@@ -57,6 +59,23 @@ class FoloosiPaymentService
                 ) {
                     $reference   = $data['data']['payment_link_reference'];
                     $paymentUrl  = "https://foloosi.com/v1/pay/{$reference}";
+
+                    $updateResponse = Http::withHeaders([
+                        'secret_key'     => $this->secretKey,
+                        'Content-Type'   => 'application/json',
+                    ])->post("{$this->baseUrl}/merchant/v1/payment-links/update", [
+                        'payment_link_reference' => $reference,
+                        'callback_url'           => $this->callbackUrl,
+                        // 'success_url'            => config('app.frontend_url') . "/payment/success?ref={$reference}",
+                        // 'failure_url'            => config('app.frontend_url') . "/payment/failed?ref={$reference}",
+                    ]);
+
+                    Log::info('Foloosi Update Payment Link Response', [
+                        'order_id'  => $order->id,
+                        'reference' => $reference,
+                        'status'    => $updateResponse->status(),
+                        'body'      => $updateResponse->body(),
+                    ]);
 
                     $order->update([
                         'invoice_id'   => $reference,
@@ -148,7 +167,7 @@ class FoloosiPaymentService
             'phone_code'       => $phoneCode,
             'notify_email'     => 'No',
             'notify_sms'       => 'No',
-            'expire_date'     => now()->addDays(7)->format('Y-m-d H:i:s'),
+            'expire_date'      => now()->addDays(7)->format('Y-m-d H:i:s'),
         ];
 
         try {
@@ -174,6 +193,28 @@ class FoloosiPaymentService
                 ) {
                     $reference   = $data['data']['payment_link_reference'];
                     $paymentUrl  = "https://foloosi.com/v1/pay/{$reference}";
+
+                    $updateResponse = Http::withHeaders([
+                        'secret_key'     => $this->secretKey,
+                        'Content-Type'   => 'application/json',
+                    ])->post("{$this->baseUrl}/merchant/v1/payment-links/update", [
+                        'payment_link_reference' => $reference,
+                        'callback_url'           => $this->callbackUrl,
+                        // 'success_url'            => config('app.frontend_url') . "/payment/success?ref={$reference}",
+                        // 'failure_url'            => config('app.frontend_url') . "/payment/failed?ref={$reference}",
+                    ]);
+
+                    Log::info('Foloosi Update Payment Link Response (Subscription)', [
+                        'subscription_id' => $subscription->id,
+                        'reference'       => $reference,
+                        'status'          => $updateResponse->status(),
+                        'body'            => $updateResponse->body(),
+                    ]);
+
+                    $subscription->update([
+                        'invoice_id'  => $reference,
+                        'invoice_url' => $paymentUrl,
+                    ]);
 
                     return [
                         'invoice_id'   => $reference,
