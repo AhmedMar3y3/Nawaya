@@ -62,6 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Payment callback routes (public, no auth required)
-Route::post('/foloosi/callback', [PaymentController::class, 'foloosiWebhook'])->name('foloosi.callback');
+Route::post('/foloosi/callback', [PaymentController::class, 'foloosiWebhook'])
+->withoutMiddleware('api')
+->name('foloosi.callback');
 // Route::post('/orders/foloosi/callback', [PaymentController::class, 'foloosiCallback']);
 // Route::post('/subscriptions/foloosi/callback', [PaymentController::class, 'foloosiSubscriptionCallback']);
