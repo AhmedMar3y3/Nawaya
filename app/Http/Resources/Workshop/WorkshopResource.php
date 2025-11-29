@@ -59,6 +59,11 @@ class WorkshopResource extends JsonResource
             }
         }
 
+        $packagesCount = $this->relationLoaded('packages')
+            ? $this->packages->count()
+            : $this->packages()->count();
+        $data['has_multiple_packages'] = $packagesCount > 1;
+
         return $data;
     }
 }

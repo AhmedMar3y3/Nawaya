@@ -26,3 +26,4 @@ class SubscriptionSummaryResource extends JsonResource
     }
 }
 
+

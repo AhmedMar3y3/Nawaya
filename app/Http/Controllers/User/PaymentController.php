@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Services\User\FoloosiPaymentService;
 use App\Enums\Subscription\SubscriptionStatus;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -85,5 +86,18 @@ class PaymentController extends Controller
         }
 
         return response('OK', 200);
+    }
+
+    public function verifyPayment(Request $request)
+    {
+        try {
+        $reference = $request->reference;
+        $verification = $this->foloosiPaymentService->verifyPayment($reference);
+        return $this->successWithDataResponse($verification);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Http\Resources\Profile;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\Workshop\WorkshopResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Enums\Subscription\SubscriptionStatus;
 
 class ProfileResource extends JsonResource
 {
@@ -14,18 +16,23 @@ class ProfileResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id'          => $this->id,
-            'image'       => $this->image ?? env('APP_URL') . '/defaults/profile.webp',
-            'name'        => $this->name,
+            'full_name'   => $this->full_name,
             'email'       => $this->email,
-            'gender'      => $this->gender,
-            'city_id'     => $this->city_id,
-            'city_name'   => $this->city->name,
-            'age'         => $this->age,
-            'school_id'   => $this->school_id,
-            'school_name' => $this->school ? $this->school->name : null,
-            'section'     => $this->section,
+            'phone'       => $this->phone,
         ];
+
+        if ($this->relationLoaded('subscriptions')) {
+            $activeSubscriptions = $this->subscriptions->map(function ($subscription) {
+                return [
+                    'id' => $subscription->id,
+                    'workshop' => $subscription->workshop ? new WorkshopResource($subscription->workshop) : null,
+                ];
+            });
+            $data['active_subscriptions'] = $activeSubscriptions;
+        }
+
+        return $data;
     }
 }
