@@ -159,10 +159,10 @@ class CartService
         });
 
         $tax        = $productsPrice * 0.05;
-        $totalPrice = $productsPrice + $tax;
+        $totalPrice = $productsPrice;
 
         return [
-            'products_price' => round($productsPrice, 2),
+            'products_price' => round($productsPrice, 2) - round($tax, 2),
             'tax'            => round($tax, 2),
             'total_price'    => round($totalPrice, 2),
         ];

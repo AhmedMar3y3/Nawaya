@@ -19,7 +19,7 @@ class UserService
 
         $query->withCount([
             'subscriptions as active_subscriptions_count' => function ($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value);
+                $q->where('status', SubscriptionStatus::PAID->value);
             }
         ]);
 
@@ -45,7 +45,7 @@ class UserService
 
         $query->withCount([
             'subscriptions as active_subscriptions_count' => function ($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value);
+                $q->where('status', SubscriptionStatus::PAID->value);
             }
         ]);
 
@@ -68,13 +68,13 @@ class UserService
         /** @var User $user */
         $user = User::with([
             'subscriptions' => function($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value)->with('workshop');
+                $q->where('status', SubscriptionStatus::PAID->value)->with('workshop');
             },
             'country'
         ])
             ->withCount([
                 'subscriptions as active_subscriptions_count' => function ($q) {
-                    $q->where('status', SubscriptionStatus::ACTIVE->value);
+                    $q->where('status', SubscriptionStatus::PAID->value);
                 }
             ])
             ->findOrFail($id);

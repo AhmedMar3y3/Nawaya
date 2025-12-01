@@ -24,7 +24,7 @@ class WorkshopService
 
         $query->withCount([
             'subscriptions as subscribers_count' => function ($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value);
+                $q->where('status', SubscriptionStatus::PAID->value);
             },
         ]);
 
@@ -43,7 +43,7 @@ class WorkshopService
 
         $query->withCount([
             'subscriptions as subscribers_count' => function ($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value);
+                $q->where('status', SubscriptionStatus::PAID->value);
             },
         ]);
 
@@ -76,7 +76,7 @@ class WorkshopService
         ])
             ->withCount([
                 'subscriptions as subscribers_count' => function ($q) {
-                    $q->where('status', SubscriptionStatus::ACTIVE->value);
+                    $q->where('status', SubscriptionStatus::PAID->value);
                 },
             ])
             ->findOrFail($id);

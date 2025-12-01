@@ -35,7 +35,7 @@ class WorkshopsExport implements FromCollection, WithHeadings, WithMapping
         // Load subscriptions count
         $query->withCount([
             'subscriptions as subscribers_count' => function ($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value);
+                $q->where('status', SubscriptionStatus::PAID->value);
             }
         ]);
 

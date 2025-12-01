@@ -6,8 +6,8 @@
     <title>تقرير المستخدمين</title>
     <style>
         * {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
             direction: rtl;
+            text-align: right;
         }
         
         body {
@@ -16,6 +16,7 @@
             margin: 0;
             padding: 20px;
             font-size: 10px;
+            font-family: 'DejaVu Sans', 'Arial Unicode MS', 'Tahoma', sans-serif;
         }
         
         table {

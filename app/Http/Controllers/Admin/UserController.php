@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\User\UpdateUserRequest;
 use App\Http\Requests\Admin\User\UserFilterRequest;
 use App\Models\User;
 use App\Services\Admin\UserService;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Mpdf\Mpdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -187,27 +187,59 @@ class UserController extends Controller
 
     public function exportPdf(Request $request)
     {
-        set_time_limit(180);
-        ini_set('memory_limit', '512M');
+        try {
+            set_time_limit(180);
+            ini_set('memory_limit', '512M');
 
-        $tab         = $request->get('tab', 'active');
-        $onlyTrashed = $tab === 'deleted';
+            $tab         = $request->get('tab', 'active');
+            $onlyTrashed = $tab === 'deleted';
 
-        $users = $this->userService->getUsersForExport($request, $onlyTrashed, 1000);
+            $users = $this->userService->getUsersForExport($request, $onlyTrashed, 1000);
 
-        $pdf = PDF::loadView('Admin.users.exports.pdf', [
-            'users' => $users,
-            'tab'   => $tab,
-        ]);
+            $html = view('Admin.users.exports.pdf', [
+                'users' => $users,
+                'tab'   => $tab,
+            ])->render();
 
-        $pdf->setOption('enable-local-file-access', true);
-        $pdf->setOption('isRemoteEnabled', false);
-        $pdf->setOption('chroot', base_path());
-        $pdf->setPaper('a4', 'landscape');
-        $pdf->setOption('defaultFont', 'DejaVu Sans');
-        $pdf->setOption('isHtml5ParserEnabled', true);
-        $pdf->setOption('isPhpEnabled', false);
+            // Ensure temp directory exists for mPDF
+            $tempDir = storage_path('app/temp');
+            if (!file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
 
-        return $pdf->download('users.pdf');
+            $mpdf = new Mpdf([
+                'mode' => 'utf-8',
+                'format' => 'A4-L', // Landscape
+                'orientation' => 'L',
+                'margin_left' => 10,
+                'margin_right' => 10,
+                'margin_top' => 15,
+                'margin_bottom' => 15,
+                'margin_header' => 10,
+                'margin_footer' => 10,
+                'direction' => 'rtl',
+                'autoLangToFont' => true,
+                'autoScriptToLang' => true,
+                'autoArabic' => true,
+                'useSubstitutions' => true,
+                'tempDir' => $tempDir,
+            ]);
+
+            $mpdf->SetDirectionality('rtl');
+            $mpdf->WriteHTML($html);
+            
+            $pdfContent = $mpdf->Output('', 'S');
+            
+            return response($pdfContent, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="users.pdf"')
+                ->header('Content-Length', strlen($pdfContent))
+                ->header('Cache-Control', 'no-cache, must-revalidate')
+                ->header('Pragma', 'no-cache');
+        } catch (\Exception $e) {
+            \Log::error('Users PDF Export Error: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تصدير التقرير: ' . $e->getMessage());
+        }
     }
 }

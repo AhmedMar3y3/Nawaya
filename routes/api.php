@@ -16,7 +16,7 @@ Route::post('/register'    , [AuthController::class, 'register']);
 Route::post('/login'       , [AuthController::class, 'login']);
 Route::post('/google-login', [AuthController::class, 'loginWithGoogle']);
 
-    // Workshop routes
+// Workshop routes
 Route::prefix('workshops')->group(function () {
     Route::get('/'    , [WorkshopController::class, 'index']);
     Route::get('/{id}', [WorkshopController::class, 'show']);

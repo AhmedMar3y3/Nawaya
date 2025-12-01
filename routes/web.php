@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\DR_HopeController;
 use App\Http\Controllers\Admin\WorkshopController;
 use App\Http\Controllers\Admin\SupportMessageController;
+use App\Http\Controllers\Admin\FinancialCenterController;
+use App\Http\Controllers\Admin\ExpenseController;
 
 
 // public routes //
@@ -103,5 +105,33 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::delete('/{id}'             , [OrderController::class, 'deleteOrder'])->name('destroy');
         Route::post('/{id}/restore'       , [OrderController::class, 'restoreOrder'])->name('restore');
         Route::delete('/{id}/permanent'   , [OrderController::class, 'permanentlyDeleteOrder'])->name('permanent');
+    });
+
+    // Financial Center Routes
+    Route::prefix('financial-center')->name('admin.financial-center.')->group(function () {
+        Route::get('/'                                    , [FinancialCenterController::class, 'index'])->name('index');
+        Route::get('/export/excel'                       , [FinancialCenterController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/annual-tax/details'                 , [FinancialCenterController::class, 'getAnnualTaxDetails'])->name('annual-tax.details');
+        Route::get('/annual-tax/export/pdf'              , [FinancialCenterController::class, 'exportAnnualTaxPdf'])->name('annual-tax.export.pdf');
+        Route::get('/annual-tax/export/excel'            , [FinancialCenterController::class, 'exportAnnualTaxExcel'])->name('annual-tax.export.excel');
+        Route::get('/vat-report'                         , [FinancialCenterController::class, 'getVatReport'])->name('vat-report');
+        Route::get('/vat-report/export/pdf'              , [FinancialCenterController::class, 'exportVatPdf'])->name('vat-report.export.pdf');
+        Route::get('/vat-report/export/excel'            , [FinancialCenterController::class, 'exportVatExcel'])->name('vat-report.export.excel');
+        Route::get('/workshops/{workshopId}/payments'     , [FinancialCenterController::class, 'getWorkshopPayments'])->name('workshops.payments');
+        Route::put('/workshops/{workshopId}/teacher-per'   , [FinancialCenterController::class, 'updateTeacherPercentage'])->name('workshops.update-teacher-per');
+        Route::post('/workshops/{workshopId}/payments'     , [FinancialCenterController::class, 'addPayment'])->name('workshops.add-payment');
+        Route::delete('/payments/{paymentId}'              , [FinancialCenterController::class, 'deletePayment'])->name('payments.delete');
+    });
+
+    // Expenses Routes
+    Route::prefix('expenses')->name('admin.expenses.')->group(function () {
+        Route::get('/'                    , [ExpenseController::class, 'index'])->name('index');
+        Route::post('/'                   , [ExpenseController::class, 'store'])->name('store');
+        Route::get('/{id}'                , [ExpenseController::class, 'show'])->name('show');
+        Route::put('/{id}'                , [ExpenseController::class, 'update'])->name('update');
+        Route::delete('/{id}'             , [ExpenseController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/restore'       , [ExpenseController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/permanent'   , [ExpenseController::class, 'permanentlyDelete'])->name('permanent-delete');
+        Route::get('/export/excel'        , [ExpenseController::class, 'exportExcel'])->name('export.excel');
     });
     });

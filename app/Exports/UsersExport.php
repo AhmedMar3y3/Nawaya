@@ -35,7 +35,7 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping
         // Load subscriptions count
         $query->withCount([
             'subscriptions as active_subscriptions_count' => function ($q) {
-                $q->where('status', SubscriptionStatus::ACTIVE->value);
+                $q->where('status', SubscriptionStatus::PAID->value);
             }
         ]);
 

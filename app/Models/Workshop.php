@@ -72,8 +72,18 @@ class Workshop extends Model
         return $this->hasMany(WorkshopPackage::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(WorkshopPayment::class);
+    }
+
     public function activeSubscriptions()
     {
-        return $this->subscriptions()->where('status', SubscriptionStatus::ACTIVE->value);
+        return $this->subscriptions()->where('status', SubscriptionStatus::PAID->value);
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
     }
 }
