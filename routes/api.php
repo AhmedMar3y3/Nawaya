@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\CartController;
@@ -8,10 +9,11 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\DrHopeController;
 use App\Http\Controllers\User\PaymentController;
 use App\Http\Controllers\User\WorkshopController;
-use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\SubscriptionController;
 
 // Auth routes
+Route::get('/countries'    , [Controller::class, 'countries']);
 Route::post('/register'    , [AuthController::class, 'register']);
 Route::post('/login'       , [AuthController::class, 'login']);
 Route::post('/google-login', [AuthController::class, 'loginWithGoogle']);
