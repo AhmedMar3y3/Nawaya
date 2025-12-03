@@ -44,12 +44,16 @@ class FinancialCenterController extends Controller
                 ->where('status', SubscriptionStatus::PAID->value)
                 ->sum('price');
 
-            $netProfit    = $totalRevenue * 0.95;
-            $teacherPer   = $workshop->teacher_per ?? 0;
-            $teacherShare = ($netProfit * $teacherPer) / 100;
-            $companyShare = $netProfit - $teacherShare;
-            $totalPaid    = $workshop->payments()->sum('amount');
-            $remaining    = $teacherShare - $totalPaid;
+            $profit        = $totalRevenue * 0.95;
+            $taxExpenses   = Expense::where('is_including_tax', true)->where('workshop_id', $workshop->id)->sum('amount');
+            $refundableTax = $taxExpenses * 0.05;
+            $expenses      = Expense::where('workshop_id', $workshop->id)->sum('amount');
+            $netProfit     = $profit + $refundableTax - $expenses;
+            $teacherPer    = $workshop->teacher_per ?? 0;
+            $teacherShare  = ($netProfit * $teacherPer) / 100;
+            $companyShare  = $netProfit - $teacherShare;
+            $totalPaid     = $workshop->payments()->sum('amount');
+            $remaining     = $teacherShare - $totalPaid;
 
             return [
                 'id'            => $workshop->id,
@@ -68,7 +72,7 @@ class FinancialCenterController extends Controller
         $allWorkshops         = Workshop::select('id', 'title')->get();
         $boutiqueSummary      = $this->calculateBoutiqueSummary();
         $expensesTaxesSummary = $this->calculateExpensesTaxesSummary();
-        
+
         $workshopNetProfits = Workshop::with(['subscriptions', 'payments'])->get()->sum(function ($workshop) {
             $totalRevenue = $workshop->subscriptions()
                 ->where('status', SubscriptionStatus::PAID->value)
@@ -88,15 +92,15 @@ class FinancialCenterController extends Controller
 
     private function calculateExpensesTaxesSummary(): array
     {
-        $expenses        = Expense::sum('amount');
-        $completedOrders = Order::with(['orderItems.product'])->where('status', OrderStatus::COMPLETED->value)->sum('total_price');
+        $expenses          = Expense::sum('amount');
+        $completedOrders   = Order::with(['orderItems.product'])->where('status', OrderStatus::COMPLETED->value)->sum('total_price');
         $paidSubscriptions = Subscription::where('status', SubscriptionStatus::PAID->value)->sum('price');
 
         $totalRevenue = $completedOrders + $paidSubscriptions;
-        $vat          = $totalRevenue * 5 / 105;
+        $vat          = $totalRevenue * 0.05;
 
         $expensesWithTax = Expense::where('is_including_tax', true)->sum('amount');
-        $refundableTax   = $expensesWithTax * 5 / 105;
+        $refundableTax   = $expensesWithTax * 0.05;
 
         $workshopNetProfits = Workshop::with(['subscriptions', 'payments'])->get()->sum(function ($workshop) {
             $totalRevenue = $workshop->subscriptions()
@@ -111,7 +115,7 @@ class FinancialCenterController extends Controller
 
         return [
             'expenses'       => $expenses,
-            'refundable_tax' => $refundableTax,// need to be implemented
+            'refundable_tax' => $refundableTax,
             'vat'            => $vat,
             'annual_tax'     => $annualTax,
         ];
@@ -125,14 +129,14 @@ class FinancialCenterController extends Controller
 
         $completedOrdersCount = $completedOrders->count();
         $totalRevenue         = $completedOrders->sum('total_price');
-        $vat                  = $totalRevenue * 5 / 105;
+        $vat                  = $totalRevenue * 0.05;
         $netRevenue           = $totalRevenue - $vat;
         $totalOwnerShares     = 0;
         foreach ($completedOrders as $order) {
             foreach ($order->orderItems as $item) {
                 $product = $item->product;
                 if ($product && $product->owner_type === OwnerType::USER && $product->owner_per > 0) {
-                    $itemNetPrice = $item->total_price * 100 / 105;
+                    $itemNetPrice = $item->total_price * 0.95;
                     $ownerShare   = ($itemNetPrice * $product->owner_per) / 100;
                     $totalOwnerShares += $ownerShare;
                 }
@@ -236,16 +240,16 @@ class FinancialCenterController extends Controller
             });
 
             $boutiqueSummary = $this->calculateBoutiqueSummary();
-            $totalNetProfit = $workshopNetProfits + $boutiqueSummary['platform_profit'];
-            $annualTax = $totalNetProfit * 0.09;
+            $totalNetProfit  = $workshopNetProfits + $boutiqueSummary['platform_profit'];
+            $annualTax       = $totalNetProfit * 0.09;
 
             return response()->json([
                 'success' => true,
-                'data' => [
+                'data'    => [
                     'workshop_net_profits' => $workshopNetProfits,
                     'boutique_net_profits' => $boutiqueSummary['platform_profit'],
-                    'total_net_profit' => $totalNetProfit,
-                    'annual_tax' => $annualTax,
+                    'total_net_profit'     => $totalNetProfit,
+                    'annual_tax'           => $annualTax,
                 ],
             ]);
         } catch (\Exception $e) {
@@ -264,44 +268,44 @@ class FinancialCenterController extends Controller
             });
 
             $boutiqueSummary = $this->calculateBoutiqueSummary();
-            $totalNetProfit = $workshopNetProfits + $boutiqueSummary['platform_profit'];
-            $annualTax = $totalNetProfit * 0.09;
+            $totalNetProfit  = $workshopNetProfits + $boutiqueSummary['platform_profit'];
+            $annualTax       = $totalNetProfit * 0.09;
 
             $html = view('Admin.financial-center.annual-tax-pdf', [
                 'workshop_net_profits' => $workshopNetProfits,
                 'boutique_net_profits' => $boutiqueSummary['platform_profit'],
-                'total_net_profit' => $totalNetProfit,
-                'annual_tax' => $annualTax,
+                'total_net_profit'     => $totalNetProfit,
+                'annual_tax'           => $annualTax,
             ])->render();
 
             $tempDir = storage_path('app/temp');
-            if (!file_exists($tempDir)) {
+            if (! file_exists($tempDir)) {
                 mkdir($tempDir, 0755, true);
             }
 
             $mpdf = new Mpdf([
-                'mode' => 'utf-8',
-                'format' => 'A4',
-                'orientation' => 'P',
-                'margin_left' => 15,
-                'margin_right' => 15,
-                'margin_top' => 20,
-                'margin_bottom' => 20,
-                'margin_header' => 10,
-                'margin_footer' => 10,
-                'direction' => 'rtl',
-                'autoLangToFont' => true,
+                'mode'             => 'utf-8',
+                'format'           => 'A4',
+                'orientation'      => 'P',
+                'margin_left'      => 15,
+                'margin_right'     => 15,
+                'margin_top'       => 20,
+                'margin_bottom'    => 20,
+                'margin_header'    => 10,
+                'margin_footer'    => 10,
+                'direction'        => 'rtl',
+                'autoLangToFont'   => true,
                 'autoScriptToLang' => true,
-                'autoArabic' => true,
+                'autoArabic'       => true,
                 'useSubstitutions' => true,
-                'tempDir' => $tempDir,
+                'tempDir'          => $tempDir,
             ]);
 
             $mpdf->SetDirectionality('rtl');
             $mpdf->WriteHTML($html);
-            
+
             $pdfContent = $mpdf->Output('', 'S');
-            
+
             return response($pdfContent, 200)
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'attachment; filename="annual-tax-report.pdf"')
@@ -326,14 +330,14 @@ class FinancialCenterController extends Controller
             });
 
             $boutiqueSummary = $this->calculateBoutiqueSummary();
-            $totalNetProfit = $workshopNetProfits + $boutiqueSummary['platform_profit'];
-            $annualTax = $totalNetProfit * 0.09;
+            $totalNetProfit  = $workshopNetProfits + $boutiqueSummary['platform_profit'];
+            $annualTax       = $totalNetProfit * 0.09;
 
             return Excel::download(new \App\Exports\AnnualTaxExport([
                 'workshop_net_profits' => $workshopNetProfits,
                 'boutique_net_profits' => $boutiqueSummary['platform_profit'],
-                'total_net_profit' => $totalNetProfit,
-                'annual_tax' => $annualTax,
+                'total_net_profit'     => $totalNetProfit,
+                'annual_tax'           => $annualTax,
             ]), 'annual-tax-report.xlsx');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء تصدير التقرير');
@@ -344,10 +348,9 @@ class FinancialCenterController extends Controller
     {
         try {
             $workshopId = $request->get('workshop_id');
-            $dateFrom = $request->get('date_from');
-            $dateTo = $request->get('date_to');
+            $dateFrom   = $request->get('date_from');
+            $dateTo     = $request->get('date_to');
 
-            // Calculate VAT from orders (always include orders, not filtered by workshop)
             $ordersQuery = Order::where('status', OrderStatus::COMPLETED->value);
             if ($dateFrom) {
                 $ordersQuery->whereDate('created_at', '>=', $dateFrom);
@@ -356,11 +359,10 @@ class FinancialCenterController extends Controller
                 $ordersQuery->whereDate('created_at', '<=', $dateTo);
             }
             $completedOrders = $ordersQuery->get();
-            $ordersTotal = $completedOrders->sum('total_price');
-            $ordersVat = $ordersTotal * 5 / 105;
+            $ordersTotal     = $completedOrders->sum('total_price');
+            $ordersVat       = $ordersTotal * 0.05;
 
-            // Calculate VAT from subscriptions
-            $subscriptionsQuery = \App\Models\Subscription::where('status', SubscriptionStatus::PAID->value);
+            $subscriptionsQuery = Subscription::where('status', SubscriptionStatus::PAID->value);
             if ($workshopId) {
                 $subscriptionsQuery->where('workshop_id', $workshopId);
             }
@@ -370,15 +372,15 @@ class FinancialCenterController extends Controller
             if ($dateTo) {
                 $subscriptionsQuery->whereDate('created_at', '<=', $dateTo);
             }
-            $paidSubscriptions = $subscriptionsQuery->get();
+            $paidSubscriptions  = $subscriptionsQuery->get();
             $subscriptionsTotal = $paidSubscriptions->sum('price');
-            $subscriptionsVat = $subscriptionsTotal * 5 / 105;
+            $subscriptionsVat   = $subscriptionsTotal * 0.05;
 
             $totalVat = $ordersVat + $subscriptionsVat;
 
             return $this->successWithDataResponse([
-                'total_vat' => $totalVat,
-                'orders_vat' => $ordersVat,
+                'total_vat'         => $totalVat,
+                'orders_vat'        => $ordersVat,
                 'subscriptions_vat' => $subscriptionsVat,
             ]);
         } catch (\Exception $e) {
@@ -390,8 +392,8 @@ class FinancialCenterController extends Controller
     {
         try {
             $workshopId = $request->get('workshop_id');
-            $dateFrom = $request->get('date_from');
-            $dateTo = $request->get('date_to');
+            $dateFrom   = $request->get('date_from');
+            $dateTo     = $request->get('date_to');
 
             $ordersQuery = Order::where('status', OrderStatus::COMPLETED->value);
             if ($dateFrom) {
@@ -401,9 +403,9 @@ class FinancialCenterController extends Controller
                 $ordersQuery->whereDate('created_at', '<=', $dateTo);
             }
             $completedOrders = $ordersQuery->get();
-            $ordersVat = $completedOrders->sum('total_price') * 5 / 105;
+            $ordersVat       = $completedOrders->sum('total_price') * 0.05;
 
-            $subscriptionsQuery = \App\Models\Subscription::where('status', SubscriptionStatus::PAID->value);
+            $subscriptionsQuery = Subscription::where('status', SubscriptionStatus::PAID->value);
             if ($workshopId) {
                 $subscriptionsQuery->where('workshop_id', $workshopId);
             }
@@ -414,48 +416,48 @@ class FinancialCenterController extends Controller
                 $subscriptionsQuery->whereDate('created_at', '<=', $dateTo);
             }
             $paidSubscriptions = $subscriptionsQuery->get();
-            $subscriptionsVat = $paidSubscriptions->sum('price') * 5 / 105;
+            $subscriptionsVat  = $paidSubscriptions->sum('price') * 0.05;
 
-            $totalVat = $ordersVat + $subscriptionsVat;
+            $totalVat     = $ordersVat + $subscriptionsVat;
             $workshopName = $workshopId ? Workshop::find($workshopId)?->title : 'الإجمالي';
 
             $html = view('Admin.financial-center.vat-report-pdf', [
-                'total_vat' => $totalVat,
-                'orders_vat' => $ordersVat,
+                'total_vat'         => $totalVat,
+                'orders_vat'        => $ordersVat,
                 'subscriptions_vat' => $subscriptionsVat,
-                'workshop_name' => $workshopName,
-                'date_from' => $dateFrom,
-                'date_to' => $dateTo,
+                'workshop_name'     => $workshopName,
+                'date_from'         => $dateFrom,
+                'date_to'           => $dateTo,
             ])->render();
 
             $tempDir = storage_path('app/temp');
-            if (!file_exists($tempDir)) {
+            if (! file_exists($tempDir)) {
                 mkdir($tempDir, 0755, true);
             }
 
             $mpdf = new Mpdf([
-                'mode' => 'utf-8',
-                'format' => 'A4',
-                'orientation' => 'P',
-                'margin_left' => 15,
-                'margin_right' => 15,
-                'margin_top' => 20,
-                'margin_bottom' => 20,
-                'margin_header' => 10,
-                'margin_footer' => 10,
-                'direction' => 'rtl',
-                'autoLangToFont' => true,
+                'mode'             => 'utf-8',
+                'format'           => 'A4',
+                'orientation'      => 'P',
+                'margin_left'      => 15,
+                'margin_right'     => 15,
+                'margin_top'       => 20,
+                'margin_bottom'    => 20,
+                'margin_header'    => 10,
+                'margin_footer'    => 10,
+                'direction'        => 'rtl',
+                'autoLangToFont'   => true,
                 'autoScriptToLang' => true,
-                'autoArabic' => true,
+                'autoArabic'       => true,
                 'useSubstitutions' => true,
-                'tempDir' => $tempDir,
+                'tempDir'          => $tempDir,
             ]);
 
             $mpdf->SetDirectionality('rtl');
             $mpdf->WriteHTML($html);
-            
+
             $pdfContent = $mpdf->Output('', 'S');
-            
+
             return response($pdfContent, 200)
                 ->header('Content-Type', 'application/pdf')
                 ->header('Content-Disposition', 'attachment; filename="vat-report.pdf"')
@@ -472,8 +474,8 @@ class FinancialCenterController extends Controller
     {
         try {
             $workshopId = $request->get('workshop_id');
-            $dateFrom = $request->get('date_from');
-            $dateTo = $request->get('date_to');
+            $dateFrom   = $request->get('date_from');
+            $dateTo     = $request->get('date_to');
 
             $ordersQuery = Order::where('status', OrderStatus::COMPLETED->value);
             if ($dateFrom) {
@@ -483,9 +485,9 @@ class FinancialCenterController extends Controller
                 $ordersQuery->whereDate('created_at', '<=', $dateTo);
             }
             $completedOrders = $ordersQuery->get();
-            $ordersVat = $completedOrders->sum('total_price') * 5 / 105;
+            $ordersVat       = $completedOrders->sum('total_price') * 0.05;
 
-            $subscriptionsQuery = \App\Models\Subscription::where('status', SubscriptionStatus::PAID->value);
+            $subscriptionsQuery = Subscription::where('status', SubscriptionStatus::PAID->value);
             if ($workshopId) {
                 $subscriptionsQuery->where('workshop_id', $workshopId);
             }
@@ -496,18 +498,174 @@ class FinancialCenterController extends Controller
                 $subscriptionsQuery->whereDate('created_at', '<=', $dateTo);
             }
             $paidSubscriptions = $subscriptionsQuery->get();
-            $subscriptionsVat = $paidSubscriptions->sum('price') * 5 / 105;
+            $subscriptionsVat  = $paidSubscriptions->sum('price') * 0.05;
 
             $totalVat = $ordersVat + $subscriptionsVat;
 
             return Excel::download(new \App\Exports\VatReportExport([
-                'total_vat' => $totalVat,
-                'orders_vat' => $ordersVat,
+                'total_vat'         => $totalVat,
+                'orders_vat'        => $ordersVat,
                 'subscriptions_vat' => $subscriptionsVat,
-                'workshop_id' => $workshopId,
-                'date_from' => $dateFrom,
-                'date_to' => $dateTo,
+                'workshop_id'       => $workshopId,
+                'date_from'         => $dateFrom,
+                'date_to'           => $dateTo,
             ]), 'vat-report.xlsx');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تصدير التقرير');
+        }
+    }
+
+    public function getRefundableTaxReport(Request $request): JsonResponse
+    {
+        try {
+            $workshopId = $request->get('workshop_id');
+            $dateFrom   = $request->get('date_from');
+            $dateTo     = $request->get('date_to');
+
+            $expensesQuery = Expense::where('is_including_tax', true);
+
+            if ($workshopId && $workshopId !== 'all') {
+                if (is_numeric($workshopId)) {
+                    $expensesQuery->where('workshop_id', $workshopId);
+                }
+            }
+
+            if ($dateFrom) {
+                $expensesQuery->whereDate('created_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $expensesQuery->whereDate('created_at', '<=', $dateTo);
+            }
+
+            $expensesWithTax = $expensesQuery->get();
+            $totalAmount     = $expensesWithTax->sum('amount');
+            $refundableTax   = $totalAmount * 0.05;
+
+            return $this->successWithDataResponse([
+                'refundable_tax' => $refundableTax,
+                'total_amount'   => $totalAmount,
+                'expenses_count' => $expensesWithTax->count(),
+            ]);
+        } catch (\Exception $e) {
+            return $this->failureResponse('حدث خطأ أثناء جلب البيانات: ' . $e->getMessage());
+        }
+    }
+
+    public function exportRefundableTaxPdf(Request $request)
+    {
+        try {
+            $workshopId = $request->get('workshop_id');
+            $dateFrom   = $request->get('date_from');
+            $dateTo     = $request->get('date_to');
+
+            $expensesQuery = Expense::where('is_including_tax', true);
+
+            if ($workshopId && $workshopId !== 'all') {
+                if (is_numeric($workshopId)) {
+                    $expensesQuery->where('workshop_id', $workshopId);
+                }
+            }
+
+            if ($dateFrom) {
+                $expensesQuery->whereDate('created_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $expensesQuery->whereDate('created_at', '<=', $dateTo);
+            }
+
+            $expensesWithTax = $expensesQuery->with('workshop')->get();
+            $totalAmount     = $expensesWithTax->sum('amount');
+            $refundableTax   = $totalAmount * 0.05;
+
+            $workshopName = 'الإجمالي (يشمل الورش والمصروفات العامة)';
+            if ($workshopId && $workshopId !== 'all' && is_numeric($workshopId)) {
+                $workshop     = Workshop::find($workshopId);
+                $workshopName = $workshop ? $workshop->title : 'غير محدد';
+            }
+
+            $html = view('Admin.financial-center.refundable-tax-pdf', [
+                'refundable_tax' => $refundableTax,
+                'total_amount'   => $totalAmount,
+                'expenses_count' => $expensesWithTax->count(),
+                'workshop_name'  => $workshopName,
+                'date_from'      => $dateFrom,
+                'date_to'        => $dateTo,
+            ])->render();
+
+            $tempDir = storage_path('app/temp');
+            if (! file_exists($tempDir)) {
+                mkdir($tempDir, 0755, true);
+            }
+
+            $mpdf = new Mpdf([
+                'mode'             => 'utf-8',
+                'format'           => 'A4',
+                'orientation'      => 'P',
+                'margin_left'      => 15,
+                'margin_right'     => 15,
+                'margin_top'       => 20,
+                'margin_bottom'    => 20,
+                'margin_header'    => 10,
+                'margin_footer'    => 10,
+                'direction'        => 'rtl',
+                'autoLangToFont'   => true,
+                'autoScriptToLang' => true,
+                'autoArabic'       => true,
+                'useSubstitutions' => true,
+                'tempDir'          => $tempDir,
+            ]);
+
+            $mpdf->SetDirectionality('rtl');
+            $mpdf->WriteHTML($html);
+
+            $pdfContent = $mpdf->Output('', 'S');
+
+            return response($pdfContent, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="refundable-tax-report.pdf"')
+                ->header('Content-Length', strlen($pdfContent))
+                ->header('Cache-Control', 'no-cache, must-revalidate')
+                ->header('Pragma', 'no-cache');
+        } catch (\Exception $e) {
+            \Log::error('Refundable Tax PDF Export Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تصدير التقرير: ' . $e->getMessage());
+        }
+    }
+
+    public function exportRefundableTaxExcel(Request $request)
+    {
+        try {
+            $workshopId = $request->get('workshop_id');
+            $dateFrom   = $request->get('date_from');
+            $dateTo     = $request->get('date_to');
+
+            $expensesQuery = Expense::where('is_including_tax', true);
+
+            if ($workshopId && $workshopId !== 'all') {
+                if (is_numeric($workshopId)) {
+                    $expensesQuery->where('workshop_id', $workshopId);
+                }
+            }
+
+            if ($dateFrom) {
+                $expensesQuery->whereDate('created_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $expensesQuery->whereDate('created_at', '<=', $dateTo);
+            }
+
+            $expensesWithTax = $expensesQuery->get();
+            $totalAmount     = $expensesWithTax->sum('amount');
+            $refundableTax   = $totalAmount * 0.05;
+
+            return Excel::download(new \App\Exports\RefundableTaxExport([
+                'refundable_tax' => $refundableTax,
+                'total_amount'   => $totalAmount,
+                'expenses_count' => $expensesWithTax->count(),
+                'workshop_id'    => $workshopId,
+                'date_from'      => $dateFrom,
+                'date_to'        => $dateTo,
+            ]), 'refundable-tax-report.xlsx');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'حدث خطأ أثناء تصدير التقرير');
         }

@@ -25,7 +25,6 @@ class SupportMessageFilter
             }
         }
         
-        // Default sorting if not specified
         if (!$this->request->has('sort')) {
             $this->builder->orderBy('created_at', 'desc');
         }

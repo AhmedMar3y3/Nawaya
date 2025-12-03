@@ -885,7 +885,7 @@
                     </div>
 
                     <!-- Refundable Tax Card -->
-                    <div class="expense-card" style="cursor: default;">
+                    <div class="expense-card" onclick="openRefundableTaxModal()" style="cursor: pointer;">
                         <div class="expense-card-icon"
                             style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
                             <i class="fa fa-arrow-down" style="font-size: 2rem;"></i>
@@ -1125,6 +1125,68 @@
         </div>
     </div>
 
+    <!-- Refundable Tax Report Modal -->
+    <div class="modal fade" id="refundableTaxModal" tabindex="-1" aria-labelledby="refundableTaxModalLabel" aria-hidden="true"
+        dir="rtl">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); border: none;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <h5 class="modal-title" id="refundableTaxModalLabel" style="color: #fff; font-weight: 700;">
+                        تقرير الضريبة المستردة على المصروفات
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <!-- Filters -->
+                    <div style="margin-bottom: 2rem;">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">فلتر حسب الورشة</label>
+                                <select class="form-control" id="refundableTaxWorkshopFilter" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                                    <option value="all">الإجمالي (يشمل الورش والمصروفات العامة)</option>
+                                    @if (isset($allWorkshops))
+                                        @foreach ($allWorkshops as $workshop)
+                                            <option value="{{ $workshop->id }}">{{ $workshop->title }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">من تاريخ</label>
+                                <input type="date" class="form-control" id="refundableTaxDateFrom" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">إلى تاريخ</label>
+                                <input type="date" class="form-control" id="refundableTaxDateTo" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Refundable Tax Section -->
+                    <div style="text-align: center; margin-bottom: 2rem; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                        <h6 style="color: #94a3b8; margin-bottom: 1rem; font-size: 1rem;">الضريبة المستردة للفترة المحددة</h6>
+                        <h2 style="color: #fff; font-size: 2.5rem; font-weight: 700; margin: 0;" id="refundableTaxTotalAmount">
+                            0.00
+                        </h2>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.1); padding: 1.5rem 2rem;">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal" style="margin-left: auto;">
+                        إغلاق
+                    </button>
+                    <button type="button" class="btn-export" onclick="exportRefundableTaxExcel()" style="text-decoration: none;">
+                        <i class="fa fa-download"></i>
+                        تصدير Excel
+                    </button>
+                    <button type="button" class="btn-save" onclick="exportRefundableTaxPdf()" style="text-decoration: none; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                        <i class="fa fa-print"></i>
+                        طباعة / حفظ PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Expenses Management Modal -->
     <div class="modal fade" id="expensesModal" tabindex="-1" aria-labelledby="expensesModalLabel" aria-hidden="true"
         dir="rtl">
@@ -1204,7 +1266,7 @@
                                         <div style="min-width:180px;">
                                             <label class="form-label d-flex align-items-center mb-0" style="gap:1rem;">
                                                 <input type="checkbox" id="expenseIsIncludingTax" name="is_including_tax"
-                                                    value="1" checked>
+                                                    value="1">
                                                 الفاتورة تشمل الضريبة
                                             </label>
                                         </div>
@@ -1642,6 +1704,108 @@
             }
         });
 
+        let refundableTaxModal = null;
+
+        function openRefundableTaxModal() {
+            if (!refundableTaxModal) {
+                refundableTaxModal = new bootstrap.Modal(document.getElementById('refundableTaxModal'));
+            }
+            // Reset filters
+            const refundableTaxWorkshopFilter = document.getElementById('refundableTaxWorkshopFilter');
+            const refundableTaxDateFrom = document.getElementById('refundableTaxDateFrom');
+            const refundableTaxDateTo = document.getElementById('refundableTaxDateTo');
+            if (refundableTaxWorkshopFilter) refundableTaxWorkshopFilter.value = 'all';
+            if (refundableTaxDateFrom) refundableTaxDateFrom.value = '';
+            if (refundableTaxDateTo) refundableTaxDateTo.value = '';
+            // Load refundable tax data
+            loadRefundableTaxReport();
+            refundableTaxModal.show();
+        }
+
+        function loadRefundableTaxReport() {
+            const workshopId = document.getElementById('refundableTaxWorkshopFilter')?.value || 'all';
+            const dateFrom = document.getElementById('refundableTaxDateFrom')?.value || '';
+            const dateTo = document.getElementById('refundableTaxDateTo')?.value || '';
+
+            const params = new URLSearchParams();
+            if (workshopId && workshopId !== 'all') params.append('workshop_id', workshopId);
+            if (dateFrom) params.append('date_from', dateFrom);
+            if (dateTo) params.append('date_to', dateTo);
+
+            fetch(`/financial-center/refundable-tax?${params.toString()}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Refundable Tax Report Data:', data);
+                if (data.success && data.data) {
+                    const refundableTaxTotalAmount = document.getElementById('refundableTaxTotalAmount');
+                    if (refundableTaxTotalAmount) {
+                        refundableTaxTotalAmount.textContent = parseFloat(data.data.refundable_tax || 0).toFixed(2);
+                    }
+                } else {
+                    console.error('Refundable Tax Report Error:', data.msg || data.message || 'Unknown error');
+                    const refundableTaxTotalAmount = document.getElementById('refundableTaxTotalAmount');
+                    if (refundableTaxTotalAmount) {
+                        refundableTaxTotalAmount.textContent = '0.00';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error loading refundable tax report:', error);
+                const refundableTaxTotalAmount = document.getElementById('refundableTaxTotalAmount');
+                if (refundableTaxTotalAmount) {
+                    refundableTaxTotalAmount.textContent = '0.00';
+                }
+            });
+        }
+
+        function exportRefundableTaxExcel() {
+            const workshopId = document.getElementById('refundableTaxWorkshopFilter')?.value || 'all';
+            const dateFrom = document.getElementById('refundableTaxDateFrom')?.value || '';
+            const dateTo = document.getElementById('refundableTaxDateTo')?.value || '';
+
+            const params = new URLSearchParams();
+            if (workshopId && workshopId !== 'all') params.append('workshop_id', workshopId);
+            if (dateFrom) params.append('date_from', dateFrom);
+            if (dateTo) params.append('date_to', dateTo);
+
+            window.location.href = `/financial-center/refundable-tax/export/excel?${params.toString()}`;
+        }
+
+        function exportRefundableTaxPdf() {
+            const workshopId = document.getElementById('refundableTaxWorkshopFilter')?.value || 'all';
+            const dateFrom = document.getElementById('refundableTaxDateFrom')?.value || '';
+            const dateTo = document.getElementById('refundableTaxDateTo')?.value || '';
+
+            const params = new URLSearchParams();
+            if (workshopId && workshopId !== 'all') params.append('workshop_id', workshopId);
+            if (dateFrom) params.append('date_from', dateFrom);
+            if (dateTo) params.append('date_to', dateTo);
+
+            window.location.href = `/financial-center/refundable-tax/export/pdf?${params.toString()}`;
+        }
+
+        // Add event listeners for refundable tax filters
+        document.addEventListener('DOMContentLoaded', function() {
+            const refundableTaxWorkshopFilter = document.getElementById('refundableTaxWorkshopFilter');
+            const refundableTaxDateFrom = document.getElementById('refundableTaxDateFrom');
+            const refundableTaxDateTo = document.getElementById('refundableTaxDateTo');
+
+            if (refundableTaxWorkshopFilter) {
+                refundableTaxWorkshopFilter.addEventListener('change', loadRefundableTaxReport);
+            }
+            if (refundableTaxDateFrom) {
+                refundableTaxDateFrom.addEventListener('change', loadRefundableTaxReport);
+            }
+            if (refundableTaxDateTo) {
+                refundableTaxDateTo.addEventListener('change', loadRefundableTaxReport);
+            }
+        });
+
         function openAnnualTaxModal() {
             if (!annualTaxModal) {
                 annualTaxModal = new bootstrap.Modal(document.getElementById('annualTaxModal'));
@@ -1783,7 +1947,7 @@
             if (expenseFormTitle) expenseFormTitle.textContent = 'إضافة مصروف جديد';
             if (expenseSubmitText) expenseSubmitText.textContent = 'إضافة المصروف';
             if (expenseCancelBtn) expenseCancelBtn.style.display = 'none';
-            if (expenseIsIncludingTax) expenseIsIncludingTax.checked = true;
+            if (expenseIsIncludingTax) expenseIsIncludingTax.checked = false;
             if (expenseImagePreview) expenseImagePreview.style.display = 'none';
             // Reset file input label
             const expenseFileInputLabel = document.getElementById('expenseFileInputLabel');

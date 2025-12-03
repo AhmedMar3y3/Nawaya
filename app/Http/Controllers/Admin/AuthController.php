@@ -40,23 +40,54 @@ class AuthController extends Controller
             $greeting = 'مساء الخير';
         }
         
-        // $totalUsers = \App\Models\User::count();
-        // $activeUsers = \App\Models\User::where('is_active', true)->count();
-        // $recentUsers = \App\Models\User::where('created_at', '>=', now()->subDays(7))->count();
+        $totalUsers = \App\Models\User::count();
+        $activeUsers = \App\Models\User::where('is_active', true)->count();
+        $recentUsers = \App\Models\User::where('created_at', '>=', now()->subDays(7))->count();
         
-        // $last7DaysUsers = \App\Models\User::selectRaw('DATE(created_at) as date, COUNT(*) as count')
-        //     ->where('created_at', '>=', now()->subDays(7))
-        //     ->groupBy('date')
-        //     ->orderBy('date')
-        //     ->pluck('count', 'date');
+        $totalWorkshops = \App\Models\Workshop::count();
+        $activeWorkshops = \App\Models\Workshop::where('is_active', true)->count();
+        $recentWorkshops = \App\Models\Workshop::where('created_at', '>=', now()->subDays(7))->count();
+        
+        $totalOrders = \App\Models\Order::count();
+        $completedOrders = \App\Models\Order::where('status', \App\Enums\Order\OrderStatus::COMPLETED->value)->count();
+        $pendingOrders = \App\Models\Order::where('status', \App\Enums\Order\OrderStatus::PENDING->value)->count();
+        $recentOrders = \App\Models\Order::where('created_at', '>=', now()->subDays(7))->count();
+        
+        $totalSubscriptions = \App\Models\Subscription::count();
+        $paidSubscriptions = \App\Models\Subscription::where('status', \App\Enums\Subscription\SubscriptionStatus::PAID->value)->count();
+        $recentSubscriptions = \App\Models\Subscription::where('created_at', '>=', now()->subDays(7))->count();
+        
+        $totalProducts = \App\Models\Product::count();
+        $recentProducts = \App\Models\Product::where('created_at', '>=', now()->subDays(7))->count();
+        
+        $totalSupportMessages = \App\Models\SupportMessage::count();
+        $recentSupportMessages = \App\Models\SupportMessage::where('created_at', '>=', now()->subDays(7))->count();
+        
+        $recentUsersList = \App\Models\User::latest()->limit(5)->get(['id', 'full_name', 'email', 'created_at']);
+        $recentOrdersList = \App\Models\Order::with('user')->latest()->limit(5)->get(['id', 'user_id', 'total_price', 'status', 'created_at']);
         
         return view('Admin.dashboard', compact(
             'admin',
             'greeting',
-            // 'totalUsers',
-            // 'activeUsers',
-            // 'recentUsers',
-            // 'last7DaysUsers'
+            'totalUsers',
+            'activeUsers',
+            'recentUsers',
+            'totalWorkshops',
+            'activeWorkshops',
+            'recentWorkshops',
+            'totalOrders',
+            'completedOrders',
+            'pendingOrders',
+            'recentOrders',
+            'totalSubscriptions',
+            'paidSubscriptions',
+            'recentSubscriptions',
+            'totalProducts',
+            'recentProducts',
+            'totalSupportMessages',
+            'recentSupportMessages',
+            'recentUsersList',
+            'recentOrdersList'
         ));
     }
 }

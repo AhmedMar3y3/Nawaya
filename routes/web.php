@@ -117,6 +117,9 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::get('/vat-report'                         , [FinancialCenterController::class, 'getVatReport'])->name('vat-report');
         Route::get('/vat-report/export/pdf'              , [FinancialCenterController::class, 'exportVatPdf'])->name('vat-report.export.pdf');
         Route::get('/vat-report/export/excel'            , [FinancialCenterController::class, 'exportVatExcel'])->name('vat-report.export.excel');
+        Route::get('/refundable-tax'                     , [FinancialCenterController::class, 'getRefundableTaxReport'])->name('refundable-tax');
+        Route::get('/refundable-tax/export/pdf'          , [FinancialCenterController::class, 'exportRefundableTaxPdf'])->name('refundable-tax.export.pdf');
+        Route::get('/refundable-tax/export/excel'        , [FinancialCenterController::class, 'exportRefundableTaxExcel'])->name('refundable-tax.export.excel');
         Route::get('/workshops/{workshopId}/payments'     , [FinancialCenterController::class, 'getWorkshopPayments'])->name('workshops.payments');
         Route::put('/workshops/{workshopId}/teacher-per'   , [FinancialCenterController::class, 'updateTeacherPercentage'])->name('workshops.update-teacher-per');
         Route::post('/workshops/{workshopId}/payments'     , [FinancialCenterController::class, 'addPayment'])->name('workshops.add-payment');
