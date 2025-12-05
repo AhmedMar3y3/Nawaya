@@ -4,11 +4,10 @@ namespace App\Enums\Payment;
 
 use App\Traits\HasLocalizedEnum;
 
-enum PaymentType: string {
+enum RefundType: string {
     use HasLocalizedEnum;
 
-    case ONLINE        = 'online';
+    case CASH          = 'cash';
     case BANK_TRANSFER = 'bank_transfer';
     case LINK          = 'link';
-    case USER_BALANCE  = 'user_balance';
 }

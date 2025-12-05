@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Payment\RefundType;
 use App\Enums\Payment\PaymentType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,6 +21,13 @@ class Subscription extends Model
         'payment_type',
         'invoice_id',
         'invoice_url',
+        'package_id',
+        'paid_amount',
+        'transferer_name',
+        'notes',
+        'is_refunded',
+        'refund_type',
+        'refund_notes',
 
         // Gift flow
         'is_gift',
@@ -28,13 +36,18 @@ class Subscription extends Model
         'phone',
         'country_id',
         'message',
+        'is_gift_approved',
     ];
 
     protected $casts = [
-        'price'        => 'double',
-        'status'       => SubscriptionStatus::class,
-        'payment_type' => PaymentType::class,
-        'is_gift'      => 'boolean',
+        'price'            => 'double',
+        'paid_amount'      => 'double',
+        'is_refunded'      => 'boolean',
+        'is_gift_approved' => 'boolean',
+        'refund_type'      => RefundType::class,
+        'status'           => SubscriptionStatus::class,
+        'payment_type'     => PaymentType::class,
+        'is_gift'          => 'boolean',
     ];
 
     public function user()
@@ -45,6 +58,11 @@ class Subscription extends Model
     public function workshop()
     {
         return $this->belongsTo(Workshop::class);
+    }
+
+    public function package()
+    {
+        return $this->belongsTo(WorkshopPackage::class, 'package_id');
     }
 
     public function gifter()

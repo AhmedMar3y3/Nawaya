@@ -137,7 +137,7 @@
                 <div class="dynamic-section-header mb-3">
                     <h6 class="mb-0" style="color: #38bdf8; font-weight: 600;">
                         <i class="fa fa-paperclip me-2"></i>
-                        المرفقات (صور/فيديوهات)
+                        المرفقات (صوت/فيديوهات)
                     </h6>
                 </div>
                 <div id="attachments_container"></div>

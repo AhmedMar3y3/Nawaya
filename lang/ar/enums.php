@@ -9,9 +9,16 @@ return [
         'refunded'  => 'مسترجع',
     ],
     'payment_types'             => [
-        'cash'          => 'نقدي',
         'online'        => 'بطاقة بنكية',
         'bank_transfer' => 'تحويل بنكي',
+        'link'          => 'رابط دفع',
+        'user_balance'  => 'رصيد داخلي',
+    ],
+    
+    'refund_types'              => [
+        'cash'          => 'كاش',
+        'bank_transfer' => 'تحويل بنكي',
+        'link'          => 'رابط دفع',
     ],
 
     'boutique_owner_types'      => [
@@ -29,5 +36,16 @@ return [
     'workshop_attachment_types' => [
         'audio' => 'ملف صوتي',
         'video' => 'ملف فيديو',
+    ],
+
+    'subscription_statuses'     => [
+        'pending'      => 'قيد المراجعة',
+        'processing'   => 'قيد المعالجة',
+        'paid'         => 'مدفوع',
+        'active'       => 'نشط',
+        'expired'      => 'منتهي',
+        'failed'       => 'فشل',
+        'refunded'     => 'مسترد',
+        'user_balance' => 'رصيد داخلي',
     ],
 ];

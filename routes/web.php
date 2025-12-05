@@ -8,10 +8,11 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\DR_HopeController;
+use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\WorkshopController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\SupportMessageController;
 use App\Http\Controllers\Admin\FinancialCenterController;
-use App\Http\Controllers\Admin\ExpenseController;
 
 
 // public routes //
@@ -109,7 +110,7 @@ Route::middleware(['auth.admin'])->group(function () {
 
     // Financial Center Routes
     Route::prefix('financial-center')->name('admin.financial-center.')->group(function () {
-        Route::get('/'                                    , [FinancialCenterController::class, 'index'])->name('index');
+        Route::get('/'                                   , [FinancialCenterController::class, 'index'])->name('index');
         Route::get('/export/excel'                       , [FinancialCenterController::class, 'exportExcel'])->name('export.excel');
         Route::get('/annual-tax/details'                 , [FinancialCenterController::class, 'getAnnualTaxDetails'])->name('annual-tax.details');
         Route::get('/annual-tax/export/pdf'              , [FinancialCenterController::class, 'exportAnnualTaxPdf'])->name('annual-tax.export.pdf');
@@ -120,10 +121,10 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::get('/refundable-tax'                     , [FinancialCenterController::class, 'getRefundableTaxReport'])->name('refundable-tax');
         Route::get('/refundable-tax/export/pdf'          , [FinancialCenterController::class, 'exportRefundableTaxPdf'])->name('refundable-tax.export.pdf');
         Route::get('/refundable-tax/export/excel'        , [FinancialCenterController::class, 'exportRefundableTaxExcel'])->name('refundable-tax.export.excel');
-        Route::get('/workshops/{workshopId}/payments'     , [FinancialCenterController::class, 'getWorkshopPayments'])->name('workshops.payments');
-        Route::put('/workshops/{workshopId}/teacher-per'   , [FinancialCenterController::class, 'updateTeacherPercentage'])->name('workshops.update-teacher-per');
-        Route::post('/workshops/{workshopId}/payments'     , [FinancialCenterController::class, 'addPayment'])->name('workshops.add-payment');
-        Route::delete('/payments/{paymentId}'              , [FinancialCenterController::class, 'deletePayment'])->name('payments.delete');
+        Route::get('/workshops/{workshopId}/payments'    , [FinancialCenterController::class, 'getWorkshopPayments'])->name('workshops.payments');
+        Route::put('/workshops/{workshopId}/teacher-per' , [FinancialCenterController::class, 'updateTeacherPercentage'])->name('workshops.update-teacher-per');
+        Route::post('/workshops/{workshopId}/payments'   , [FinancialCenterController::class, 'addPayment'])->name('workshops.add-payment');
+        Route::delete('/payments/{paymentId}'            , [FinancialCenterController::class, 'deletePayment'])->name('payments.delete');
     });
 
     // Expenses Routes
@@ -137,4 +138,31 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::delete('/{id}/permanent'   , [ExpenseController::class, 'permanentlyDelete'])->name('permanent-delete');
         Route::get('/export/excel'        , [ExpenseController::class, 'exportExcel'])->name('export.excel');
     });
+
+    // Subscriptions Routes
+    Route::prefix('subscriptions')->name('admin.subscriptions.')->group(function () {
+        Route::get('/'                    , [SubscriptionController::class, 'index'])->name('index');
+        Route::post('/'                   , [SubscriptionController::class, 'store'])->name('store');
+        Route::get('/search-users'        , [SubscriptionController::class, 'searchUsers'])->name('search-users');
+        Route::get('/packages'            , [SubscriptionController::class, 'getPackages'])->name('packages');
+        Route::get('/export/excel'        , [SubscriptionController::class, 'exportExcel'])->name('export.excel');
+        Route::get('/export/pdf'          , [SubscriptionController::class, 'exportPdf'])->name('export.pdf');
+        Route::get('/{id}/edit'           , [SubscriptionController::class, 'edit'])->name('edit');
+        Route::get('/{id}/invoice'        , [SubscriptionController::class, 'getInvoice'])->name('invoice');
+        Route::get('/{id}/invoice/pdf'    , [SubscriptionController::class, 'downloadInvoicePdf'])->name('invoice.pdf');
+        Route::put('/{id}'                , [SubscriptionController::class, 'update'])->name('update');
+        Route::post('/{id}/transfer-to-balance', [SubscriptionController::class, 'transferToInternalBalance'])->name('transfer-to-balance');
+        Route::post('/{id}/transfer'      , [SubscriptionController::class, 'transfer'])->name('transfer');
+        Route::post('/{id}/refund'        , [SubscriptionController::class, 'processRefund'])->name('refund');
+        Route::get('/pending-approvals'   , [SubscriptionController::class, 'getPendingApprovals'])->name('pending-approvals');
+        Route::post('/{id}/approve'       , [SubscriptionController::class, 'approveSubscription'])->name('approve');
+        Route::post('/{id}/reject'        , [SubscriptionController::class, 'rejectSubscription'])->name('reject');
+        Route::get('/pending-approvals/export'   , [SubscriptionController::class, 'exportPendingApprovalsExcel'])->name('pending-approvals.export');
+        Route::get('/workshop/{workshopId}/stats', [SubscriptionController::class, 'getWorkshopSubscriptionsStats'])->name('workshop.stats');
+        Route::get('/workshop/{workshopId}/stats/export/excel', [SubscriptionController::class, 'exportWorkshopStatsExcel'])->name('workshop.stats.export.excel');
+        Route::get('/workshop/{workshopId}/stats/export/pdf'  , [SubscriptionController::class, 'exportWorkshopStatsPdf'])->name('workshop.stats.export.pdf');
+        Route::post('/{id}/restore'       , [SubscriptionController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/permanent'   , [SubscriptionController::class, 'permanentlyDelete'])->name('permanent-delete');
+        Route::delete('/{id}'             , [SubscriptionController::class, 'destroy'])->name('destroy');
     });
+});

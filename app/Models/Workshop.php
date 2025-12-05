@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\Workshop\WorkshopType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\Workshop\WorkshopType;
 use App\Enums\Subscription\SubscriptionStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Workshop extends Model
 {
@@ -35,11 +35,11 @@ class Workshop extends Model
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'   => 'boolean',
         'teacher_per' => 'double',
-        'type' => WorkshopType::class,
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'type'        => WorkshopType::class,
+        'start_date'  => 'date',
+        'end_date'    => 'date',
     ];
 
     public function country()
@@ -85,5 +85,10 @@ class Workshop extends Model
     public function expenses()
     {
         return $this->hasMany(Expense::class);
+    }
+
+    public function userBalanceHistories()
+    {
+        return $this->hasMany(UserBalanceHistory::class);
     }
 }

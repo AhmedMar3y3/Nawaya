@@ -71,7 +71,9 @@ class SubscriptionService
                 $subscription = Subscription::create([
                     'user_id'      => $recipientUser?->id,
                     'workshop_id'  => $package->workshop_id,
+                    'package_id'    => $packageId,
                     'price'        => $price,
+                    'paid_amount'  => $price,
                     'status'       => SubscriptionStatus::PENDING,
                     'is_gift'      => true,
                     'gift_user_id' => $user->id,
@@ -84,7 +86,9 @@ class SubscriptionService
                 $subscription = Subscription::create([
                     'user_id'     => $user->id,
                     'workshop_id' => $package->workshop_id,
+                    'package_id'  => $packageId,
                     'price'       => $price,
+                    'paid_amount' => $price,
                     'status'      => SubscriptionStatus::PENDING,
                     'is_gift'     => false,
                 ]);
