@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\DR_HopeController;
 use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\WorkshopController;
+use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\SupportMessageController;
 use App\Http\Controllers\Admin\FinancialCenterController;
@@ -180,5 +181,15 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::post('/{id}/restore'       , [SubscriptionController::class, 'restore'])->name('restore');
         Route::delete('/{id}/permanent'   , [SubscriptionController::class, 'permanentlyDelete'])->name('permanent-delete');
         Route::delete('/{id}'             , [SubscriptionController::class, 'destroy'])->name('destroy');
+    });
+
+    // Certificates Routes
+    Route::prefix('certificates')->name('admin.certificates.')->group(function () {
+        Route::get('/'                    , [CertificateController::class, 'index'])->name('index');
+        Route::post('/generate'           , [CertificateController::class, 'generate'])->name('generate');
+        Route::post('/cancel'             , [CertificateController::class, 'cancel'])->name('cancel');
+        Route::post('/{id}/toggle-status' , [CertificateController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/{id}/download'       , [CertificateController::class, 'download'])->name('download');
+        Route::get('/export/excel'        , [CertificateController::class, 'exportExcel'])->name('export.excel');
     });
 });

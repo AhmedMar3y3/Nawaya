@@ -32,6 +32,7 @@ class Workshop extends Model
         'country_id',
         'hotel',
         'hall',
+        'is_certificates_generated',
     ];
 
     protected $casts = [
@@ -90,5 +91,10 @@ class Workshop extends Model
     public function userBalanceHistories()
     {
         return $this->hasMany(UserBalanceHistory::class);
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
     }
 }

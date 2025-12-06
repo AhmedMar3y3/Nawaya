@@ -74,4 +74,9 @@ class Subscription extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class);
+    }
 }

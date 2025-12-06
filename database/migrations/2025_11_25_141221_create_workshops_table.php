@@ -36,6 +36,7 @@ return new class extends Migration
             // Online & Onsite_Online cases only
             $table->string('online_link')->nullable();
 
+            $table->boolean('is_certificates_generated')->default(false)->index();
             $table->softDeletes();
             $table->timestamps();
         });
