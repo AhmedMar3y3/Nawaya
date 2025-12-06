@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
+            $table->string('full_name')->index();
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->foreignId('country_id')->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);
-            $table->double('balance')->default(0);
+            $table->double('balance')->default(0)->index();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

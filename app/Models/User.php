@@ -80,4 +80,9 @@ class User extends Authenticatable
     {
         return $this->subscriptions()->where('status', 'active');
     }
+
+    public function balanceHistories()
+    {
+        return $this->hasMany(UserBalanceHistory::class);
+    }
 }

@@ -1,17 +1,18 @@
 <?php
+
 namespace App\Services\Admin;
 
-use App\Enums\Subscription\SubscriptionStatus;
-use App\Enums\Workshop\WorkshopType;
-use App\Filters\WorkshopFilter;
 use App\Models\Workshop;
-use App\Models\WorkshopAttachment;
 use App\Models\WorkshopFile;
+use Illuminate\Http\Request;
+use App\Filters\WorkshopFilter;
 use App\Models\WorkshopPackage;
 use App\Models\WorkshopRecording;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use App\Models\WorkshopAttachment;
+use App\Enums\Workshop\WorkshopType;
+use App\Enums\Subscription\SubscriptionStatus;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class WorkshopService
 {
@@ -96,35 +97,28 @@ class WorkshopService
     public function createWorkshop(array $data): Workshop
     {
         return DB::transaction(function () use ($data) {
-            // Extract related data
             $packages    = $data['packages'] ?? [];
             $attachments = $data['attachments'] ?? [];
             $files       = $data['files'] ?? [];
             $recordings  = $data['recordings'] ?? [];
 
-            // Remove related data from main data
             unset($data['packages'], $data['attachments'], $data['files'], $data['recordings']);
 
-            // Ensure teacher_per is set from teacher_percentage if present
             if (isset($data['teacher_percentage'])) {
                 $data['teacher_per'] = $data['teacher_percentage'];
                 unset($data['teacher_percentage']);
             }
 
-            // Create workshop
             $workshop = Workshop::create($data);
 
-            // Create packages
             if (! empty($packages)) {
                 foreach ($packages as $packageData) {
-                    // Convert checkbox value to boolean
                     if (isset($packageData['is_offer'])) {
                         $packageData['is_offer'] = filter_var($packageData['is_offer'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
                     } else {
                         $packageData['is_offer'] = false;
                     }
 
-                    // If is_offer is false, set offer_price and offer_expiry_date to null
                     if (! $packageData['is_offer']) {
                         $packageData['offer_price']       = null;
                         $packageData['offer_expiry_date'] = null;
@@ -134,21 +128,18 @@ class WorkshopService
                 }
             }
 
-            // Create attachments
             if (! empty($attachments)) {
                 foreach ($attachments as $attachmentData) {
                     $workshop->attachments()->create($attachmentData);
                 }
             }
 
-            // Create files
             if (! empty($files)) {
                 foreach ($files as $fileData) {
                     $workshop->files()->create($fileData);
                 }
             }
 
-            // Create recordings (only for recorded type)
             if ($workshop->type === WorkshopType::RECORDED && ! empty($recordings)) {
                 foreach ($recordings as $recordingData) {
                     $workshop->recordings()->create($recordingData);
@@ -324,7 +315,6 @@ class WorkshopService
         return DB::transaction(function () use ($id) {
             $workshop = Workshop::onlyTrashed()->findOrFail($id);
 
-            // Permanently delete related data
             $workshop->packages()->onlyTrashed()->forceDelete();
             $workshop->attachments()->onlyTrashed()->forceDelete();
             $workshop->files()->onlyTrashed()->forceDelete();

@@ -812,40 +812,40 @@
                 إجمالي الإشتراكات
             </button>
 
-            <button type="button" class="action-btn" onclick="alert('سيتم تنفيذ هذه الوظيفة لاحقاً')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" class="action-btn" onclick="openTransfersModal()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-exchange-alt me-2"></i>
                 التحويلات
             </button>
             
-            <button type="button" class="action-btn" onclick="alert('سيتم تنفيذ هذه الوظيفة لاحقاً')" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" class="action-btn" onclick="openRefundsModal()" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-undo me-2"></i>
                 المستردات
             </button>
            
             <!-- Second Row -->
-            <button type="button" class="action-btn" onclick="alert('سيتم تنفيذ هذه الوظيفة لاحقاً')" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" class="action-btn" onclick="openBalanceSubscriptionsModal()" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-credit-card me-2"></i>
                 اشتراكات بالرصيد
             </button>
 
-            <button type="button" class="action-btn" onclick="alert('سيتم تنفيذ هذه الوظيفة لاحقاً')" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" class="action-btn" onclick="openUserBalancesModal()" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-wallet me-2"></i>
                 الأرصدة المتاحة
             </button>
 
-            <button type="button" class="action-btn" onclick="alert('سيتم تنفيذ هذه الوظيفة لاحقاً')" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" class="action-btn" onclick="openDebtsModal()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-exclamation-triangle me-2"></i>
                 المديونيات
             </button>
 
-            <button type="button" class="action-btn" onclick="alert('سيتم تنفيذ هذه الوظيفة لاحقاً')" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <button type="button" class="action-btn" onclick="openPendingGiftsModal()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-gift me-2"></i>
                 الهدايا المعلقة
             </button>
     
         </div>
     </div>
-    
+
     <div class="filters-section">
         <form method="GET" action="{{ route('admin.subscriptions.index') }}" id="filterForm">
             <input type="hidden" name="tab" value="{{ $tab }}" id="tabInput">
@@ -1228,15 +1228,15 @@
             
             <!-- Items Table -->
             <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
-                <thead>
+                    <thead>
                     <tr style="background: #f9fafb; border-bottom: 2px solid #e5e7eb;">
                         <th style="padding: 0.75rem; text-align: right; color: #374151; font-weight: 600; font-size: 0.875rem;">الوصف</th>
                         <th style="padding: 0.75rem; text-align: center; color: #374151; font-weight: 600; font-size: 0.875rem;">صافي المبلغ</th>
                         <th style="padding: 0.75rem; text-align: center; color: #374151; font-weight: 600; font-size: 0.875rem;">الضريبة (5%)</th>
                         <th style="padding: 0.75rem; text-align: center; color: #374151; font-weight: 600; font-size: 0.875rem;">الإجمالي</th>
-                    </tr>
-                </thead>
-                <tbody>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr style="border-bottom: 1px solid #e5e7eb;">
                         <td style="padding: 1rem; color: #1f2937;">
                             <div id="invoice_workshop_title" style="font-weight: 600; margin-bottom: 0.25rem;">-</div>
@@ -1254,15 +1254,15 @@
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                     <span style="color: #6b7280; font-size: 0.875rem;">المجموع الفرعي:</span>
                     <span style="color: #1f2937; font-weight: 600;" id="invoice_summary_subtotal">-</span>
-                </div>
+                                    </div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
                     <span style="color: #6b7280; font-size: 0.875rem;">ضريبة القيمة المضافة (5%):</span>
                     <span style="color: #1f2937; font-weight: 600;" id="invoice_summary_vat">-</span>
-                </div>
+                                    </div>
                 <div style="display: flex; justify-content: space-between; padding: 1rem; background: #7c3aed; color: white; border-radius: 6px; margin-top: 1rem;">
                     <span style="font-weight: 600; font-size: 1rem;">الإجمالي المستحق (درهم):</span>
                     <span style="font-weight: 700; font-size: 1.125rem;" id="invoice_summary_total">-</span>
-                </div>
+                                </div>
             </div>
 
             <!-- Footer -->
@@ -1277,6 +1277,237 @@
     <!-- Include Modal Partials -->
     @include('Admin.subscriptions.partials.modals.pending-approvals')
     @include('Admin.subscriptions.partials.modals.total-subscriptions')
+    @include('Admin.subscriptions.partials.modals.transfers')
+    @include('Admin.subscriptions.partials.modals.refunds')
+    @include('Admin.subscriptions.partials.modals.balance-subscriptions')
+    @include('Admin.subscriptions.partials.modals.debts')
+    @include('Admin.subscriptions.partials.modals.user-balances')
+    @include('Admin.subscriptions.partials.modals.pending-gifts')
+    
+    <!-- User Details Modal Template -->
+    <div id="userDetailsModalTemplate" style="display: none;">
+    <div id="userDetailsModalContent" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: 15px; padding: 0; overflow: hidden;">
+        <!-- Loading State -->
+        <div id="userDetailsLoading" style="padding: 3rem; text-align: center; color: #94a3b8;">
+            <i class="fa fa-spinner fa-spin fa-3x mb-3"></i>
+            <div style="font-size: 1.1rem;">جاري تحميل البيانات...</div>
+        </div>
+
+        <!-- Content -->
+        <div id="userDetailsContent" style="display: none;">
+            <!-- User Profile Section -->
+            <div style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding: 2.5rem; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                
+                <div style="position: relative; z-index: 1; display: flex; align-items: center; gap: 1.5rem;">
+                    <!-- Avatar -->
+                    <div style="width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+                        <i class="fa fa-user" style="font-size: 3rem; color: #fff;"></i>
+                    </div>
+                    
+                    <!-- User Info -->
+                    <div style="flex: 1; color: #fff;">
+                        <h2 id="userDetailsName" style="margin: 0 0 0.5rem 0; font-size: 1.8rem; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.3);"></h2>
+                        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa fa-envelope" style="font-size: 1rem; opacity: 0.9;"></i>
+                                <span id="userDetailsEmail" style="font-size: 0.95rem;"></span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa fa-phone" style="font-size: 1rem; opacity: 0.9;"></i>
+                                <span id="userDetailsPhone" style="font-size: 0.95rem;"></span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa fa-globe" style="font-size: 1rem; opacity: 0.9;"></i>
+                                <span id="userDetailsCountry" style="font-size: 0.95rem;"></span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fa fa-calendar" style="font-size: 1rem; opacity: 0.9;"></i>
+                                <span id="userDetailsCreatedAt" style="font-size: 0.95rem;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div style="padding: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; text-align: center; transition: all 0.3s ease;">
+                    <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي الاشتراكات</div>
+                    <div id="statTotalSubscriptions" style="color: #fff; font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                    <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي المدفوع</div>
+                    <div id="statTotalPaid" style="color: #10b981; font-size: 2rem; font-weight: 700;">0.00 د.إ</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                    <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي السعر</div>
+                    <div id="statTotalPrice" style="color: #fff; font-size: 2rem; font-weight: 700;">0.00 د.إ</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                    <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">إجمالي المديونية</div>
+                    <div id="statTotalDebt" style="color: #ef4444; font-size: 2rem; font-weight: 700;">0.00 د.إ</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 1.5rem; text-align: center; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);">
+                    <div style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin-bottom: 0.5rem;">الرصيد الداخلي</div>
+                    <div id="statBalance" style="color: #fff; font-size: 2rem; font-weight: 700;">0.00 د.إ</div>
+                </div>
+            </div>
+
+            <!-- Subscriptions Section -->
+            <div style="padding: 0 2rem 2rem 2rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <h3 style="color: #fff; font-size: 1.5rem; font-weight: 700; margin: 0;">
+                        <i class="fa fa-list-alt ms-2" style="color: #7c3aed;"></i>
+                        الاشتراكات المدفوعة
+                    </h3>
+                    <span id="subscriptionsCount" style="background: rgba(124, 58, 237, 0.2); color: #a78bfa; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;">0 اشتراك</span>
+                </div>
+
+                <div id="subscriptionsList" style="display: grid; gap: 1.5rem;">
+                    <!-- Subscriptions will be rendered here -->
+                </div>
+
+                <div id="noSubscriptions" style="display: none; text-align: center; padding: 3rem; color: #94a3b8;">
+                    <i class="fa fa-inbox fa-4x mb-3" style="opacity: 0.5;"></i>
+                    <div style="font-size: 1.1rem;">لا توجد اشتراكات مدفوعة</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <style>
+        .subscription-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subscription-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        }
+        
+        .subscription-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(124, 58, 237, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        .subscription-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .subscription-workshop {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+        
+        .subscription-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-gift {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .badge-refunded {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .subscription-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+        }
+        
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .icon-blue {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+        
+        .icon-green {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .icon-red {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .icon-purple {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+        }
+        
+        .icon-yellow {
+            background: rgba(234, 179, 8, 0.2);
+            color: #eab308;
+        }
+        
+        .detail-content {
+            flex: 1;
+        }
+        
+        .detail-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+    </style>
     
     <!-- Transfer Modal Template -->
     <div id="transferModalTemplate" style="display: none;">
@@ -1452,10 +1683,11 @@
 
 @section('scripts')
 <script>
+// Track currently open user for accordion behavior
+let currentlyOpenUserId = null;
+
 let currentTab = '{{ $tab }}';
 let allPackages = @json($packages);
-console.log('All packages loaded:', allPackages);
-console.log('Packages count:', allPackages ? allPackages.length : 0);
 
 function switchTab(tab) {
     currentTab = tab;
@@ -1497,8 +1729,6 @@ function openNewSubscriptionModal() {
 }
 
 function initializeSubscriptionForm() {
-    console.log('Initializing subscription form...');
-    console.log('allPackages available:', typeof allPackages !== 'undefined', allPackages);
     
     // User search handler
     const userSearchInput = document.getElementById('userSearchInput');
@@ -1515,15 +1745,10 @@ function initializeSubscriptionForm() {
     // Workshop change handler
     const workshopSelect = document.getElementById('workshop_id');
     if (workshopSelect) {
-        console.log('✅ Workshop select found');
-        console.log('handleWorkshopChange function exists?', typeof handleWorkshopChange);
         // The inline onchange handler should work, but also attach programmatically
         workshopSelect.addEventListener('change', function(e) {
-            console.log('📢 Change event fired via addEventListener!', e.target.value);
             handleWorkshopChange(e);
         });
-    } else {
-        console.error('❌ Workshop select NOT found!');
     }
 
     // Package change handler
@@ -1669,17 +1894,10 @@ function updateUserBalanceDisplay(balance) {
 }
 
 function handleWorkshopChange(event) {
-    console.log('🚀 handleWorkshopChange called!', event);
     const workshopId = event ? parseInt(event.target.value) : parseInt(this.value);
-    console.log('Workshop ID from event:', workshopId);
     const packageSelect = document.getElementById('package_id');
     const actualPriceInput = document.getElementById('actual_price');
     
-    console.log('Workshop ID:', workshopId);
-    console.log('Package select element:', packageSelect);
-    console.log('allPackages:', allPackages);
-    console.log('allPackages type:', typeof allPackages);
-    console.log('Is array?', Array.isArray(allPackages));
     
     // Clear package and price
     if (packageSelect) packageSelect.innerHTML = '<option value="">لا توجد باقات</option>';
@@ -1688,31 +1906,23 @@ function handleWorkshopChange(event) {
     if (paidAmount) paidAmount.value = '';
 
     if (!workshopId) {
-        console.error('No workshop ID provided!');
         return;
     }
     
     if (!allPackages) {
-        console.error('allPackages is not defined!');
         return;
     }
 
     // Ensure allPackages is an array
     const packagesArray = Array.isArray(allPackages) ? allPackages : [];
-    console.log('Packages array length:', packagesArray.length);
-    console.log('First package:', packagesArray[0]);
-    console.log('Filtering for workshop_id:', workshopId, 'Type:', typeof workshopId);
 
     // Filter packages client-side - compare as numbers
     const filteredPackages = packagesArray.filter(pkg => {
         const pkgWorkshopId = parseInt(pkg.workshop_id);
         const matches = pkgWorkshopId === workshopId;
-        console.log(`Package ${pkg.id}: workshop_id=${pkgWorkshopId} (${typeof pkgWorkshopId}), matches=${matches}`);
         return matches;
     });
     
-    console.log('Filtered packages count:', filteredPackages.length);
-    console.log('Filtered packages:', filteredPackages);
     
     if (filteredPackages.length > 0 && packageSelect) {
         const options = filteredPackages.map(pkg => {
@@ -1722,10 +1932,7 @@ function handleWorkshopChange(event) {
             return `<option value="${pkg.id}" data-price="${pkg.price}" data-offer-price="${offerPrice}" data-is-offer="${isOffer}" data-offer-expiry="${offerExpiry}">${pkg.title}</option>`;
         });
         packageSelect.innerHTML = '<option value="">اختر باقة...</option>' + options.join('');
-        console.log('✅ Packages loaded in dropdown:', filteredPackages.length);
     } else {
-        console.error('❌ No packages found for workshop_id:', workshopId);
-        console.error('Package select exists?', !!packageSelect);
         if (packageSelect) packageSelect.innerHTML = '<option value="">لا توجد باقات</option>';
     }
 }
@@ -2808,7 +3015,193 @@ function openRecordingPermissionsModal(subscriptionId) {
 }
 
 function openDetailsModal(subscriptionId) {
-    alert('سيتم تنفيذ هذه الوظيفة لاحقاً');
+    const template = document.getElementById('userDetailsModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'تفاصيل المستخدم والاشتراكات';
+    
+    // Show loading, hide content
+    document.getElementById('userDetailsLoading').style.display = 'block';
+    document.getElementById('userDetailsContent').style.display = 'none';
+    
+    fetch(`/subscriptions/${subscriptionId}/user-details`, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            renderUserDetails(data.data);
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء جلب البيانات', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching user details:', error);
+        showToast('حدث خطأ أثناء جلب البيانات', 'error');
+    });
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function renderUserDetails(data) {
+    const { user, subscriptions, statistics } = data;
+    
+    // Hide loading, show content
+    document.getElementById('userDetailsLoading').style.display = 'none';
+    document.getElementById('userDetailsContent').style.display = 'block';
+    
+    // Render user info
+    document.getElementById('userDetailsName').textContent = user.full_name || '-';
+    document.getElementById('userDetailsEmail').textContent = user.email || '-';
+    document.getElementById('userDetailsPhone').textContent = user.phone || '-';
+    document.getElementById('userDetailsCountry').textContent = user.country || '-';
+    if (user.created_at) {
+        const date = new Date(user.created_at);
+        const formattedDate = date.getFullYear() + '-' + 
+            String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(date.getDate()).padStart(2, '0');
+        document.getElementById('userDetailsCreatedAt').textContent = formattedDate;
+    } else {
+        document.getElementById('userDetailsCreatedAt').textContent = '-';
+    }
+    
+    // Render statistics
+    document.getElementById('statTotalSubscriptions').textContent = statistics.total_subscriptions || 0;
+    document.getElementById('statTotalPaid').textContent = (statistics.total_paid || 0).toFixed(2) + ' د.إ';
+    document.getElementById('statTotalPrice').textContent = (statistics.total_price || 0).toFixed(2) + ' د.إ';
+    document.getElementById('statTotalDebt').textContent = (statistics.total_debt || 0).toFixed(2) + ' د.إ';
+    document.getElementById('statBalance').textContent = (statistics.balance || 0).toFixed(2) + ' د.إ';
+    
+    // Render subscriptions
+    const subscriptionsList = document.getElementById('subscriptionsList');
+    const noSubscriptions = document.getElementById('noSubscriptions');
+    const subscriptionsCount = document.getElementById('subscriptionsCount');
+    
+    if (subscriptions && subscriptions.length > 0) {
+        subscriptionsList.style.display = 'grid';
+        noSubscriptions.style.display = 'none';
+        subscriptionsCount.textContent = `${subscriptions.length} ${subscriptions.length === 1 ? 'اشتراك' : 'اشتراكات'}`;
+        
+        subscriptionsList.innerHTML = subscriptions.map(sub => `
+            <div class="subscription-card">
+                <div class="subscription-header">
+                    <h4 class="subscription-workshop">
+                        <i class="fa fa-graduation-cap ms-2" style="color: #7c3aed;"></i>
+                        ${sub.workshop_title || '-'}
+                    </h4>
+                    <div style="display: flex; gap: 0.5rem;">
+                        ${sub.is_gift ? '<span class="subscription-badge badge-gift"><i class="fa fa-gift ms-1"></i>هدية</span>' : ''}
+                        ${sub.is_refunded ? '<span class="subscription-badge badge-refunded"><i class="fa fa-undo ms-1"></i>مسترد</span>' : ''}
+                    </div>
+                </div>
+                
+                <div class="subscription-details">
+                    <div class="detail-item">
+                        <div class="detail-icon icon-purple">
+                            <i class="fa fa-box"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">الباقة</div>
+                            <div class="detail-value">${sub.package_title || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon icon-blue">
+                            <i class="fa fa-money-bill-wave"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">السعر</div>
+                            <div class="detail-value">${parseFloat(sub.price || 0).toFixed(2)} د.إ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon icon-green">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">المبلغ المدفوع</div>
+                            <div class="detail-value">${parseFloat(sub.paid_amount || 0).toFixed(2)} د.إ</div>
+                        </div>
+                    </div>
+                    
+                    ${parseFloat(sub.debt || 0) > 0 ? `
+                    <div class="detail-item">
+                        <div class="detail-icon icon-red">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">المديونية</div>
+                            <div class="detail-value">${parseFloat(sub.debt || 0).toFixed(2)} د.إ</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon icon-yellow">
+                            <i class="fa fa-credit-card"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">نوع الدفع</div>
+                            <div class="detail-value">${sub.payment_type || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    ${sub.invoice_id ? `
+                    <div class="detail-item">
+                        <div class="detail-icon icon-blue">
+                            <i class="fa fa-file-invoice"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">رقم الفاتورة</div>
+                            <div class="detail-value">${sub.invoice_id}</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    ${sub.refund_type ? `
+                    <div class="detail-item">
+                        <div class="detail-icon icon-red">
+                            <i class="fa fa-undo"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">نوع الاسترداد</div>
+                            <div class="detail-value">${sub.refund_type}</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon icon-purple">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">تاريخ الإنشاء</div>
+                            <div class="detail-value">${sub.created_at || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-icon icon-blue">
+                            <i class="fa fa-clock"></i>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-label">آخر تحديث</div>
+                            <div class="detail-value">${sub.updated_at || '-'}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        subscriptionsList.style.display = 'none';
+        noSubscriptions.style.display = 'block';
+        subscriptionsCount.textContent = '0 اشتراكات';
+    }
 }
 
 function openPendingApprovalsModal() {
@@ -2832,7 +3225,7 @@ function fetchPendingApprovals() {
             <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
                 <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                 <div>جاري التحميل...</div>
-            </td>
+                            </td>
         </tr>
     `;
     
@@ -2853,7 +3246,7 @@ function fetchPendingApprovals() {
                         <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
                             <i class="fa fa-inbox fa-3x mb-3"></i>
                             <div>لا توجد اشتراكات قيد المعالجة</div>
-                        </td>
+                            </td>
                     </tr>
                 `;
                 return;
@@ -2881,7 +3274,7 @@ function fetchPendingApprovals() {
                             <i class="fa fa-times me-1"></i>
                             رفض
                         </button>
-                    </td>
+                            </td>
                 </tr>
             `).join('');
         } else {
@@ -2890,7 +3283,7 @@ function fetchPendingApprovals() {
                     <td colspan="6" class="text-center py-4" style="color: #ef4444;">
                         <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                         <div>حدث خطأ أثناء جلب البيانات</div>
-                    </td>
+                            </td>
                 </tr>
             `;
         }
@@ -2902,7 +3295,7 @@ function fetchPendingApprovals() {
                 <td colspan="6" class="text-center py-4" style="color: #ef4444;">
                     <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                     <div>حدث خطأ أثناء جلب البيانات</div>
-                </td>
+                            </td>
             </tr>
         `;
     });
@@ -2994,6 +3387,1136 @@ function exportTotalSubscriptionsPdf() {
     const summaryDiv = document.getElementById('total_subscriptions_summary');
     const storedWorkshopId = summaryDiv?.getAttribute('data-workshop-id') || workshopId;
     window.location.href = `/subscriptions/workshop/${storedWorkshopId}/stats/export/pdf`;
+}
+
+function openTransfersModal() {
+    const template = document.getElementById('transfersModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'إحصائيات التحويلات';
+    
+    // Fetch transfers
+    fetchTransfers();
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function fetchTransfers() {
+    const tbody = document.getElementById('transfersTableBody');
+    const emptyDiv = document.getElementById('transfers_empty');
+    const totalCountSpan = document.getElementById('transfers_total_count');
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="8" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+                            </td>
+        </tr>
+    `;
+    
+    if (emptyDiv) emptyDiv.style.display = 'none';
+    
+    fetch('{{ route("admin.subscriptions.transfers") }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            const transfers = data.data;
+            
+            if (totalCountSpan) {
+                totalCountSpan.textContent = transfers.length;
+            }
+            
+            if (transfers.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyDiv) emptyDiv.style.display = 'block';
+                return;
+            }
+            
+            if (emptyDiv) emptyDiv.style.display = 'none';
+            
+            tbody.innerHTML = transfers.map(transfer => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 1rem; color: #fff;">${transfer.user_name || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${transfer.user_phone || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${transfer.from_workshop || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${transfer.to_workshop || '-'}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${parseFloat(transfer.old_price).toFixed(2)} د.إ</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${parseFloat(transfer.new_price).toFixed(2)} د.إ</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${parseFloat(transfer.paid_amount).toFixed(2)} د.إ</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${transfer.created_at || '-'}</td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching transfers:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function openRefundsModal() {
+    const template = document.getElementById('refundsModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'إحصائيات المبالغ المستردة';
+    
+    // Fetch refunds
+    fetchRefunds();
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function fetchRefunds() {
+    const tbody = document.getElementById('refundsTableBody');
+    const emptyDiv = document.getElementById('refunds_empty');
+    const totalCountSpan = document.getElementById('refunds_total_count');
+    const totalAmountSpan = document.getElementById('refunds_total_amount');
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="8" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    
+    if (emptyDiv) emptyDiv.style.display = 'none';
+    
+    fetch('{{ route("admin.subscriptions.refunds") }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            const refunds = data.data.refunds || [];
+            const totalCount = data.data.total_count || 0;
+            const totalAmount = data.data.total_amount || 0;
+            
+            // Update summary boxes
+            if (totalCountSpan) {
+                totalCountSpan.textContent = totalCount;
+            }
+            if (totalAmountSpan) {
+                totalAmountSpan.textContent = parseFloat(totalAmount).toFixed(2) + ' د.إ';
+            }
+            
+            if (refunds.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyDiv) emptyDiv.style.display = 'block';
+                return;
+            }
+            
+            if (emptyDiv) emptyDiv.style.display = 'none';
+            
+            tbody.innerHTML = refunds.map(refund => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 1rem; color: #fff;">${refund.user_name || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${refund.user_phone || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${refund.workshop_title || '-'}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${parseFloat(refund.paid_amount).toFixed(2)} د.إ</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${refund.refund_type || '-'}</td>
+                    <td style="padding: 1rem; color: #94a3b8; max-width: 300px; word-wrap: break-word;">${refund.refund_notes || '-'}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${refund.updated_at || '-'}</td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <button type="button" 
+                                class="btn btn-sm" 
+                                onclick="reactivateRefund(${refund.id})"
+                                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: #fff;">
+                            <i class="fa fa-redo me-1"></i>
+                            إعادة تفعيل
+                                    </button>
+                            </td>
+                        </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching refunds:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function reactivateRefund(subscriptionId) {
+    if (!confirm('هل أنت متأكد من إعادة تفعيل هذا الاشتراك؟')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/${subscriptionId}/reactivate`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('تم إعادة تفعيل الاشتراك بنجاح', 'success');
+            // Refresh the refunds list
+            fetchRefunds();
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء إعادة تفعيل الاشتراك', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error reactivating subscription:', error);
+        showToast('حدث خطأ أثناء إعادة تفعيل الاشتراك', 'error');
+    });
+}
+
+function openBalanceSubscriptionsModal() {
+    const template = document.getElementById('balanceSubscriptionsModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'الاشتراكات المدفوعة بالرصيد';
+    
+    // Fetch balance subscriptions
+    fetchBalanceSubscriptions();
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function fetchBalanceSubscriptions() {
+    const tbody = document.getElementById('balanceSubscriptionsTableBody');
+    const emptyDiv = document.getElementById('balance_subscriptions_empty');
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    
+    if (emptyDiv) emptyDiv.style.display = 'none';
+    
+    fetch('{{ route("admin.subscriptions.balance-subscriptions") }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            const subscriptions = data.data;
+            
+            if (subscriptions.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyDiv) emptyDiv.style.display = 'block';
+                return;
+            }
+            
+            if (emptyDiv) emptyDiv.style.display = 'none';
+            
+            tbody.innerHTML = subscriptions.map(sub => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 1rem; color: #fff;">${sub.user_name || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${sub.user_phone || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${sub.workshop_title || '-'}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${sub.created_at || '-'}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${parseFloat(sub.paid_amount).toFixed(2)} د.إ</td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching balance subscriptions:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function openDebtsModal() {
+    const template = document.getElementById('debtsModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'المشتركون المدينون';
+    
+    // Reset workshop filter
+    document.getElementById('debts_workshop_id').value = '';
+    
+    // Fetch debts
+    fetchDebts();
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function handleDebtsWorkshopChange(event) {
+    const workshopId = event.target.value;
+    fetchDebts(workshopId);
+}
+
+function fetchDebts(workshopId = null) {
+    const tbody = document.getElementById('debtsTableBody');
+    const emptyDiv = document.getElementById('debts_empty');
+    const totalAmountSpan = document.getElementById('debts_total_amount');
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="4" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    
+    if (emptyDiv) emptyDiv.style.display = 'none';
+    
+    let url = '{{ route("admin.subscriptions.debts") }}';
+    if (workshopId) {
+        url += `?workshop_id=${workshopId}`;
+    }
+    
+    fetch(url, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            const debts = data.data.debts || [];
+            const totalDebt = data.data.total_debt || 0;
+            
+            // Update total debt
+            if (totalAmountSpan) {
+                totalAmountSpan.textContent = parseFloat(totalDebt).toFixed(2) + ' د.إ';
+            }
+            
+            if (debts.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyDiv) emptyDiv.style.display = 'block';
+                return;
+            }
+            
+            if (emptyDiv) emptyDiv.style.display = 'none';
+            
+            tbody.innerHTML = debts.map(debt => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 1rem; color: #fff;">${debt.user_name || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${debt.user_phone || '-'}</td>
+                    <td style="padding: 1rem; color: #fff;">${debt.workshop_title || '-'}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${parseFloat(debt.debt).toFixed(2)} د.إ</td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching debts:', error);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function openUserBalancesModal() {
+    const template = document.getElementById('userBalancesModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'تفاصيل أرصدة المستخدمين';
+    
+    // Reset currently open user
+    currentlyOpenUserId = null;
+    
+    // Fetch user balances
+    fetchUserBalances();
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function fetchUserBalances() {
+    const listDiv = document.getElementById('userBalancesList');
+    const emptyDiv = document.getElementById('user_balances_empty');
+    const totalSpan = document.getElementById('user_balances_total');
+    
+    if (!listDiv) return Promise.resolve();
+    
+    listDiv.innerHTML = `
+        <div class="text-center py-4" style="color: #94a3b8;">
+            <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+            <div>جاري التحميل...</div>
+            </div>
+    `;
+    
+    if (emptyDiv) emptyDiv.style.display = 'none';
+    
+    return fetch('{{ route("admin.subscriptions.users-balances") }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            const users = data.data.users || [];
+            const totalBalance = data.data.total_balance || 0;
+            
+            // Update total balance
+            if (totalSpan) {
+                totalSpan.textContent = parseFloat(totalBalance).toFixed(2);
+            }
+            
+            if (users.length === 0) {
+                listDiv.innerHTML = '';
+                if (emptyDiv) emptyDiv.style.display = 'block';
+                return;
+            }
+            
+            if (emptyDiv) emptyDiv.style.display = 'none';
+            
+            // Render users
+            listDiv.innerHTML = users.map((user, index) => renderUserBalance(user, index)).join('');
+        } else {
+            listDiv.innerHTML = `
+                <div class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+            </div>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching user balances:', error);
+        listDiv.innerHTML = `
+            <div class="text-center py-4" style="color: #ef4444;">
+                <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                <div>حدث خطأ أثناء جلب البيانات</div>
+                </div>
+        `;
+    });
+}
+
+function renderUserBalance(user, index) {
+    const isExpanded = false; // All users closed by default
+    return `
+        <div class="user-balance-item" style="margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
+            <!-- Collapsed Header -->
+            <div class="user-balance-header" onclick="toggleUserBalance(${user.id})" style="padding: 1rem; background: rgba(15, 23, 42, 0.5); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i class="fa fa-chevron-${isExpanded ? 'down' : 'right'}" id="user_balance_chevron_${user.id}" style="color: #94a3b8; transition: transform 0.3s;"></i>
+                    <div>
+                        <div style="color: #fff; font-weight: 600;">${user.user_name || '-'}</div>
+                        <div style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.25rem;">${user.user_phone || '-'}</div>
+            </div>
+    </div>
+                <div style="color: #fff; font-weight: 600;">الرصيد الحالي: ${parseFloat(user.balance).toFixed(2)}</div>
+</div>
+            
+            <!-- Expanded Content -->
+            <div id="user_balance_content_${user.id}" style="display: ${isExpanded ? 'block' : 'none'}; padding: 1.5rem; background: rgba(15, 23, 42, 0.3);">
+                <!-- Summary Boxes -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 1rem;">
+                        <div style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 0.5rem;">إجمالي المضاف</div>
+                        <div style="color: #10b981; font-weight: 700; font-size: 1.25rem;" id="user_${user.id}_total_added">${parseFloat(user.total_added).toFixed(2)}</div>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 1rem;">
+                        <div style="color: #94a3b8; font-size: 0.875rem; margin-bottom: 0.5rem;">إجمالي المستخدم</div>
+                        <div style="color: #ef4444; font-weight: 700; font-size: 1.25rem;" id="user_${user.id}_total_subtracted">${parseFloat(user.total_subtracted).toFixed(2)}</div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <button type="button" onclick="switchBalanceTab(${user.id}, 'existing')" id="user_${user.id}_tab_existing" class="balance-tab-btn" style="padding: 0.75rem 1.5rem; background: rgba(59, 130, 246, 0.2); border: none; border-bottom: 2px solid #3b82f6; color: #fff; cursor: pointer; font-weight: 600;">
+                            سجل الحركات
+                        </button>
+                        <button type="button" onclick="switchBalanceTab(${user.id}, 'deleted')" id="user_${user.id}_tab_deleted" class="balance-tab-btn" style="padding: 0.75rem 1.5rem; background: transparent; border: none; border-bottom: 2px solid transparent; color: #94a3b8; cursor: pointer;">
+                            سلة المهملات
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Existing Histories Tab -->
+                <div id="user_${user.id}_tab_content_existing" class="balance-tab-content">
+                    ${renderBalanceHistoriesTable(user.histories || [], user.id, 'existing')}
+                </div>
+                
+                <!-- Deleted Histories Tab -->
+                <div id="user_${user.id}_tab_content_deleted" class="balance-tab-content" style="display: none;">
+                    ${renderBalanceHistoriesTable(user.deleted_histories || [], user.id, 'deleted')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderBalanceHistoriesTable(histories, userId, type) {
+    if (histories.length === 0) {
+        return `
+            <div class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-inbox fa-2x mb-2"></i>
+                <div>لا توجد سجلات</div>
+            </div>
+        `;
+    }
+    
+    return `
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="table" style="color: #fff; margin: 0; width: 100%;">
+                <thead style="position: sticky; top: 0; background: rgba(15, 23, 42, 0.95); z-index: 10;">
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">التاريخ</th>
+                        <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الوصف</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">المبلغ</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${histories.map(history => `
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td style="padding: 1rem; text-align: center; color: #94a3b8;">${history.created_at || '-'}</td>
+                            <td style="padding: 1rem; color: #fff; max-width: 400px; word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.5;">
+                                ${history.description || '-'}
+                            </td>
+                            <td style="padding: 1rem; text-align: center;">
+                                <span style="color: ${history.type === 'add' ? '#10b981' : '#ef4444'}; font-weight: 600;">
+                                    ${history.type === 'add' ? '+' : '-'}${parseFloat(history.amount).toFixed(2)} د.إ
+                                </span>
+                            </td>
+                            <td style="padding: 1rem; text-align: center;">
+                                ${type === 'existing' ? `
+                                    <button type="button" onclick="deleteBalanceHistory(${history.id}, ${userId})" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444;">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                ` : `
+                                    <button type="button" onclick="restoreBalanceHistory(${history.id}, ${userId})" class="btn btn-sm me-2" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981;">
+                                        <i class="fa fa-undo"></i>
+                                    </button>
+                                    <button type="button" onclick="permanentlyDeleteBalanceHistory(${history.id}, ${userId})" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444;">
+                                        <i class="fa fa-trash-alt"></i>
+                                    </button>
+                                `}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+function toggleUserBalance(userId) {
+    const content = document.getElementById(`user_balance_content_${userId}`);
+    const chevron = document.getElementById(`user_balance_chevron_${userId}`);
+    
+    // If this user is currently open, close it
+    if (currentlyOpenUserId === userId && content.style.display !== 'none') {
+        content.style.display = 'none';
+        chevron.classList.remove('fa-chevron-down');
+        chevron.classList.add('fa-chevron-right');
+        currentlyOpenUserId = null;
+        return;
+    }
+    
+    // Close all other users first (accordion behavior)
+    if (currentlyOpenUserId !== null && currentlyOpenUserId !== userId) {
+        const otherContent = document.getElementById(`user_balance_content_${currentlyOpenUserId}`);
+        const otherChevron = document.getElementById(`user_balance_chevron_${currentlyOpenUserId}`);
+        if (otherContent) {
+            otherContent.style.display = 'none';
+        }
+        if (otherChevron) {
+            otherChevron.classList.remove('fa-chevron-down');
+            otherChevron.classList.add('fa-chevron-right');
+        }
+    }
+    
+    // Open the clicked user
+    if (content) {
+        content.style.display = 'block';
+        currentlyOpenUserId = userId;
+    }
+    if (chevron) {
+        chevron.classList.remove('fa-chevron-right');
+        chevron.classList.add('fa-chevron-down');
+    }
+}
+
+function switchBalanceTab(userId, tab) {
+    // Update tab buttons
+    document.getElementById(`user_${userId}_tab_existing`).style.background = tab === 'existing' ? 'rgba(59, 130, 246, 0.2)' : 'transparent';
+    document.getElementById(`user_${userId}_tab_existing`).style.borderBottom = tab === 'existing' ? '2px solid #3b82f6' : '2px solid transparent';
+    document.getElementById(`user_${userId}_tab_existing`).style.color = tab === 'existing' ? '#fff' : '#94a3b8';
+    document.getElementById(`user_${userId}_tab_existing`).style.fontWeight = tab === 'existing' ? '600' : 'normal';
+    
+    document.getElementById(`user_${userId}_tab_deleted`).style.background = tab === 'deleted' ? 'rgba(59, 130, 246, 0.2)' : 'transparent';
+    document.getElementById(`user_${userId}_tab_deleted`).style.borderBottom = tab === 'deleted' ? '2px solid #3b82f6' : '2px solid transparent';
+    document.getElementById(`user_${userId}_tab_deleted`).style.color = tab === 'deleted' ? '#fff' : '#94a3b8';
+    document.getElementById(`user_${userId}_tab_deleted`).style.fontWeight = tab === 'deleted' ? '600' : 'normal';
+    
+    // Update tab content
+    document.getElementById(`user_${userId}_tab_content_existing`).style.display = tab === 'existing' ? 'block' : 'none';
+    document.getElementById(`user_${userId}_tab_content_deleted`).style.display = tab === 'deleted' ? 'block' : 'none';
+}
+
+function deleteBalanceHistory(historyId, userId) {
+    if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/balance-history/${historyId}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('تم حذف السجل بنجاح', 'success');
+            // Refresh user balances to update the lists, maintaining the open user
+            const openUserId = currentlyOpenUserId;
+            fetchUserBalances().then(() => {
+                if (openUserId) {
+                    // Reopen the user that was open
+                    setTimeout(() => {
+                        const content = document.getElementById(`user_balance_content_${openUserId}`);
+                        const chevron = document.getElementById(`user_balance_chevron_${openUserId}`);
+                        if (content && chevron) {
+                            content.style.display = 'block';
+                            chevron.classList.remove('fa-chevron-right');
+                            chevron.classList.add('fa-chevron-down');
+                            currentlyOpenUserId = openUserId;
+                        }
+                    }, 100);
+                }
+            });
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء حذف السجل', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting balance history:', error);
+        showToast('حدث خطأ أثناء حذف السجل', 'error');
+    });
+}
+
+function restoreBalanceHistory(historyId, userId) {
+    fetch(`/subscriptions/balance-history/${historyId}/restore`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('تم استعادة السجل بنجاح', 'success');
+            // Refresh user balances to update the lists, maintaining the open user
+            const openUserId = currentlyOpenUserId;
+            fetchUserBalances().then(() => {
+                if (openUserId) {
+                    // Reopen the user that was open
+                    setTimeout(() => {
+                        const content = document.getElementById(`user_balance_content_${openUserId}`);
+                        const chevron = document.getElementById(`user_balance_chevron_${openUserId}`);
+                        if (content && chevron) {
+                            content.style.display = 'block';
+                            chevron.classList.remove('fa-chevron-right');
+                            chevron.classList.add('fa-chevron-down');
+                            currentlyOpenUserId = openUserId;
+                        }
+                    }, 100);
+                }
+            });
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء استعادة السجل', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error restoring balance history:', error);
+        showToast('حدث خطأ أثناء استعادة السجل', 'error');
+    });
+}
+
+function permanentlyDeleteBalanceHistory(historyId, userId) {
+    if (!confirm('هل أنت متأكد من الحذف النهائي لهذا السجل؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/balance-history/${historyId}/permanent`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('تم الحذف النهائي بنجاح', 'success');
+            // Refresh user balances to update the lists, maintaining the open user
+            const openUserId = currentlyOpenUserId;
+            fetchUserBalances().then(() => {
+                if (openUserId) {
+                    // Reopen the user that was open
+                    setTimeout(() => {
+                        const content = document.getElementById(`user_balance_content_${openUserId}`);
+                        const chevron = document.getElementById(`user_balance_chevron_${openUserId}`);
+                        if (content && chevron) {
+                            content.style.display = 'block';
+                            chevron.classList.remove('fa-chevron-right');
+                            chevron.classList.add('fa-chevron-down');
+                            currentlyOpenUserId = openUserId;
+                        }
+                    }, 100);
+                }
+            });
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء الحذف النهائي', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error permanently deleting balance history:', error);
+        showToast('حدث خطأ أثناء الحذف النهائي', 'error');
+    });
+}
+
+// Store gift subscriptions data
+let giftSubscriptionsData = { existing: [], deleted: [] };
+
+function openPendingGiftsModal() {
+    const template = document.getElementById('pendingGiftsModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'الهدايا المعلقة';
+    
+    // Reset to existing tab
+    switchGiftTab('existing');
+    
+    // Fetch gift subscriptions
+    fetchGiftSubscriptions();
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function fetchGiftSubscriptions() {
+    const existingTbody = document.getElementById('giftExistingTableBody');
+    const deletedTbody = document.getElementById('giftDeletedTableBody');
+    const existingEmpty = document.getElementById('gift_existing_empty');
+    const deletedEmpty = document.getElementById('gift_deleted_empty');
+    
+    if (!existingTbody || !deletedTbody) return;
+    
+    // Show loading
+    existingTbody.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    deletedTbody.innerHTML = `
+        <tr>
+            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    
+    if (existingEmpty) existingEmpty.style.display = 'none';
+    if (deletedEmpty) deletedEmpty.style.display = 'none';
+    
+    fetch('{{ route("admin.subscriptions.gift-subscriptions") }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            giftSubscriptionsData.existing = data.data.existing || [];
+            giftSubscriptionsData.deleted = data.data.deleted || [];
+            
+            // Render existing gifts
+            renderGiftTable('existing', giftSubscriptionsData.existing);
+            
+            // Render deleted gifts
+            renderGiftTable('deleted', giftSubscriptionsData.deleted);
+        } else {
+            existingTbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+            deletedTbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching gift subscriptions:', error);
+        existingTbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+        deletedTbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderGiftTable(type, gifts) {
+    const tbody = document.getElementById(`gift${type === 'existing' ? 'Existing' : 'Deleted'}TableBody`);
+    const emptyDiv = document.getElementById(`gift_${type}_empty`);
+    const tabContent = document.getElementById(`gift_tab_content_${type}`);
+    
+    if (!tbody || !tabContent) return;
+    
+    const table = tbody.closest('table');
+    
+    if (gifts.length === 0) {
+        tbody.innerHTML = '';
+        if (table) table.style.display = 'none';
+        if (emptyDiv) emptyDiv.style.display = 'block';
+        return;
+    }
+    
+    // Show table and hide empty state
+    if (table) table.style.display = 'table';
+    if (emptyDiv) emptyDiv.style.display = 'none';
+    
+    tbody.innerHTML = gifts.map(gift => `
+        <tr id="gift_row_${gift.id}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word;">${gift.sender_name || '-'}</td>
+            <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word;">${gift.workshop_title || '-'}</td>
+            <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word;">${gift.receiver_name || '-'}</td>
+            <td style="padding: 1rem; text-align: center; color: #94a3b8;">${gift.created_at || '-'}</td>
+            <td style="padding: 1rem; text-align: center;">
+                ${type === 'existing' ? `
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center;">
+                        ${gift.user_id !== null ? `
+                            <button type="button" onclick="approveGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981;" title="موافقة">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        ` : ''}
+                        <button type="button" onclick="transferGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6;" title="تحويل">
+                            <i class="fa fa-exchange-alt"></i>
+                        </button>
+                        <button type="button" onclick="deleteGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444;" title="حذف">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                ` : `
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center;">
+                        <button type="button" onclick="restoreGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981;" title="استعادة">
+                            <i class="fa fa-undo"></i>
+                        </button>
+                        <button type="button" onclick="permanentlyDeleteGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444;" title="حذف نهائي">
+                            <i class="fa fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `}
+            </td>
+        </tr>
+    `).join('');
+}
+
+function switchGiftTab(tab) {
+    // Update tab buttons
+    document.getElementById('gift_tab_existing').style.background = tab === 'existing' ? 'rgba(59, 130, 246, 0.2)' : 'transparent';
+    document.getElementById('gift_tab_existing').style.borderBottom = tab === 'existing' ? '2px solid #3b82f6' : '2px solid transparent';
+    document.getElementById('gift_tab_existing').style.color = tab === 'existing' ? '#fff' : '#94a3b8';
+    document.getElementById('gift_tab_existing').style.fontWeight = tab === 'existing' ? '600' : 'normal';
+    
+    document.getElementById('gift_tab_deleted').style.background = tab === 'deleted' ? 'rgba(59, 130, 246, 0.2)' : 'transparent';
+    document.getElementById('gift_tab_deleted').style.borderBottom = tab === 'deleted' ? '2px solid #3b82f6' : '2px solid transparent';
+    document.getElementById('gift_tab_deleted').style.color = tab === 'deleted' ? '#fff' : '#94a3b8';
+    document.getElementById('gift_tab_deleted').style.fontWeight = tab === 'deleted' ? '600' : 'normal';
+    
+    // Update tab content
+    document.getElementById('gift_tab_content_existing').style.display = tab === 'existing' ? 'block' : 'none';
+    document.getElementById('gift_tab_content_deleted').style.display = tab === 'deleted' ? 'block' : 'none';
+}
+
+function deleteGiftSubscription(subscriptionId) {
+    if (!confirm('هل أنت متأكد من حذف هذه الهدية؟')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/gift-subscriptions/${subscriptionId}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.subscription) {
+            const subscription = data.data.subscription;
+            
+            // Remove from existing array
+            giftSubscriptionsData.existing = giftSubscriptionsData.existing.filter(g => g.id !== subscriptionId);
+            
+            // Add to deleted array
+            giftSubscriptionsData.deleted.unshift(subscription);
+            
+            // Update tables dynamically
+            renderGiftTable('existing', giftSubscriptionsData.existing);
+            renderGiftTable('deleted', giftSubscriptionsData.deleted);
+            
+            showToast('تم حذف الهدية بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء حذف الهدية', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting gift subscription:', error);
+        showToast('حدث خطأ أثناء حذف الهدية', 'error');
+    });
+}
+
+function restoreGiftSubscription(subscriptionId) {
+    fetch(`/subscriptions/gift-subscriptions/${subscriptionId}/restore`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.subscription) {
+            const subscription = data.data.subscription;
+            
+            // Remove from deleted array
+            giftSubscriptionsData.deleted = giftSubscriptionsData.deleted.filter(g => g.id !== subscriptionId);
+            
+            // Add to existing array
+            giftSubscriptionsData.existing.unshift(subscription);
+            
+            // Update tables dynamically
+            renderGiftTable('existing', giftSubscriptionsData.existing);
+            renderGiftTable('deleted', giftSubscriptionsData.deleted);
+            
+            showToast('تم استعادة الهدية بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء استعادة الهدية', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error restoring gift subscription:', error);
+        showToast('حدث خطأ أثناء استعادة الهدية', 'error');
+    });
+}
+
+function approveGiftSubscription(subscriptionId) {
+    if (!confirm('هل أنت متأكد من الموافقة على هذه الهدية؟')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/gift-subscriptions/${subscriptionId}/approve`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.subscription) {
+            const subscription = data.data.subscription;
+            
+            // Update the subscription in existing array
+            const index = giftSubscriptionsData.existing.findIndex(g => g.id === subscriptionId);
+            if (index !== -1) {
+                giftSubscriptionsData.existing[index] = subscription;
+            }
+            
+            // Update table dynamically
+            renderGiftTable('existing', giftSubscriptionsData.existing);
+            
+            showToast('تم الموافقة على الهدية بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء الموافقة على الهدية', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error approving gift subscription:', error);
+        showToast('حدث خطأ أثناء الموافقة على الهدية', 'error');
+    });
+}
+
+function transferGiftSubscription(subscriptionId) {
+    if (!confirm('هل أنت متأكد من تحويل هذا الاشتراك إلى المرسل؟ سيتم إلغاء تفاصيل الهدية وتحويل الاشتراك إلى حساب المرسل.')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/gift-subscriptions/${subscriptionId}/transfer`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.subscription) {
+            const subscription = data.data.subscription;
+            
+            // Remove from existing array (since it's no longer a gift)
+            giftSubscriptionsData.existing = giftSubscriptionsData.existing.filter(g => g.id !== subscriptionId);
+            
+            // Update table dynamically
+            renderGiftTable('existing', giftSubscriptionsData.existing);
+            
+            showToast('تم تحويل الاشتراك بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء تحويل الاشتراك', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error transferring gift subscription:', error);
+        showToast('حدث خطأ أثناء تحويل الاشتراك', 'error');
+    });
+}
+
+function permanentlyDeleteGiftSubscription(subscriptionId) {
+    if (!confirm('هل أنت متأكد من الحذف النهائي لهذه الهدية؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        return;
+    }
+    
+    fetch(`/subscriptions/gift-subscriptions/${subscriptionId}/permanent`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove from deleted array
+            giftSubscriptionsData.deleted = giftSubscriptionsData.deleted.filter(g => g.id !== subscriptionId);
+            
+            // Update table dynamically
+            renderGiftTable('deleted', giftSubscriptionsData.deleted);
+            
+            showToast('تم الحذف النهائي بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء الحذف النهائي', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error permanently deleting gift subscription:', error);
+        showToast('حدث خطأ أثناء الحذف النهائي', 'error');
+    });
 }
 
 function openTotalSubscriptionsModal() {

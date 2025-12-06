@@ -8,6 +8,7 @@ use App\Models\Workshop;
 use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Models\WorkshopPackage;
+use App\Models\WorkshopTransfer;
 use Illuminate\Support\Collection;
 use App\Models\UserBalanceHistory;
 use App\Filters\SubscriptionFilter;
@@ -30,21 +31,26 @@ class SubscriptionService
         $query  = $onlyTrashed ? Subscription::onlyTrashed() : Subscription::query();
         $filter = new SubscriptionFilter($request);
         $query  = $filter->apply($query);
+
+        $query->where('status', \App\Enums\Subscription\SubscriptionStatus::PAID);
+
         $query->with(['user', 'workshop', 'workshop.packages', 'country']);
         $query->latest();
         return $query->limit($limit)->get()->map(function ($subscription) {
 
             return [
-                'id'            => $subscription->id,
-                'user_name'     => $subscription->user ? $subscription->user->full_name : ($subscription->full_name ?? '-'),
-                'email'         => $subscription->user ? $subscription->user->email : '-',
-                'phone'         => $subscription->user ? $subscription->user->phone : ($subscription->phone ?? '-'),
-                'paid_amount'   => $subscription->price,
-                'status'        => __('enums.subscription_statuses.' . $subscription->status->value, [], 'ar'),
-                'package_title' => $subscription->package ? $subscription->package->title : ($subscription->workshop ? $subscription->workshop->title : '-'),
-                'payment_type'  => $subscription->payment_type ? __('enums.payment_types.' . $subscription->payment_type->value, [], 'ar') : '-',
-                'is_gift'       => $subscription->is_gift ? 'نعم' : 'لا',
-                'created_at'    => $subscription->created_at ? $subscription->created_at->format('Y-m-d') : '-',
+                'id'             => $subscription->id,
+                'user_name'      => $subscription->user ? $subscription->user->full_name : ($subscription->full_name ?? '-'),
+                'email'          => $subscription->user ? $subscription->user->email : '-',
+                'phone'          => $subscription->user ? $subscription->user->phone : ($subscription->phone ?? '-'),
+                'workshop_title' => $subscription->workshop ? $subscription->workshop->title : '-',
+                'paid_amount'    => $subscription->paid_amount ?? 0,
+                'price'          => $subscription->price ?? 0,
+                'status'         => __('enums.subscription_statuses.' . $subscription->status->value, [], 'ar'),
+                'package_title'  => $subscription->package ? $subscription->package->title : ($subscription->workshop ? $subscription->workshop->title : '-'),
+                'payment_type'   => $subscription->payment_type ? __('enums.payment_types.' . $subscription->payment_type->value, [], 'ar') : '-',
+                'is_gift'        => $subscription->is_gift ? 'نعم' : 'لا',
+                'created_at'     => $subscription->created_at ? $subscription->created_at->format('Y-m-d') : '-',
             ];
         })->toArray();
     }
@@ -52,6 +58,69 @@ class SubscriptionService
     public function getSubscriptionById(int $id): Subscription
     {
         return Subscription::with(['user', 'workshop', 'workshop.packages', 'country', 'gifter'])->findOrFail($id);
+    }
+
+    public function getUserDetailsWithSubscriptions(int $subscriptionId): array
+    {
+        $subscription = $this->getSubscriptionById($subscriptionId);
+
+        if (! $subscription->user_id) {
+            throw new \Exception('هذا الاشتراك لا يحتوي على مستخدم');
+        }
+
+        $user = User::with([
+            'country',
+            'subscriptions' => function ($query) {
+                $query->where('status', \App\Enums\Subscription\SubscriptionStatus::PAID)
+                    ->with(['workshop', 'package', 'country'])
+                    ->latest();
+            },
+        ])->findOrFail($subscription->user_id);
+
+        $paidSubscriptions = $user->subscriptions;
+
+        $totalPaid  = $paidSubscriptions->sum('paid_amount');
+        $totalPrice = $paidSubscriptions->sum('price');
+        $totalDebt  = $paidSubscriptions->sum(function ($sub) {
+            return max(0, $sub->price - $sub->paid_amount);
+        });
+
+        return [
+            'user'          => [
+                'id'         => $user->id,
+                'full_name'  => $user->full_name,
+                'email'      => $user->email,
+                'phone'      => $user->phone,
+                'balance'    => $user->balance ?? 0,
+                'is_active'  => $user->is_active,
+                'country'    => $user->country ? $user->country->name : null,
+                'created_at' => $user->created_at ? $user->created_at->format('Y-m-d H:i:s') : null,
+            ],
+            'subscriptions' => $paidSubscriptions->map(function ($sub) {
+                return [
+                    'id'             => $sub->id,
+                    'workshop_title' => $sub->workshop ? $sub->workshop->title : '-',
+                    'package_title'  => $sub->package ? $sub->package->title : ($sub->workshop ? $sub->workshop->title : '-'),
+                    'price'          => $sub->price ?? 0,
+                    'paid_amount'    => $sub->paid_amount ?? 0,
+                    'debt'           => max(0, ($sub->price ?? 0) - ($sub->paid_amount ?? 0)),
+                    'payment_type'   => $sub->payment_type ? __('enums.payment_types.' . $sub->payment_type->value, [], 'ar') : '-',
+                    'invoice_id'     => $sub->invoice_id,
+                    'is_gift'        => $sub->is_gift,
+                    'is_refunded'    => $sub->is_refunded,
+                    'refund_type'    => $sub->refund_type ? __('enums.refund_types.' . $sub->refund_type->value, [], 'ar') : null,
+                    'created_at'     => $sub->created_at ? $sub->created_at->format('Y-m-d H:i:s') : '-',
+                    'updated_at'     => $sub->updated_at ? $sub->updated_at->format('Y-m-d H:i:s') : '-',
+                ];
+            })->toArray(),
+            'statistics'    => [
+                'total_subscriptions' => $paidSubscriptions->count(),
+                'total_paid'          => $totalPaid,
+                'total_price'         => $totalPrice,
+                'total_debt'          => $totalDebt,
+                'balance'             => $user->balance ?? 0,
+            ],
+        ];
     }
 
     public function createSubscription(array $data): Subscription
@@ -551,5 +620,192 @@ class SubscriptionService
         }
 
         return 0;
+    }
+
+    public function getTransfers(): Collection
+    {
+        return WorkshopTransfer::with([
+            'subscription.user',
+            'workshopFrom',
+            'workshopTo',
+        ])
+            ->latest()
+            ->get();
+    }
+
+    public function getRefundedSubscriptions(): Collection
+    {
+        return Subscription::where(function ($query) {
+            $query->where('is_refunded', true)
+                ->orWhere('status', \App\Enums\Subscription\SubscriptionStatus::REFUNDED);
+        })
+            ->with(['user', 'workshop'])
+            ->latest('updated_at')
+            ->get();
+    }
+
+    public function reactivateSubscription(int $subscriptionId): Subscription
+    {
+        $subscription = $this->getSubscriptionById($subscriptionId);
+
+        if (! $subscription->is_refunded && $subscription->status !== \App\Enums\Subscription\SubscriptionStatus::REFUNDED) {
+            throw new \Exception('هذا الاشتراك غير مسترد');
+        }
+
+        $subscription->update([
+            'status'       => \App\Enums\Subscription\SubscriptionStatus::PAID,
+            'is_refunded'  => false,
+            'refund_type'  => null,
+            'refund_notes' => null,
+        ]);
+
+        return $subscription->fresh();
+    }
+
+    public function getBalanceSubscriptions(): Collection
+    {
+        return Subscription::where('payment_type', \App\Enums\Payment\PaymentType::USER_BALANCE)
+            ->where('status', \App\Enums\Subscription\SubscriptionStatus::PAID)
+            ->with(['user', 'workshop'])
+            ->latest('created_at')
+            ->get();
+    }
+
+    public function getDebtSubscriptions(?int $workshopId = null): Collection
+    {
+        $query = Subscription::where('status', \App\Enums\Subscription\SubscriptionStatus::PAID)->whereRaw('paid_amount < price')
+            ->with(['user', 'workshop']);
+
+        if ($workshopId) {
+            $query->where('workshop_id', $workshopId);
+        }
+
+        return $query->latest('created_at')->get();
+    }
+
+    public function getUsersWithBalances(): Collection
+    {
+        return User::where('balance', '>', 0)
+            ->with([
+                'balanceHistories' => function ($query) {
+                    $query->withTrashed()->with('workshop')->orderBy('created_at', 'desc');
+                },
+            ])
+            ->orderBy('balance', 'desc')
+            ->get();
+    }
+
+    public function deleteBalanceHistory(int $historyId): UserBalanceHistory
+    {
+        $history = UserBalanceHistory::findOrFail($historyId);
+        $history->delete();
+        return $history;
+    }
+
+    public function restoreBalanceHistory(int $historyId): UserBalanceHistory
+    {
+        $history = UserBalanceHistory::onlyTrashed()->findOrFail($historyId);
+        $history->restore();
+        return $history;
+    }
+
+    public function permanentlyDeleteBalanceHistory(int $historyId): void
+    {
+        $history = UserBalanceHistory::onlyTrashed()->findOrFail($historyId);
+        $history->forceDelete();
+    }
+
+    public function getGiftSubscriptions(bool $onlyTrashed = false): Collection
+    {
+        $query = Subscription::where('status', \App\Enums\Subscription\SubscriptionStatus::PAID)
+            ->where('is_gift', true)
+            ->where('is_gift_approved', false)
+            ->with(['gifter', 'user', 'workshop']);
+
+        if ($onlyTrashed) {
+            $query->onlyTrashed();
+        }
+
+        return $query->latest('created_at')->get();
+    }
+
+    public function deleteGiftSubscription(int $subscriptionId): Subscription
+    {
+        $subscription = $this->getSubscriptionById($subscriptionId);
+
+        if (! $subscription->is_gift) {
+            throw new \Exception('هذا الاشتراك ليس هدية');
+        }
+
+        $subscription->delete();
+        return $subscription;
+    }
+
+    public function restoreGiftSubscription(int $subscriptionId): Subscription
+    {
+        $subscription = Subscription::onlyTrashed()->findOrFail($subscriptionId);
+
+        if (! $subscription->is_gift) {
+            throw new \Exception('هذا الاشتراك ليس هدية');
+        }
+
+        $subscription->restore();
+        return $subscription;
+    }
+
+    public function permanentlyDeleteGiftSubscription(int $subscriptionId): void
+    {
+        $subscription = Subscription::onlyTrashed()->findOrFail($subscriptionId);
+
+        if (! $subscription->is_gift) {
+            throw new \Exception('هذا الاشتراك ليس هدية');
+        }
+
+        $subscription->forceDelete();
+    }
+
+    public function approveGiftSubscription(int $subscriptionId): Subscription
+    {
+        $subscription = $this->getSubscriptionById($subscriptionId);
+
+        if (! $subscription->is_gift) {
+            throw new \Exception('هذا الاشتراك ليس هدية');
+        }
+
+        if ($subscription->user_id === null) {
+            throw new \Exception('لا يمكن الموافقة على الهدية: المستلم ليس لديه حساب في النظام');
+        }
+
+        $subscription->update([
+            'is_gift_approved' => true,
+        ]);
+
+        return $subscription->fresh(['user', 'workshop', 'workshop.packages', 'country', 'gifter']);
+    }
+
+    public function transferGiftSubscription(int $subscriptionId): Subscription
+    {
+        $subscription = $this->getSubscriptionById($subscriptionId);
+
+        if (! $subscription->is_gift) {
+            throw new \Exception('هذا الاشتراك ليس هدية');
+        }
+
+        if (! $subscription->gift_user_id) {
+            throw new \Exception('لا يمكن تحويل الهدية: المرسل غير موجود');
+        }
+
+        $subscription->update([
+            'user_id'          => $subscription->gift_user_id,
+            'is_gift'          => false,
+            'is_gift_approved' => false,
+            'gift_user_id'     => null,
+            'full_name'        => null,
+            'phone'            => null,
+            'country_id'       => null,
+            'message'          => null,
+        ]);
+
+        return $subscription->fresh(['user', 'workshop', 'workshop.packages', 'country', 'gifter']);
     }
 }

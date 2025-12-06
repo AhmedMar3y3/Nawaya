@@ -26,6 +26,7 @@ class SubscriptionsExport implements FromCollection, WithHeadings, WithMapping
         $request = new Request($this->filters);
         $filter  = new SubscriptionFilter($request);
         $query   = $filter->apply($query);
+        $query->where('status', \App\Enums\Subscription\SubscriptionStatus::PAID); 
         $query->with(['user', 'workshop', 'workshop.packages', 'country']);
 
         return $query->get();
@@ -37,6 +38,7 @@ class SubscriptionsExport implements FromCollection, WithHeadings, WithMapping
             'اسم المستخدم',
             'البريد الإلكتروني',
             'رقم الهاتف',
+            'عنوان الورشة',
             'المبلغ المدفوع',
             'حالة الاشتراك',
             'عنوان الباقة',
@@ -65,7 +67,8 @@ class SubscriptionsExport implements FromCollection, WithHeadings, WithMapping
             $subscription->user ? $subscription->user->full_name : ($subscription->full_name ?? '-'),
             $subscription->user ? $subscription->user->email : '-',
             $subscription->user ? $subscription->user->phone : ($subscription->phone ?? '-'),
-            number_format($subscription->price, 2),
+            $subscription->workshop ? $subscription->workshop->title : '-',
+            number_format($subscription->paid_amount ?? 0, 2),
             __('enums.subscription_statuses.' . $subscription->status->value, [], 'ar'),
             $packageTitle,
             $subscription->payment_type ? __('enums.payment_types.' . $subscription->payment_type->value, [], 'ar') : '-',
