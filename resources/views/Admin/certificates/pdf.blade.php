@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شهادة إتمام</title>
+    <title>شهادة حضور</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         
@@ -16,7 +16,8 @@
         body {
             font-family: 'Cairo', 'Arial', sans-serif;
             direction: rtl;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 0;
         }
         
         .certificate-container {
@@ -25,8 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #6a4c93 100%);
             position: relative;
             overflow: hidden;
         }
@@ -34,225 +34,224 @@
         .certificate-container::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
-            animation: rotate 20s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .certificate {
-            width: 90%;
-            max-width: 1000px;
-            background: #ffffff;
-            border: 20px solid #d4af37;
-            border-radius: 15px;
-            padding: 60px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
-        }
-        
-        .certificate::before {
-            content: '';
-            position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 50%),
                 repeating-linear-gradient(
-                    0deg,
+                    45deg,
                     transparent,
-                    transparent 2px,
-                    rgba(212, 175, 55, 0.1) 2px,
-                    rgba(212, 175, 55, 0.1) 4px
+                    transparent 10px,
+                    rgba(255,255,255,0.03) 10px,
+                    rgba(255,255,255,0.03) 20px
                 );
             pointer-events: none;
         }
         
-        .certificate-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .certificate-content {
+            width: 90%;
+            max-width: 1000px;
             position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #ffffff;
+            padding: 60px 40px;
         }
         
-        .certificate-logo {
-            font-size: 60px;
-            margin-bottom: 20px;
+        .logo-section {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            text-align: right;
+            z-index: 2;
+        }
+        
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+        
+        .logo-name {
+            font-size: 18px;
+            color: #ffffff;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+        
+        .birds {
+            font-size: 24px;
+            margin-top: -10px;
+            margin-right: 5px;
+            line-height: 1;
         }
         
         .certificate-title {
-            font-size: 48px;
+            font-size: 64px;
             font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .certificate-subtitle {
-            font-size: 24px;
-            color: #667eea;
-            font-weight: 600;
-            margin-bottom: 30px;
-        }
-        
-        .certificate-divider {
-            width: 200px;
-            height: 3px;
-            background: linear-gradient(to right, transparent, #d4af37, transparent);
-            margin: 30px auto;
+            color: #ffffff;
+            margin: 80px 0 60px 0;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
         }
         
         .certificate-body {
-            text-align: center;
-            margin: 50px 0;
+            margin: 40px 0;
+            line-height: 2.2;
         }
         
         .certificate-text {
             font-size: 28px;
-            color: #2d3748;
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
-        
-        .certificate-name {
-            font-size: 42px;
-            font-weight: 700;
-            color: #667eea;
+            color: #ffffff;
             margin: 20px 0;
-            padding: 15px;
-            border-bottom: 3px solid #d4af37;
-            display: inline-block;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         }
         
-        .certificate-workshop {
+        .user-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 25px 0;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .workshop-title {
             font-size: 32px;
             font-weight: 600;
-            color: #2d3748;
-            margin: 20px 0;
+            color: #ffffff;
+            margin: 25px 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         }
         
-        .certificate-date {
-            font-size: 20px;
-            color: #718096;
-            margin-top: 40px;
+        .teacher-section {
+            margin: 30px 0;
         }
         
-        .certificate-footer {
-            margin-top: 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-        
-        .certificate-signature {
-            text-align: center;
-            flex: 1;
-        }
-        
-        .signature-line {
-            width: 200px;
-            height: 2px;
-            background: #2d3748;
-            margin: 50px auto 10px;
-        }
-        
-        .signature-label {
-            font-size: 18px;
-            color: #718096;
-        }
-        
-        .certificate-seal {
-            position: absolute;
-            bottom: 40px;
-            left: 40px;
-            width: 120px;
-            height: 120px;
-            border: 5px solid #d4af37;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.9);
-            font-size: 14px;
-            text-align: center;
-            padding: 10px;
-            color: #2d3748;
+        .teacher-name {
+            font-size: 28px;
             font-weight: 600;
+            color: #ffffff;
+            margin: 15px 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
         }
         
-        .certificate-number {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 14px;
-            color: #718096;
+        .teacher-title {
+            font-size: 22px;
+            color: #ffffff;
+            margin: 10px 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            opacity: 0.95;
+        }
+        
+        .workshop-date {
+            font-size: 24px;
+            color: #ffffff;
+            margin: 30px 0 20px 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        .workshop-type {
+            font-size: 24px;
+            color: #ffffff;
+            margin: 15px 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        .workshop-address {
+            font-size: 22px;
+            color: #ffffff;
+            margin: 15px 0;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            opacity: 0.95;
         }
     </style>
 </head>
 <body>
     <div class="certificate-container">
-        <div class="certificate">
-            <div class="certificate-number">
-                رقم الشهادة: #{{ $certificate->id }}
+        <div class="certificate-content">
+            <div class="logo-section">
+                <div class="logo-text">Dr. Hope</div>
+                <div class="birds">🕊️🕊️🕊️</div>
+                <div class="logo-name">أمل العتيبي<br>Amal Al Otaibi</div>
             </div>
             
-            <div class="certificate-header">
-                <div class="certificate-logo">🏆</div>
-                <h1 class="certificate-title">شهادة إتمام</h1>
-                <p class="certificate-subtitle">Certificate of Completion</p>
-            </div>
-            
-            <div class="certificate-divider"></div>
+            <h1 class="certificate-title">شهادة حضور</h1>
             
             <div class="certificate-body">
-                <p class="certificate-text">
-                    هذه الشهادة تثبت أن
-                </p>
+                <p class="certificate-text">نبارك لـ</p>
                 
-                <div class="certificate-name">
+                <div class="user-name">
                     {{ $certificate->user->full_name ?? 'المستخدم' }}
                 </div>
                 
-                <p class="certificate-text">
-                    قد أكمل بنجاح ورشة
-                </p>
+                <p class="certificate-text">حضورها دورة ورشة</p>
                 
-                <div class="certificate-workshop">
+                <div class="workshop-title">
                     {{ $certificate->workshop->title }}
                 </div>
                 
-                <p class="certificate-date">
-                    بتاريخ: {{ $certificate->issued_at ? $certificate->issued_at->locale('ar')->translatedFormat('j F Y') : date('Y-m-d') }}
-                </p>
-            </div>
-            
-            <div class="certificate-divider"></div>
-            
-            <div class="certificate-footer">
-                <div class="certificate-signature">
-                    <div class="signature-line"></div>
-                    <div class="signature-label">التوقيع</div>
-                </div>
-                
-                <div class="certificate-seal">
-                    <div>
-                        <div style="font-size: 16px; margin-bottom: 5px;">ختم</div>
-                        <div style="font-size: 12px;">نوايا</div>
+                <div class="teacher-section">
+                    <p class="certificate-text">تقديم</p>
+                    <div class="teacher-name">
+                        {{ $certificate->workshop->teacher }}
+                    </div>
+                    <div class="teacher-title">
+                        مستشار فن إدارة الذات والحياة
                     </div>
                 </div>
+                
+                @php
+                    $workshop = $certificate->workshop;
+                    $workshopDate = $workshop->start_date 
+                        ? $workshop->start_date->locale('ar')->translatedFormat('j F Y')
+                        : ($certificate->issued_at 
+                            ? $certificate->issued_at->locale('ar')->translatedFormat('j F Y')
+                            : now()->locale('ar')->translatedFormat('j F Y'));
+                    
+                    $workshopType = $workshop->type->getLocalizedName();
+                    
+                    $address = null;
+                    if (in_array($workshop->type->value, ['onsite', 'online_onsite'])) {
+                        $addressParts = [];
+                        if ($workshop->hall) {
+                            $addressParts[] = $workshop->hall;
+                        }
+                        if ($workshop->hotel) {
+                            $addressParts[] = $workshop->hotel;
+                        }
+                        if ($workshop->city) {
+                            $addressParts[] = $workshop->city;
+                        }
+                        if ($workshop->country && $workshop->country->name) {
+                            $addressParts[] = $workshop->country->name;
+                        }
+                        if (!empty($addressParts)) {
+                            $address = implode(' ، ', $addressParts);
+                        }
+                    }
+                @endphp
+                
+                <div class="workshop-date">
+                    {{ $workshopDate }}
+                </div>
+                
+                <div class="workshop-type">
+                    {{ $workshopType }}
+                </div>
+                
+                @if($address)
+                <div class="workshop-address">
+                    {{ $address }}
+                </div>
+                @endif
             </div>
         </div>
     </div>
 </body>
 </html>
-

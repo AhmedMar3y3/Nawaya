@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Requests\API\SupportMessage\StoreMessageRequest;
+use App\Http\Resources\DrHope\ReviewsResource;
 use App\Models\DR_HOPE;
 use App\Models\Partner;
 use App\Models\Product;
 use App\Models\SupportMessage;
+use App\Models\WorkshopReview;
 use App\Traits\HttpResponses;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DrHope\VideosResource;
@@ -54,5 +56,11 @@ class DrHopeController extends Controller
     {
         SupportMessage::create($request->validated() + ['user_id' => $request->user()->id]);
         return $this->successResponse('تم إرسال استشارتك للمتخصصين');
+    }
+
+    public function reviews()
+    {
+        $reviews = WorkshopReview::active()->with(['user', 'workshop'])->latest()->paginate(20);
+        return $this->successWithDataResponse(ReviewsResource::collection($reviews));
     }
 }

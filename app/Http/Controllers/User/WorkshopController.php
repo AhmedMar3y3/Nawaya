@@ -31,7 +31,6 @@ class WorkshopController extends Controller
 
         $workshops = $query->latest()->get();
 
-        // Split workshops into two arrays
         $nonRecordedWorkshops = $workshops->filter(function ($workshop) {
             return in_array($workshop->type, [
                 \App\Enums\Workshop\WorkshopType::ONLINE,

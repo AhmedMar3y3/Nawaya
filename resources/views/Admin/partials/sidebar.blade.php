@@ -138,7 +138,7 @@
 
         <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.settings.index') }}">
-                <span class="menu-title me-2">الإعدادات</span>
+                <span class="menu-title me-2">المحتوي العام</span>
                 <span class="menu-icon">
                     <i class="fa fa-cogs"></i>
                 </span>

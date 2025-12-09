@@ -7,9 +7,9 @@ use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\DrHopeController;
+use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\PaymentController;
 use App\Http\Controllers\User\WorkshopController;
-use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\SubscriptionController;
 
 // Auth routes
@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/partners'       , [DrHopeController::class, 'partners']);
         Route::get('/partners/{id}'  , [DrHopeController::class, 'partnerDetails']);
         Route::post('/support'       , [DrHopeController::class, 'support']);
+        Route::get('/reviews'        , [DrHopeController::class, 'reviews']);
     });
 
     // Cart routes
@@ -66,10 +67,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Profile routes
     Route::prefix('profile')->group(function () {
         Route::get('/details'          , [ProfileController::class, 'getProfileDetails']);
+        Route::post('/review'          , [ProfileController::class, 'postReview']);
         Route::get('/suggest-workshops', [ProfileController::class, 'suggestWorkshops']);
+        Route::get('/subscription/{subscriptionId}/invoice'    , [ProfileController::class, 'downloadInvoice']);
+        Route::get('/subscription/{subscriptionId}/certificate', [ProfileController::class, 'downloadCertificate']);
     });
 });
 
 // Payment callback routes (public, no auth required)
 Route::post('/foloosi/callback', [PaymentController::class, 'foloosiWebhook'])->name('foloosi.callback');
-Route::post('/foloosi/verify', [PaymentController::class, 'verifyPayment'])->name('foloosi.verify');
+Route::post('/foloosi/verify'  , [PaymentController::class, 'verifyPayment'])->name('foloosi.verify');

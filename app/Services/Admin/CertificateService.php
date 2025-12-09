@@ -98,6 +98,6 @@ class CertificateService
 
     public function getCertificateForDownload(int $certificateId): Certificate
     {
-        return Certificate::with(['user', 'workshop'])->findOrFail($certificateId);
+        return Certificate::with(['user', 'workshop.country'])->findOrFail($certificateId);
     }
 }

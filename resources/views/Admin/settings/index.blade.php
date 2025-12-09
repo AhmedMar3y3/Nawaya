@@ -1022,6 +1022,10 @@
                 <i class="fas fa-handshake"></i>
                 الشركاء
             </button>
+            <button type="button" class="tab-button" data-tab="reviews-settings">
+                <i class="fas fa-star"></i>
+                التقييمات
+            </button>
         </div>
 
         <!-- Settings Form -->
@@ -1576,6 +1580,21 @@
                     <div id="partners-list" class="partners-grid">
                         <!-- Partners will be loaded here -->
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Settings Tab -->
+        <div class="tab-content" id="reviews-settings">
+            <div style="padding: 2rem; text-align: center;">
+                <div style="margin-bottom: 2rem;">
+                    <i class="fas fa-star" style="font-size: 4rem; color: #fbbf24; margin-bottom: 1rem;"></i>
+                    <h3 style="color: #fff; margin-bottom: 1rem;">إدارة التقييمات</h3>
+                    <p style="color: #94a3b8; margin-bottom: 2rem;">عرض وإدارة تقييمات المستخدمين للورش</p>
+                    <a href="{{ route('admin.reviews.index') }}" class="btn-create" style="text-decoration: none; display: inline-block;">
+                        <i class="fas fa-star"></i>
+                        الانتقال إلى صفحة التقييمات
+                    </a>
                 </div>
             </div>
         </div>

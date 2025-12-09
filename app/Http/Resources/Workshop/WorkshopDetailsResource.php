@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Workshop;
 
-use Carbon\Carbon;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Enums\Workshop\WorkshopType;

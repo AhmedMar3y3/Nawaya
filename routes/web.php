@@ -4,16 +4,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\DR_HopeController;
 use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\WorkshopController;
+use App\Http\Controllers\User\TapPaymentController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\SupportMessageController;
 use App\Http\Controllers\Admin\FinancialCenterController;
+
 
 
 // public routes //
@@ -44,6 +47,14 @@ Route::middleware(['auth.admin'])->group(function () {
     // setting routes //
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
+    // Reviews Routes
+    Route::prefix('reviews')->name('admin.reviews.')->group(function () {
+        Route::get('/'         , [ReviewController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [ReviewController::class, 'show'])->name('show');
+        Route::post('/{id}/toggle', [ReviewController::class, 'toggleStatus'])->name('toggle');
+        Route::delete('/{id}'  , [ReviewController::class, 'destroy'])->name('destroy');
+    });
 
     // Support Messages Routes
     Route::prefix('support-messages')->name('admin.support-messages.')->group(function () {
@@ -193,3 +204,9 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::get('/export/excel'        , [CertificateController::class, 'exportExcel'])->name('export.excel');
     });
 });
+
+// Tap payment callback routes (public, no auth required)
+Route::get('/tap/subscription/{subscription_id}/callback', [TapPaymentController::class, 'subscriptionCallback'])->name('tap.subscription.callback');
+Route::get('/tap/subscription/{subscription_id}/error'   , [TapPaymentController::class, 'subscriptionError'])->name('tap.subscription.error');
+Route::get('/tap/order/{order_id}/callback'              , [TapPaymentController::class, 'orderCallback'])->name('tap.order.callback');
+Route::get('/tap/order/{order_id}/error'                 , [TapPaymentController::class, 'orderError'])->name('tap.order.error');
