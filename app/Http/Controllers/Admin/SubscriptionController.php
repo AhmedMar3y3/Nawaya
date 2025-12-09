@@ -654,4 +654,79 @@ class SubscriptionController extends Controller
             return $this->errorResponse($e->getMessage() ?: 'حدث خطأ أثناء تحويل الاشتراك');
         }
     }
+
+    public function getRecordingPermissions(int $id): JsonResponse
+    {
+        try {
+            $subscription = $this->subscriptionService->getSubscriptionById($id);
+
+            if (!$subscription->workshop || $subscription->workshop->type->value !== 'recorded') {
+                return $this->failureResponse('هذا الاشتراك ليس لورشة مسجلة');
+            }
+
+            $subscription->load(['workshop.recordings', 'recordingPermissions', 'user']);
+            $permissions = $subscription->recordingPermissions->map(function ($recording) {
+                return [
+                    'workshop_recording_id' => $recording->id,
+                    'available_from' => $recording->pivot->available_from ? (is_string($recording->pivot->available_from) ? $recording->pivot->available_from : $recording->pivot->available_from->format('Y-m-d')) : null,
+                    'available_to' => $recording->pivot->available_to ? (is_string($recording->pivot->available_to) ? $recording->pivot->available_to : $recording->pivot->available_to->format('Y-m-d')) : null,
+                ];
+            });
+
+            return $this->successWithDataResponse([
+                'subscription' => [
+                    'id' => $subscription->id,
+                    'workshop' => [
+                        'id' => $subscription->workshop->id,
+                        'title' => $subscription->workshop->title,
+                        'recordings' => $subscription->workshop->recordings->map(function ($recording) {
+                            return [
+                                'id' => $recording->id,
+                                'title' => $recording->title,
+                                'link' => $recording->link,
+                                'available_from' => $recording->available_from ? (is_string($recording->available_from) ? $recording->available_from : $recording->available_from->format('Y-m-d')) : null,
+                                'available_to' => $recording->available_to ? (is_string($recording->available_to) ? $recording->available_to : $recording->available_to->format('Y-m-d')) : null,
+                            ];
+                        })->toArray(),
+                    ],
+                    'user' => $subscription->user ? [
+                        'id' => $subscription->user->id,
+                        'full_name' => $subscription->user->full_name,
+                        'email' => $subscription->user->email,
+                    ] : null,
+                    'full_name' => $subscription->full_name,
+                    'recording_permissions' => $permissions->toArray(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return $this->failureResponse('حدث خطأ أثناء جلب بيانات الاشتراك');
+        }
+    }
+
+    public function updateRecordingPermissions(Request $request, int $id): JsonResponse
+    {
+        try {
+            $subscription = $this->subscriptionService->getSubscriptionById($id);
+
+            if (!$subscription->workshop || $subscription->workshop->type->value !== 'recorded') {
+                return $this->failureResponse('هذا الاشتراك ليس لورشة مسجلة');
+            }
+
+            $permissions = $request->input('permissions', []);
+
+            $syncData = [];
+            foreach ($permissions as $permission) {
+                $syncData[$permission['recording_id']] = [
+                    'available_from' => $permission['available_from'] ?? null,
+                    'available_to' => $permission['available_to'] ?? null,
+                ];
+            }
+
+            $subscription->recordingPermissions()->sync($syncData);
+
+            return $this->successResponse('تم حفظ صلاحيات التسجيلات بنجاح');
+        } catch (\Exception $e) {
+            return $this->failureResponse('حدث خطأ أثناء حفظ صلاحيات التسجيلات');
+        }
+    }
 }

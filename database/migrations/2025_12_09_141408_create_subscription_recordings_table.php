@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('workshop_recordings', function (Blueprint $table) {
+        Schema::create('subscription_recordings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('workshop_id')->constrained()->onDelete('cascade');
-            $table->string('title');
-            $table->string('link');
+            $table->foreignId('subscription_id')->constrained()->onDelete('cascade');
+            $table->foreignId('recording_id')->constrained('workshop_recordings')->onDelete('cascade');
             $table->date('available_from')->nullable();
             $table->date('available_to')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+
+            $table->unique(['subscription_id', 'recording_id']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('workshop_recordings');
+        Schema::dropIfExists('subscription_recordings');
     }
 };

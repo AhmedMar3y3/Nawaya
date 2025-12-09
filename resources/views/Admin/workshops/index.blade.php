@@ -221,6 +221,15 @@
             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
         }
 
+        .btn-calendar {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+        }
+
+        .btn-calendar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
         .btn-restore {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
@@ -591,6 +600,62 @@
 
     <!-- Modal Templates (Hidden) - Will be included in a separate partial for better organization -->
     @include('Admin.workshops.partials.modal-templates', ['countries' => $countries])
+
+    <!-- Recording Permissions Modal -->
+    <div class="modal fade" id="recordingPermissionsModal" tabindex="-1" aria-labelledby="recordingPermissionsModalLabel" aria-hidden="true" dir="rtl">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="background: #1E293B; border: none; border-radius: 15px;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h5 class="modal-title" id="recordingPermissionsModalLabel" style="color: #fff; font-weight: 600;">إدارة صلاحية التسجيلات</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 2rem;">
+                    <div id="recordingPermissionsLoading" style="text-align: center; padding: 2rem; color: #94a3b8;">
+                        <i class="fa fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                        <p>جاري التحميل...</p>
+                    </div>
+                    <div id="recordingPermissionsContent" style="display: none;">
+                        <div style="margin-bottom: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                            <p style="color: #94a3b8; margin: 0;">
+                                <strong style="color: #fff;">ورشة:</strong> 
+                                <span id="recordingPermissionsWorkshopTitle"></span>
+                            </p>
+                        </div>
+
+                        <!-- Universal Application Section -->
+                        <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                            <h6 style="color: #fff; margin-bottom: 1.5rem; font-weight: 600;">تطبيق شامل للجميع</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">تاريخ بدء الصلاحية</label>
+                                    <input type="date" class="form-control" id="universalStartDate" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">تاريخ انتهاء الصلاحية</label>
+                                    <input type="date" class="form-control" id="universalEndDate" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="applyUniversalDates()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 8px;">
+                                تطبيق على الكل
+                            </button>
+                        </div>
+
+                        <!-- Individual Selection Section -->
+                        <div style="padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                            <h6 style="color: #fff; margin-bottom: 1.5rem; font-weight: 600;">تحديد فردي لكل تسجيل</h6>
+                            <div id="recordingsList">
+                                <!-- Recordings will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(255, 255, 255, 0.1); border: none; color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px;">إلغاء</button>
+                    <button type="button" class="btn btn-warning" onclick="saveRecordingPermissions()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600;">حفظ الصلاحيات</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -1103,18 +1168,43 @@
                 if (workshop.packages && workshop.packages.length > 0) {
                     workshop.packages.forEach((pkg) => {
                         const item = document.createElement('div');
-                        item.className = 'mb-3 p-3 border rounded';
+                        item.style.cssText = 'background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; transition: all 0.3s ease;';
                         item.innerHTML = `
-                    <h6>${pkg.title || '-'}</h6>
-                    <p class="mb-1"><strong>السعر:</strong> ${pkg.price || '-'}</p>
-                    ${pkg.is_offer ? `<p class="mb-1"><strong>سعر العرض:</strong> ${pkg.offer_price || '-'}</p>` : ''}
-                    ${pkg.offer_expiry_date ? `<p class="mb-1"><strong>تاريخ انتهاء العرض:</strong> ${pkg.offer_expiry_date}</p>` : ''}
-                    ${pkg.features ? `<div class="mb-0"><strong>المميزات:</strong><div>${pkg.features}</div></div>` : ''}
-                `;
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-box" style="color: #fff; font-size: 1.1rem;"></i>
+                                </div>
+                                <h6 style="color: #fff; font-weight: 600; margin: 0; font-size: 1.1rem;">${pkg.title || '-'}</h6>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">السعر:</span>
+                                    <p style="color: #fff; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem;">${pkg.price || '-'} د.إ</p>
+                                </div>
+                                ${pkg.is_offer ? `
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">سعر العرض:</span>
+                                    <p style="color: #10b981; margin: 0.25rem 0 0 0; font-weight: 600; font-size: 1rem;">${pkg.offer_price || '-'} د.إ</p>
+                                </div>
+                                ` : ''}
+                                ${pkg.offer_expiry_date ? `
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">تاريخ انتهاء العرض:</span>
+                                    <p style="color: #fff; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem;">${pkg.offer_expiry_date}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                            ${pkg.features ? `
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">المميزات:</span>
+                                <div style="color: #fff; line-height: 1.6;">${pkg.features}</div>
+                            </div>
+                            ` : ''}
+                        `;
                         showPackagesContainer.appendChild(item);
                     });
                 } else {
-                    showPackagesContainer.innerHTML = '<p class="text-muted">لا توجد حزم</p>';
+                    showPackagesContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #94a3b8;"><i class="fa fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i><p style="margin: 0;">لا توجد باقات</p></div>';
                 }
             }
 
@@ -1125,17 +1215,39 @@
                 if (workshop.attachments && workshop.attachments.length > 0) {
                     workshop.attachments.forEach((att) => {
                         const item = document.createElement('div');
-                        item.className = 'mb-3 p-3 border rounded';
+                        item.style.cssText = 'background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem;';
+                        const iconClass = att.type === 'audio' ? 'fa-headphones' : 'fa-video';
+                        const typeColor = att.type === 'audio' ? '#10b981' : '#ef4444';
                         item.innerHTML = `
-                    <h6>${att.title || '-'}</h6>
-                    <p class="mb-1"><strong>النوع:</strong> ${att.type === 'audio' ? 'ملف صوتي' : 'ملف فيديو'}</p>
-                    ${att.file ? `<p class="mb-1"><strong>الملف:</strong> ${att.file}</p>` : ''}
-                    ${att.notes ? `<p class="mb-0"><strong>ملاحظات:</strong> ${att.notes}</p>` : ''}
-                `;
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="background: linear-gradient(135deg, ${typeColor} 0%, ${typeColor}dd 100%); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa ${iconClass}" style="color: #fff; font-size: 1.1rem;"></i>
+                                </div>
+                                <h6 style="color: #fff; font-weight: 600; margin: 0; font-size: 1.1rem;">${att.title || '-'}</h6>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">النوع:</span>
+                                    <p style="color: #fff; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem;">${att.type === 'audio' ? 'ملف صوتي' : 'ملف فيديو'}</p>
+                                </div>
+                                ${att.file ? `
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">الملف:</span>
+                                    <p style="color: #38bdf8; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem; word-break: break-all;">${att.file}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                            ${att.notes ? `
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">ملاحظات:</span>
+                                <p style="color: #fff; margin: 0; line-height: 1.6;">${att.notes}</p>
+                            </div>
+                            ` : ''}
+                        `;
                         showAttachmentsContainer.appendChild(item);
                     });
                 } else {
-                    showAttachmentsContainer.innerHTML = '<p class="text-muted">لا توجد مرفقات</p>';
+                    showAttachmentsContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #94a3b8;"><i class="fa fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i><p style="margin: 0;">لا توجد مرفقات</p></div>';
                 }
             }
 
@@ -1146,15 +1258,25 @@
                 if (workshop.files && workshop.files.length > 0) {
                     workshop.files.forEach((file) => {
                         const item = document.createElement('div');
-                        item.className = 'mb-3 p-3 border rounded';
+                        item.style.cssText = 'background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem;';
                         item.innerHTML = `
-                    <h6>${file.title || '-'}</h6>
-                    ${file.file ? `<p class="mb-0"><strong>الملف:</strong> ${file.file}</p>` : ''}
-                `;
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-file" style="color: #fff; font-size: 1.1rem;"></i>
+                                </div>
+                                <h6 style="color: #fff; font-weight: 600; margin: 0; font-size: 1.1rem;">${file.title || '-'}</h6>
+                            </div>
+                            ${file.file ? `
+                            <div>
+                                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">الملف:</span>
+                                <p style="color: #38bdf8; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem; word-break: break-all;">${file.file}</p>
+                            </div>
+                            ` : ''}
+                        `;
                         showFilesContainer.appendChild(item);
                     });
                 } else {
-                    showFilesContainer.innerHTML = '<p class="text-muted">لا توجد ملفات</p>';
+                    showFilesContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #94a3b8;"><i class="fa fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i><p style="margin: 0;">لا توجد ملفات</p></div>';
                 }
             }
 
@@ -1165,15 +1287,43 @@
                 if (workshop.recordings && workshop.recordings.length > 0) {
                     workshop.recordings.forEach((rec) => {
                         const item = document.createElement('div');
-                        item.className = 'mb-3 p-3 border rounded';
+                        item.style.cssText = 'background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem;';
+                        const availableFrom = rec.available_from ? new Date(rec.available_from).toLocaleDateString('ar-SA') : '-';
+                        const availableTo = rec.available_to ? new Date(rec.available_to).toLocaleDateString('ar-SA') : '-';
                         item.innerHTML = `
-                    <h6>${rec.title || '-'}</h6>
-                    ${rec.link ? `<p class="mb-0"><strong>الرابط:</strong> <a href="${rec.link}" target="_blank">${rec.link}</a></p>` : ''}
-                `;
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-video" style="color: #fff; font-size: 1.1rem;"></i>
+                                </div>
+                                <h6 style="color: #fff; font-weight: 600; margin: 0; font-size: 1.1rem;">${rec.title || '-'}</h6>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                ${rec.available_from ? `
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">متاح من:</span>
+                                    <p style="color: #fff; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem;">${availableFrom}</p>
+                                </div>
+                                ` : ''}
+                                ${rec.available_to ? `
+                                <div>
+                                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">متاح حتى:</span>
+                                    <p style="color: #fff; margin: 0.25rem 0 0 0; font-weight: 500; font-size: 1rem;">${availableTo}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                            ${rec.link ? `
+                            <div style="padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">الرابط:</span>
+                                <a href="${rec.link}" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 500; word-break: break-all; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fa fa-external-link-alt"></i> ${rec.link}
+                                </a>
+                            </div>
+                            ` : ''}
+                        `;
                         showRecordingsContainer.appendChild(item);
                     });
                 } else {
-                    showRecordingsContainer.innerHTML = '<p class="text-muted">لا توجد تسجيلات</p>';
+                    showRecordingsContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #94a3b8;"><i class="fa fa-inbox" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i><p style="margin: 0;">لا توجد تسجيلات</p></div>';
                 }
             }
         }
@@ -1910,5 +2060,245 @@
         window.toggleOfferFields = toggleOfferFields;
         window.updateFilePlaceholder = updateFilePlaceholder;
         window.handleTypeChange = handleTypeChange;
+
+        // Recording Permissions Modal Functions
+        let currentWorkshopId = null;
+        let workshopRecordings = [];
+
+        function openRecordingPermissionsModal(workshopId) {
+            currentWorkshopId = workshopId;
+            
+            // Show loading, hide content
+            document.getElementById('recordingPermissionsLoading').style.display = 'block';
+            document.getElementById('recordingPermissionsContent').style.display = 'none';
+            
+            // Clear previous data
+            document.getElementById('recordingPermissionsWorkshopTitle').textContent = '';
+            document.getElementById('recordingsList').innerHTML = '';
+            document.getElementById('universalStartDate').value = '';
+            document.getElementById('universalEndDate').value = '';
+            
+            // Open modal
+            const modal = new bootstrap.Modal(document.getElementById('recordingPermissionsModal'));
+            modal.show();
+            
+            // Fetch workshop data
+            fetch(`${baseUrl}/${workshopId}/recording-permissions`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.workshop) {
+                    renderRecordingPermissions(data.workshop);
+                } else {
+                    showToast(data.message || 'حدث خطأ أثناء جلب البيانات', 'error');
+                    modal.hide();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching recording permissions:', error);
+                showToast('حدث خطأ أثناء جلب البيانات', 'error');
+                modal.hide();
+            });
+        }
+
+        function renderRecordingPermissions(workshop) {
+            // Hide loading, show content
+            document.getElementById('recordingPermissionsLoading').style.display = 'none';
+            document.getElementById('recordingPermissionsContent').style.display = 'block';
+            
+            // Set workshop title
+            document.getElementById('recordingPermissionsWorkshopTitle').textContent = workshop.title;
+            
+            // Store recordings
+            workshopRecordings = workshop.recordings || [];
+            
+            // Render recordings list
+            const recordingsList = document.getElementById('recordingsList');
+            if (workshopRecordings.length === 0) {
+                recordingsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 2rem;">لا توجد تسجيلات لهذه الورشة</p>';
+                return;
+            }
+            
+            recordingsList.innerHTML = workshopRecordings.map((recording, index) => {
+                const startDate = recording.available_from ? new Date(recording.available_from).toISOString().split('T')[0] : '';
+                const endDate = recording.available_to ? new Date(recording.available_to).toISOString().split('T')[0] : '';
+                
+                return `
+                    <div class="recording-item" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <h6 style="color: #fff; margin-bottom: 1rem; font-weight: 600;">${recording.title || 'تسجيل بدون عنوان'}</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">من</label>
+                                <input type="date" 
+                                       class="form-control recording-start-date" 
+                                       data-recording-id="${recording.id}"
+                                       value="${startDate}"
+                                       style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">إلى</label>
+                                <input type="date" 
+                                       class="form-control recording-end-date" 
+                                       data-recording-id="${recording.id}"
+                                       value="${endDate}"
+                                       style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applyUniversalDates() {
+            const startDate = document.getElementById('universalStartDate').value;
+            const endDate = document.getElementById('universalEndDate').value;
+            
+            if (!startDate || !endDate) {
+                showToast('يرجى إدخال تاريخ البداية وتاريخ النهاية', 'error');
+                return;
+            }
+            
+            // Apply to all recording date inputs
+            document.querySelectorAll('.recording-start-date').forEach(input => {
+                input.value = startDate;
+            });
+            
+            document.querySelectorAll('.recording-end-date').forEach(input => {
+                input.value = endDate;
+            });
+            
+            showToast('تم تطبيق التواريخ على جميع التسجيلات', 'success');
+        }
+
+        function saveRecordingPermissions() {
+            if (!currentWorkshopId) {
+                showToast('حدث خطأ: لم يتم تحديد الورشة', 'error');
+                return;
+            }
+            
+            // Collect all recording permissions
+            const permissions = [];
+            document.querySelectorAll('.recording-item').forEach(item => {
+                const startInput = item.querySelector('.recording-start-date');
+                const endInput = item.querySelector('.recording-end-date');
+                const recordingId = startInput ? startInput.getAttribute('data-recording-id') : null;
+                
+                if (recordingId) {
+                    permissions.push({
+                        id: recordingId,
+                        available_from: startInput.value || null,
+                        available_to: endInput.value || null
+                    });
+                }
+            });
+            
+            // Show loading
+            const saveBtn = document.querySelector('#recordingPermissionsModal .btn-warning');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> جاري الحفظ...';
+            
+            // Send request
+            fetch(`${baseUrl}/${currentWorkshopId}/recording-permissions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    permissions: permissions
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message || 'تم حفظ الصلاحيات بنجاح', 'success');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('recordingPermissionsModal'));
+                    modal.hide();
+                } else {
+                    showToast(data.message || 'حدث خطأ أثناء حفظ الصلاحيات', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving recording permissions:', error);
+                showToast('حدث خطأ أثناء حفظ الصلاحيات', 'error');
+            })
+            .finally(() => {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            });
+        }
+
+        // Make function globally accessible
+        window.openRecordingPermissionsModal = openRecordingPermissionsModal;
+
+        // Toast notification function
+        function showToast(message, type) {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: 600;
+                animation: slideDown 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(function() {
+                toast.style.animation = 'slideUp 0.3s ease';
+                setTimeout(function() {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS animations for toast if not already present
+        if (!document.getElementById('toast-animations')) {
+            const style = document.createElement('style');
+            style.id = 'toast-animations';
+            style.textContent = `
+                @keyframes slideDown {
+                    from {
+                        transform: translateX(-50%) translateY(-100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(-50%) translateY(0);
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideUp {
+                    from {
+                        transform: translateX(-50%) translateY(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(-50%) translateY(-100%);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Make showToast globally accessible
+        window.showToast = showToast;
     </script>
 @endsection

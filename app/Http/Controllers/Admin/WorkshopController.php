@@ -89,9 +89,11 @@ class WorkshopController extends Controller
                     })->toArray(),
                     'recordings'            => $workshop->recordings->map(function ($recording) {
                         return [
-                            'id'    => $recording->id,
-                            'title' => $recording->title,
-                            'link'  => $recording->link,
+                            'id'            => $recording->id,
+                            'title'         => $recording->title,
+                            'link'          => $recording->link,
+                            'available_from' => $recording->available_from ? (is_string($recording->available_from) ? $recording->available_from : $recording->available_from->format('Y-m-d')) : null,
+                            'available_to'   => $recording->available_to ? (is_string($recording->available_to) ? $recording->available_to : $recording->available_to->format('Y-m-d')) : null,
                         ];
                     })->toArray(),
                 ],
@@ -153,13 +155,6 @@ class WorkshopController extends Controller
                 'errors'  => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
-            \Log::error('Workshop Store Error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-                'file'  => $e->getFile(),
-                'line'  => $e->getLine(),
-                'data'  => $request->except(['attachments', 'files']),
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ أثناء إنشاء الورشة: ' . $e->getMessage(),
@@ -224,9 +219,11 @@ class WorkshopController extends Controller
                     })->toArray(),
                     'recordings'            => $workshop->recordings->map(function ($recording) {
                         return [
-                            'id'    => $recording->id,
-                            'title' => $recording->title,
-                            'link'  => $recording->link,
+                            'id'            => $recording->id,
+                            'title'         => $recording->title,
+                            'link'          => $recording->link,
+                            'available_from' => $recording->available_from ? (is_string($recording->available_from) ? $recording->available_from : $recording->available_from->format('Y-m-d')) : null,
+                            'available_to'   => $recording->available_to ? (is_string($recording->available_to) ? $recording->available_to : $recording->available_to->format('Y-m-d')) : null,
                         ];
                     })->toArray(),
                 ],
@@ -258,12 +255,6 @@ class WorkshopController extends Controller
                 'errors'  => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
-            \Log::error('Workshop Update Error: ' . $e->getMessage(), [
-                'trace'       => $e->getTraceAsString(),
-                'workshop_id' => $id,
-                'data'        => $request->except(['attachments', 'files']),
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ أثناء تحديث الورشة: ' . $e->getMessage(),
@@ -349,5 +340,78 @@ class WorkshopController extends Controller
         $onlyTrashed = $tab === 'deleted';
 
         return Excel::download(new WorkshopsExport($request->only(['search', 'type', 'status']), $onlyTrashed), 'workshops.xlsx');
+    }
+
+    public function getRecordingPermissions($id): JsonResponse
+    {
+        try {
+            $workshop = $this->workshopService->getWorkshopById($id);
+
+            if ($workshop->type->value !== 'recorded') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'هذه الورشة ليست من نوع مسجلة',
+                ], 400);
+            }
+
+            return response()->json([
+                'success'  => true,
+                'workshop' => [
+                    'id'         => $workshop->id,
+                    'title'      => $workshop->title,
+                    'recordings' => $workshop->recordings->map(function ($recording) {
+                        return [
+                            'id'            => $recording->id,
+                            'title'         => $recording->title,
+                            'link'          => $recording->link,
+                            'available_from' => $recording->available_from ? (is_string($recording->available_from) ? $recording->available_from : $recording->available_from->format('Y-m-d')) : null,
+                            'available_to'   => $recording->available_to ? (is_string($recording->available_to) ? $recording->available_to : $recording->available_to->format('Y-m-d')) : null,
+                        ];
+                    })->toArray(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء جلب بيانات الورشة',
+            ], 404);
+        }
+    }
+
+    public function updateRecordingPermissions(Request $request, $id): JsonResponse
+    {
+        try {
+            $workshop = $this->workshopService->getWorkshopById($id);
+
+            if ($workshop->type->value !== 'recorded') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'هذه الورشة ليست من نوع مسجلة',
+                ], 400);
+            }
+
+            $permissions = $request->input('permissions', []);
+
+            foreach ($permissions as $permission) {
+                $recording = $workshop->recordings()->find($permission['id']);
+                
+                if ($recording) {
+                    $recording->update([
+                        'available_from' => $permission['available_from'] ?? null,
+                        'available_to'   => $permission['available_to'] ?? null,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم حفظ صلاحيات التسجيلات بنجاح',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حفظ صلاحيات التسجيلات',
+            ], 500);
+        }
     }
 }

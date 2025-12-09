@@ -99,7 +99,7 @@
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">الباقة:</span>
-                                <span class="detail-value">{{ $packageTitle }}</span>
+                                <span class="detail-value" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block;">{{ $packageTitle }}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">نوع الدفع:</span>
@@ -172,12 +172,14 @@
                                         title="استرداد">
                                     <i class="fa fa-undo"></i>
                                 </button>
+                                @if($subscription->workshop && $subscription->workshop->type->value === 'recorded')
                                 <button type="button" 
                                         class="btn-action btn-calendar" 
-                                        onclick="openRecordingPermissionsModal({{ $subscription->id }})"
+                                        onclick="openSubscriptionRecordingPermissionsModal({{ $subscription->id }})"
                                         title="صلاحيات التسجيل">
                                     <i class="fa fa-calendar"></i>
                                 </button>
+                                @endif
                                 <button type="button" 
                                         class="btn-action btn-user" 
                                         onclick="openDetailsModal({{ $subscription->id }})"

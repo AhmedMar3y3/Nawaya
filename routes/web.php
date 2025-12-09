@@ -50,10 +50,10 @@ Route::middleware(['auth.admin'])->group(function () {
 
     // Reviews Routes
     Route::prefix('reviews')->name('admin.reviews.')->group(function () {
-        Route::get('/'         , [ReviewController::class, 'index'])->name('index');
-        Route::get('/{id}/show', [ReviewController::class, 'show'])->name('show');
+        Route::get('/'            , [ReviewController::class, 'index'])->name('index');
+        Route::get('/{id}/show'   , [ReviewController::class, 'show'])->name('show');
         Route::post('/{id}/toggle', [ReviewController::class, 'toggleStatus'])->name('toggle');
-        Route::delete('/{id}'  , [ReviewController::class, 'destroy'])->name('destroy');
+        Route::delete('/{id}'     , [ReviewController::class, 'destroy'])->name('destroy');
     });
 
     // Support Messages Routes
@@ -94,6 +94,8 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::post('/{id}/restore'       , [WorkshopController::class, 'restore'])->name('restore');
         Route::delete('/{id}/permanent'   , [WorkshopController::class, 'permanentlyDelete'])->name('permanent-delete');
         Route::post('/{id}/toggle-status' , [WorkshopController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/{id}/recording-permissions'  , [WorkshopController::class, 'getRecordingPermissions'])->name('recording-permissions.get');
+        Route::post('/{id}/recording-permissions' , [WorkshopController::class, 'updateRecordingPermissions'])->name('recording-permissions.update');
     });
 
     // Products Routes (Boutique Management)
@@ -170,13 +172,15 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::get('/pending-approvals'   , [SubscriptionController::class, 'getPendingApprovals'])->name('pending-approvals');
         Route::post('/{id}/approve'       , [SubscriptionController::class, 'approveSubscription'])->name('approve');
         Route::post('/{id}/reject'        , [SubscriptionController::class, 'rejectSubscription'])->name('reject');
-        Route::get('/pending-approvals/export'   , [SubscriptionController::class, 'exportPendingApprovalsExcel'])->name('pending-approvals.export');
-        Route::get('/transfers'                  , [SubscriptionController::class, 'getTransfers'])->name('transfers');
-        Route::get('/refunds'                    , [SubscriptionController::class, 'getRefunds'])->name('refunds');
-        Route::get('/balance-subscriptions'      , [SubscriptionController::class, 'getBalanceSubscriptions'])->name('balance-subscriptions');
-        Route::get('/debts'                      , [SubscriptionController::class, 'getDebts'])->name('debts');
-        Route::get('/users-balances'             , [SubscriptionController::class, 'getUsersBalances'])->name('users-balances');
-        Route::delete('/balance-history/{id}'    , [SubscriptionController::class, 'deleteBalanceHistory'])->name('balance-history.delete');
+        Route::get('/pending-approvals/export'    , [SubscriptionController::class, 'exportPendingApprovalsExcel'])->name('pending-approvals.export');
+        Route::get('/{id}/recording-permissions'  , [SubscriptionController::class, 'getRecordingPermissions'])->name('recording-permissions.get');
+        Route::post('/{id}/recording-permissions' , [SubscriptionController::class, 'updateRecordingPermissions'])->name('recording-permissions.update');
+        Route::get('/transfers'                   , [SubscriptionController::class, 'getTransfers'])->name('transfers');
+        Route::get('/refunds'                     , [SubscriptionController::class, 'getRefunds'])->name('refunds');
+        Route::get('/balance-subscriptions'       , [SubscriptionController::class, 'getBalanceSubscriptions'])->name('balance-subscriptions');
+        Route::get('/debts'                       , [SubscriptionController::class, 'getDebts'])->name('debts');
+        Route::get('/users-balances'              , [SubscriptionController::class, 'getUsersBalances'])->name('users-balances');
+        Route::delete('/balance-history/{id}'     , [SubscriptionController::class, 'deleteBalanceHistory'])->name('balance-history.delete');
         Route::post('/balance-history/{id}/restore'       , [SubscriptionController::class, 'restoreBalanceHistory'])->name('balance-history.restore');
         Route::delete('/balance-history/{id}/permanent'   , [SubscriptionController::class, 'permanentlyDeleteBalanceHistory'])->name('balance-history.permanent-delete');
         Route::get('/gift-subscriptions'                  , [SubscriptionController::class, 'getGiftSubscriptions'])->name('gift-subscriptions');

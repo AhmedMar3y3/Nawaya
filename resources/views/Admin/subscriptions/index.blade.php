@@ -1679,6 +1679,66 @@
         </form>
     </div>
 </div>
+
+<!-- Subscription Recording Permissions Modal -->
+<div class="modal fade" id="subscriptionRecordingPermissionsModal" tabindex="-1" aria-labelledby="subscriptionRecordingPermissionsModalLabel" aria-hidden="true" dir="rtl">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="background: #1E293B; border: none; border-radius: 15px;">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                <h5 class="modal-title" id="subscriptionRecordingPermissionsModalLabel" style="color: #fff; font-weight: 600;">إدارة صلاحية التسجيلات</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 2rem;">
+                <div id="subscriptionRecordingPermissionsLoading" style="text-align: center; padding: 2rem; color: #94a3b8;">
+                    <i class="fa fa-spinner fa-spin" style="font-size: 2rem;"></i>
+                    <p>جاري التحميل...</p>
+                </div>
+                <div id="subscriptionRecordingPermissionsContent" style="display: none;">
+                    <div style="margin-bottom: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <p style="color: #94a3b8; margin: 0;">
+                            <strong style="color: #fff;">المشترك:</strong> 
+                            <span id="subscriptionRecordingPermissionsUserName"></span>
+                        </p>
+                        <p style="color: #94a3b8; margin: 0.5rem 0 0 0;">
+                            <strong style="color: #fff;">ورشة:</strong> 
+                            <span id="subscriptionRecordingPermissionsWorkshopTitle"></span>
+                        </p>
+                    </div>
+
+                    <!-- Universal Application Section -->
+                    <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <h6 style="color: #fff; margin-bottom: 1.5rem; font-weight: 600;">تطبيق شامل للجميع</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">تاريخ بدء الصلاحية</label>
+                                <input type="date" class="form-control" id="subscriptionUniversalStartDate" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">تاريخ انتهاء الصلاحية</label>
+                                <input type="date" class="form-control" id="subscriptionUniversalEndDate" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="applySubscriptionUniversalDates()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border: none; padding: 0.75rem 1.5rem; border-radius: 8px;">
+                            تطبيق على الكل
+                        </button>
+                    </div>
+
+                    <!-- Individual Selection Section -->
+                    <div style="padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                        <h6 style="color: #fff; margin-bottom: 1.5rem; font-weight: 600;">تحديد فردي لكل تسجيل</h6>
+                        <div id="subscriptionRecordingsList">
+                            <!-- Recordings will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(255, 255, 255, 0.1); border: none; color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px;">إلغاء</button>
+                <button type="button" class="btn btn-warning" onclick="saveSubscriptionRecordingPermissions()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: #fff; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600;">حفظ الصلاحيات</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -1688,6 +1748,7 @@ let currentlyOpenUserId = null;
 
 let currentTab = '{{ $tab }}';
 let allPackages = @json($packages);
+const subscriptionsBaseUrl = '{{ route("admin.subscriptions.index") }}';
 
 function switchTab(tab) {
     currentTab = tab;
@@ -3010,7 +3071,7 @@ function handleRefundSubmit(event) {
         showToast(error.message || 'حدث خطأ أثناء معالجة الاسترداد', 'error');
     });
 }
-function openRecordingPermissionsModal(subscriptionId) {
+function openSubscriptionRecordingPermissionsModal(subscriptionId) {
     alert('سيتم تنفيذ هذه الوظيفة لاحقاً');
 }
 
@@ -4643,6 +4704,203 @@ function copyToClipboard(elementId, text) {
     
     return false; // Prevent default button behavior
 }
+
+// Subscription Recording Permissions Modal Functions
+let currentSubscriptionId = null;
+let subscriptionRecordings = [];
+let subscriptionPermissionsMap = {};
+
+function openSubscriptionRecordingPermissionsModal(subscriptionId) {
+    currentSubscriptionId = subscriptionId;
+    
+    // Show loading, hide content
+    document.getElementById('subscriptionRecordingPermissionsLoading').style.display = 'block';
+    document.getElementById('subscriptionRecordingPermissionsContent').style.display = 'none';
+    
+    // Clear previous data
+    document.getElementById('subscriptionRecordingPermissionsUserName').textContent = '';
+    document.getElementById('subscriptionRecordingPermissionsWorkshopTitle').textContent = '';
+    document.getElementById('subscriptionRecordingsList').innerHTML = '';
+    document.getElementById('subscriptionUniversalStartDate').value = '';
+    document.getElementById('subscriptionUniversalEndDate').value = '';
+    
+    // Open modal
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionRecordingPermissionsModal'));
+    modal.show();
+    
+    // Fetch subscription data
+    fetch(`${subscriptionsBaseUrl}/${subscriptionId}/recording-permissions`, {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.subscription) {
+            renderSubscriptionRecordingPermissions(data.data.subscription);
+        } else {
+            showToast(data.msg || 'حدث خطأ أثناء جلب البيانات', 'error');
+            modal.hide();
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching subscription recording permissions:', error);
+        showToast('حدث خطأ أثناء جلب البيانات', 'error');
+        modal.hide();
+    });
+}
+
+function renderSubscriptionRecordingPermissions(subscription) {
+    // Hide loading, show content
+    document.getElementById('subscriptionRecordingPermissionsLoading').style.display = 'none';
+    document.getElementById('subscriptionRecordingPermissionsContent').style.display = 'block';
+    
+    // Set user name and workshop title
+    const userName = subscription.user ? subscription.user.full_name : subscription.full_name || 'غير محدد';
+    document.getElementById('subscriptionRecordingPermissionsUserName').textContent = userName;
+    document.getElementById('subscriptionRecordingPermissionsWorkshopTitle').textContent = subscription.workshop.title;
+    
+    // Store recordings
+    subscriptionRecordings = subscription.workshop.recordings || [];
+    
+    // Create permissions map from existing permissions
+    subscriptionPermissionsMap = {};
+    if (subscription.recording_permissions && Array.isArray(subscription.recording_permissions)) {
+        subscription.recording_permissions.forEach(permission => {
+            subscriptionPermissionsMap[permission.workshop_recording_id] = {
+                available_from: permission.available_from,
+                available_to: permission.available_to
+            };
+        });
+    }
+    
+    // Render recordings list
+    const recordingsList = document.getElementById('subscriptionRecordingsList');
+    if (subscriptionRecordings.length === 0) {
+        recordingsList.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 2rem;">لا توجد تسجيلات لهذه الورشة</p>';
+        return;
+    }
+    
+    recordingsList.innerHTML = subscriptionRecordings.map((recording, index) => {
+        // Get permission dates if they exist, otherwise use recording default dates
+        const permission = subscriptionPermissionsMap[recording.id];
+        const startDate = permission?.available_from || recording.available_from || '';
+        const endDate = permission?.available_to || recording.available_to || '';
+        
+        const startDateValue = startDate ? (typeof startDate === 'string' ? startDate.split(' ')[0] : new Date(startDate).toISOString().split('T')[0]) : '';
+        const endDateValue = endDate ? (typeof endDate === 'string' ? endDate.split(' ')[0] : new Date(endDate).toISOString().split('T')[0]) : '';
+        
+        return `
+            <div class="subscription-recording-item" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h6 style="color: #fff; margin-bottom: 1rem; font-weight: 600;">${recording.title || 'تسجيل بدون عنوان'}</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">من</label>
+                        <input type="date" 
+                               class="form-control subscription-recording-start-date" 
+                               data-recording-id="${recording.id}"
+                               value="${startDateValue}"
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label style="color: #94a3b8; margin-bottom: 0.5rem; display: block;">إلى</label>
+                        <input type="date" 
+                               class="form-control subscription-recording-end-date" 
+                               data-recording-id="${recording.id}"
+                               value="${endDateValue}"
+                               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff;">
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function applySubscriptionUniversalDates() {
+    const startDate = document.getElementById('subscriptionUniversalStartDate').value;
+    const endDate = document.getElementById('subscriptionUniversalEndDate').value;
+    
+    if (!startDate || !endDate) {
+        showToast('يرجى إدخال تاريخ البداية وتاريخ النهاية', 'error');
+        return;
+    }
+    
+    // Apply to all recording date inputs
+    document.querySelectorAll('.subscription-recording-start-date').forEach(input => {
+        input.value = startDate;
+    });
+    
+    document.querySelectorAll('.subscription-recording-end-date').forEach(input => {
+        input.value = endDate;
+    });
+    
+    showToast('تم تطبيق التواريخ على جميع التسجيلات', 'success');
+}
+
+function saveSubscriptionRecordingPermissions() {
+    if (!currentSubscriptionId) {
+        showToast('حدث خطأ: لم يتم تحديد الاشتراك', 'error');
+        return;
+    }
+    
+    // Collect all recording permissions
+    const permissions = [];
+    document.querySelectorAll('.subscription-recording-item').forEach(item => {
+        const startInput = item.querySelector('.subscription-recording-start-date');
+        const endInput = item.querySelector('.subscription-recording-end-date');
+        const recordingId = startInput ? startInput.getAttribute('data-recording-id') : null;
+        
+        if (recordingId) {
+            permissions.push({
+                recording_id: recordingId,
+                available_from: startInput.value || null,
+                available_to: endInput.value || null
+            });
+        }
+    });
+    
+    // Show loading
+    const saveBtn = document.querySelector('#subscriptionRecordingPermissionsModal .btn-warning');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> جاري الحفظ...';
+    
+    // Send request
+    fetch(`${subscriptionsBaseUrl}/${currentSubscriptionId}/recording-permissions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            permissions: permissions
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast(data.msg || 'تم حفظ الصلاحيات بنجاح', 'success');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('subscriptionRecordingPermissionsModal'));
+            modal.hide();
+        } else {
+            showToast(data.msg || 'حدث خطأ أثناء حفظ الصلاحيات', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving subscription recording permissions:', error);
+        showToast('حدث خطأ أثناء حفظ الصلاحيات', 'error');
+    })
+    .finally(() => {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+    });
+}
+
+// Make function globally accessible
+window.openSubscriptionRecordingPermissionsModal = openSubscriptionRecordingPermissionsModal;
 
 function fallbackCopyToClipboard(text, elementId) {
     const textArea = document.createElement('textarea');

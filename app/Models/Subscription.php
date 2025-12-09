@@ -79,4 +79,11 @@ class Subscription extends Model
     {
         return $this->hasOne(Certificate::class);
     }
+
+    public function recordingPermissions()
+    {
+        return $this->belongsToMany(WorkshopRecording::class, 'subscription_recordings', 'subscription_id', 'recording_id')
+            ->withPivot('available_from', 'available_to')
+            ->withTimestamps();
+    }
 }

@@ -28,6 +28,7 @@ class ProfileController extends Controller
                           'workshop.attachments',
                           'workshop.files',
                           'workshop.recordings',
+                          'recordingPermissions',
                           'certificate'
                       ]);
             }

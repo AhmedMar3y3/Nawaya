@@ -55,22 +55,27 @@
                                         onclick="openShowModal({{ $workshop->id }})"
                                         title="عرض التفاصيل">
                                     <i class="fa fa-eye"></i>
-                                    عرض
                                 </button>
                                 <button type="button" 
                                         class="btn-action btn-edit" 
                                         onclick="openEditModal({{ $workshop->id }})"
                                         title="تعديل">
                                     <i class="fa fa-edit"></i>
-                                    تعديل
                                 </button>
                                 <button type="button" 
-                                        class="btn-action btn-delete" 
-                                        onclick="deleteWorkshop({{ $workshop->id }})"
-                                        title="حذف">
-                                    <i class="fa fa-trash"></i>
-                                    حذف
-                                </button>
+                                class="btn-action btn-delete" 
+                                onclick="deleteWorkshop({{ $workshop->id }})"
+                                title="حذف">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            @if($workshop->type->value === 'recorded')
+                            <button type="button" 
+                                    class="btn-action btn-calendar" 
+                                    onclick="openRecordingPermissionsModal({{ $workshop->id }})"
+                                    title="صلاحيات التسجيلات">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                            @endif
                             @endif
                         </div>
                     </td>
