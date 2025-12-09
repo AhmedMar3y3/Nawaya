@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
          $this->call([
             AdminSeeder::class,
             CountriesSeeder::class,
+            BoutiqueDataSeeder::class,
+            ImportOldUsersSeeder::class,
+            WorkshopFinancialDataSeeder::class,
         ]);
     }
 }
