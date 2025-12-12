@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\DR_HopeController;
 use App\Http\Controllers\Admin\ExpenseController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\WorkshopController;
 use App\Http\Controllers\User\TapPaymentController;
 use App\Http\Controllers\Admin\CertificateController;
@@ -47,6 +48,10 @@ Route::middleware(['auth.admin'])->group(function () {
     // setting routes //
     Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings.index');
     Route::put('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
+    // Profile routes //
+    Route::get('/profile', [ProfileController::class, 'index'])->name('admin.profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
 
     // Reviews Routes
     Route::prefix('reviews')->name('admin.reviews.')->group(function () {

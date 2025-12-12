@@ -20,12 +20,26 @@
 
                     <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ Auth::guard('admin')->user()?->name ?? 'Admin' }}</p>
                     <i class="mdi mdi-menu-down d-none d-sm-block"></i>
-                    <img class="img-xs rounded-circle" src="{{ asset('../../../assets/images/dashboard/avatar.png') }}"
-                        alt="">
+                    @if(Auth::guard('admin')->user()?->avatar)
+                        <img class="img-xs rounded-circle" src="{{ Auth::guard('admin')->user()->avatar }}" alt="">
+                    @else
+                        <img class="img-xs rounded-circle" src="{{ asset('../../../assets/images/dashboard/avatar.png') }}" alt="">
+                    @endif
                 </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="profileDropdown"
                 style="background: white">
+                <a class="dropdown-item preview-item d-flex align-items-center justify-content-center"
+                    href="{{ route('admin.profile.index') }}">
+                    <div class="preview-thumbnail">
+                        <div class="preview-icon bg-dark rounded-circle">
+                            <i class="mdi mdi-account-cog text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="preview-item-content">
+                        <p class="preview-subject mb-1 " style="color: black">إعدادات الحساب</p>
+                    </div>
+                </a>
                 <a class="dropdown-item preview-item d-flex align-items-center justify-content-center"
                     href="{{ route('admin.logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -54,8 +68,11 @@
                         <span>online</span>
                     </div>
                     <div class="count-indicator">
-                        <img class="img-xs rounded-circle " src="{{ asset('assets/images/dashboard/avatar.png') }}"
-                            alt="">
+                        @if(Auth::guard('admin')->user()?->avatar)
+                            <img class="img-xs rounded-circle" src="{{ Auth::guard('admin')->user()->avatar }}" alt="">
+                        @else
+                            <img class="img-xs rounded-circle" src="{{ asset('assets/images/dashboard/avatar.png') }}" alt="">
+                        @endif
                         <span class="count bg-success"></span>
                     </div>
                 </div>
@@ -129,7 +146,7 @@
         <li class="nav-item menu-items">
             <a class="nav-link d-flex d-block w-100 justify-content-end"
                 href="{{ route('admin.support-messages.index') }}">
-                <span class="menu-title me-2">رسائل الدعم</span>
+                <span class="menu-title me-2">الإستشارات</span>
                 <span class="menu-icon">
                     <i class="fa fa-envelope"></i>
                 </span>
@@ -141,6 +158,15 @@
                 <span class="menu-title me-2">المحتوي العام</span>
                 <span class="menu-icon">
                     <i class="fa fa-cogs"></i>
+                </span>
+            </a>
+        </li>
+
+        <li class="nav-item menu-items">
+            <a class="nav-link d-flex d-block w-100 justify-content-end" href="{{ route('admin.profile.index') }}">
+                <span class="menu-title me-2">إعدادات الحساب</span>
+                <span class="menu-icon">
+                    <i class="fa fa-user-cog"></i>
                 </span>
             </a>
         </li>

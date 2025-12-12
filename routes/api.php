@@ -24,13 +24,14 @@ Route::prefix('workshops')->group(function () {
     Route::get('/{id}', [WorkshopController::class, 'show']);
 });
 
+// Home routes
+Route::prefix('home')->group(function () {
+    Route::get('/earliest-workshop', [HomeController::class, 'earliestOnlineWorkshop'])->middleware('optional.auth');
+    Route::get('/settings'         , [HomeController::class, 'settings']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    // Home routes
-    Route::prefix('home')->group(function () {
-        Route::get('/settings', [HomeController::class, 'settings']);
-    });
     
     // DrHope routes
     Route::prefix('drhope')->group(function () {

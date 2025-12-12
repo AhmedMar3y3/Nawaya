@@ -83,6 +83,11 @@ class Workshop extends Model
         return $this->subscriptions()->where('status', SubscriptionStatus::PAID->value);
     }
 
+    public function isSubscribedByUser($userId)
+    {
+        return $this->activeSubscriptions()->where('user_id', $userId)->exists();
+    }
+
     public function expenses()
     {
         return $this->hasMany(Expense::class);
