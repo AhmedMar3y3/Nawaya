@@ -823,24 +823,24 @@
             </button>
            
             <!-- Second Row -->
-            <button type="button" class="action-btn" onclick="openBalanceSubscriptionsModal()" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                <i class="fa fa-credit-card me-2"></i>
-                اشتراكات بالرصيد
-            </button>
-
             <button type="button" class="action-btn" onclick="openUserBalancesModal()" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-wallet me-2"></i>
                 الأرصدة المتاحة
             </button>
-
+            
             <button type="button" class="action-btn" onclick="openDebtsModal()" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-exclamation-triangle me-2"></i>
                 المديونيات
             </button>
-
+            
             <button type="button" class="action-btn" onclick="openPendingGiftsModal()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 <i class="fa fa-gift me-2"></i>
                 الهدايا المعلقة
+            </button>
+
+            <button type="button" class="action-btn" onclick="openCharitySubscriptionsModal()" style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); border: none; border-radius: 10px; padding: 1rem; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fa fa-hand-holding-heart me-2"></i>
+                 الدعم
             </button>
     
         </div>
@@ -1279,10 +1279,11 @@
     @include('Admin.subscriptions.partials.modals.total-subscriptions')
     @include('Admin.subscriptions.partials.modals.transfers')
     @include('Admin.subscriptions.partials.modals.refunds')
-    @include('Admin.subscriptions.partials.modals.balance-subscriptions')
+    @include('Admin.subscriptions.partials.modals.charity-subscriptions')
     @include('Admin.subscriptions.partials.modals.debts')
     @include('Admin.subscriptions.partials.modals.user-balances')
     @include('Admin.subscriptions.partials.modals.pending-gifts')
+    @include('Admin.subscriptions.partials.modals.assign-charity-seat')
     
     <!-- User Details Modal Template -->
     <div id="userDetailsModalTemplate" style="display: none;">
@@ -3283,7 +3284,7 @@ function fetchPendingApprovals() {
     
     tbody.innerHTML = `
         <tr>
-            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
+            <td colspan="7" class="text-center py-4" style="color: #94a3b8;">
                 <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                 <div>جاري التحميل...</div>
                             </td>
@@ -3304,7 +3305,7 @@ function fetchPendingApprovals() {
             if (subscriptions.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
+                        <td colspan="7" class="text-center py-4" style="color: #94a3b8;">
                             <i class="fa fa-inbox fa-3x mb-3"></i>
                             <div>لا توجد اشتراكات قيد المعالجة</div>
                             </td>
@@ -3318,19 +3319,20 @@ function fetchPendingApprovals() {
                     <td style="padding: 1rem; color: #fff;">${sub.name}</td>
                     <td style="padding: 1rem; color: #fff;">${sub.phone}</td>
                     <td style="padding: 1rem; color: #fff;">${sub.workshop_title}</td>
+                    <td style="padding: 1rem; text-align: center; color: #94a3b8;">${sub.type_label || (sub.type === 'charity' ? 'دعم' : 'اشتراك')}</td>
                     <td style="padding: 1rem; text-align: center; color: #94a3b8;">${sub.created_at_ar}</td>
                     <td style="padding: 1rem; text-align: center; color: #94a3b8;">${sub.payment_type}</td>
                     <td style="padding: 1rem; text-align: center;">
                         <button type="button" 
                                 class="btn btn-sm me-2" 
-                                onclick="approveSubscription(${sub.id})"
+                                onclick="approveSubscription(${sub.id}, '${sub.type || 'subscription'}')"
                                 style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: #fff;">
                             <i class="fa fa-check me-1"></i>
                             موافقة
                         </button>
                         <button type="button" 
                                 class="btn btn-sm" 
-                                onclick="rejectSubscription(${sub.id})"
+                                onclick="rejectSubscription(${sub.id}, '${sub.type || 'subscription'}')"
                                 style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border: none; color: #fff;">
                             <i class="fa fa-times me-1"></i>
                             رفض
@@ -3341,7 +3343,7 @@ function fetchPendingApprovals() {
         } else {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center py-4" style="color: #ef4444;">
+                    <td colspan="7" class="text-center py-4" style="color: #ef4444;">
                         <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                         <div>حدث خطأ أثناء جلب البيانات</div>
                             </td>
@@ -3353,7 +3355,7 @@ function fetchPendingApprovals() {
         console.error('Error fetching pending approvals:', error);
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center py-4" style="color: #ef4444;">
+                <td colspan="7" class="text-center py-4" style="color: #ef4444;">
                     <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                     <div>حدث خطأ أثناء جلب البيانات</div>
                             </td>
@@ -3362,14 +3364,15 @@ function fetchPendingApprovals() {
     });
 }
 
-function approveSubscription(subscriptionId) {
-    if (!confirm('هل أنت متأكد من الموافقة على هذا الاشتراك؟')) {
+function approveSubscription(subscriptionId, type = 'subscription') {
+    const typeLabel = type === 'charity' ? 'الاشتراك الخيري' : 'الاشتراك';
+    if (!confirm(`هل أنت متأكد من الموافقة على هذا ${typeLabel}؟`)) {
         return;
     }
     
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
     
-    fetch(`/subscriptions/${subscriptionId}/approve`, {
+    fetch(`/subscriptions/${subscriptionId}/approve?type=${type}`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken,
@@ -3392,14 +3395,15 @@ function approveSubscription(subscriptionId) {
     });
 }
 
-function rejectSubscription(subscriptionId) {
-    if (!confirm('هل أنت متأكد من رفض هذا الاشتراك؟')) {
+function rejectSubscription(subscriptionId, type = 'subscription') {
+    const typeLabel = type === 'charity' ? 'الاشتراك الخيري' : 'الاشتراك';
+    if (!confirm(`هل أنت متأكد من رفض هذا ${typeLabel}؟`)) {
         return;
     }
     
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
     
-    fetch(`/subscriptions/${subscriptionId}/reject`, {
+    fetch(`/subscriptions/${subscriptionId}/reject?type=${type}`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken,
@@ -3673,16 +3677,675 @@ function reactivateRefund(subscriptionId) {
     });
 }
 
-function openBalanceSubscriptionsModal() {
-    const template = document.getElementById('balanceSubscriptionsModalTemplate');
+let charitySubscriptionsData = { existing: [], deleted: [] };
+
+function openCharitySubscriptionsModal() {
+    const template = document.getElementById('charitySubscriptionsModalTemplate');
     document.getElementById('modalContent').innerHTML = template.innerHTML;
-    document.getElementById('subscriptionModalLabel').textContent = 'الاشتراكات المدفوعة بالرصيد';
+    document.getElementById('subscriptionModalLabel').textContent = 'إدارة صندوق الدعم';
     
-    // Fetch balance subscriptions
-    fetchBalanceSubscriptions();
+    switchCharityTab('existing');
+    
+    fetchCharitySubscriptions();
     
     const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
     modal.show();
+}
+
+function switchCharityTab(tab) {
+    const existingBtn = document.getElementById('charity_tab_existing');
+    const deletedBtn = document.getElementById('charity_tab_deleted');
+    const existingContent = document.getElementById('charity_tab_content_existing');
+    const deletedContent = document.getElementById('charity_tab_content_deleted');
+    
+    if (tab === 'existing') {
+        existingBtn.style.background = 'rgba(236, 72, 153, 0.2)';
+        existingBtn.style.borderBottom = '2px solid #ec4899';
+        existingBtn.style.color = '#fff';
+        
+        deletedBtn.style.background = 'transparent';
+        deletedBtn.style.borderBottom = '2px solid transparent';
+        deletedBtn.style.color = '#94a3b8';
+        
+        existingContent.style.display = 'block';
+        deletedContent.style.display = 'none';
+    } else {
+        deletedBtn.style.background = 'rgba(239, 68, 68, 0.2)';
+        deletedBtn.style.borderBottom = '2px solid #ef4444';
+        deletedBtn.style.color = '#fff';
+        
+        existingBtn.style.background = 'transparent';
+        existingBtn.style.borderBottom = '2px solid transparent';
+        existingBtn.style.color = '#94a3b8';
+        
+        existingContent.style.display = 'none';
+        deletedContent.style.display = 'block';
+    }
+}
+
+function fetchCharitySubscriptions() {
+    const existingTbody = document.getElementById('charityExistingTableBody');
+    const deletedTbody = document.getElementById('charityDeletedTableBody');
+    const existingEmpty = document.getElementById('charity_existing_empty');
+    const deletedEmpty = document.getElementById('charity_deleted_empty');
+    
+    if (!existingTbody || !deletedTbody) return;
+    
+    existingTbody.innerHTML = `
+        <tr>
+            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    deletedTbody.innerHTML = `
+        <tr>
+            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
+                <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
+                <div>جاري التحميل...</div>
+            </td>
+        </tr>
+    `;
+    
+    if (existingEmpty) existingEmpty.style.display = 'none';
+    if (deletedEmpty) deletedEmpty.style.display = 'none';
+    
+    fetch('{{ route("admin.charities.index") }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data) {
+            charitySubscriptionsData.existing = data.data.existing || [];
+            charitySubscriptionsData.deleted = data.data.deleted || [];
+            
+            const totalAvailable = data.data.total_available_amount || 0;
+            document.getElementById('charityTotalAvailable').textContent = totalAvailable.toFixed(2) + ' درهم';
+            
+            renderCharityTable('existing', charitySubscriptionsData.existing);
+            renderCharityTable('deleted', charitySubscriptionsData.deleted);
+        } else {
+            existingTbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+            deletedTbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4" style="color: #ef4444;">
+                        <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                        <div>حدث خطأ أثناء جلب البيانات</div>
+                    </td>
+                </tr>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching charity subscriptions:', error);
+        existingTbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+        deletedTbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center py-4" style="color: #ef4444;">
+                    <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
+                    <div>حدث خطأ أثناء جلب البيانات</div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderCharityTable(type, charities) {
+    const tbody = type === 'existing' ? document.getElementById('charityExistingTableBody') : document.getElementById('charityDeletedTableBody');
+    const emptyState = type === 'existing' ? document.getElementById('charity_existing_empty') : document.getElementById('charity_deleted_empty');
+    
+    if (!tbody) return;
+    
+    if (charities.length === 0) {
+        tbody.style.display = 'none';
+        if (emptyState) emptyState.style.display = 'block';
+        return;
+    }
+    
+    tbody.style.display = '';
+    if (emptyState) emptyState.style.display = 'none';
+    
+    tbody.innerHTML = charities.map(charity => {
+        const phone = charity.user_phone || '';
+        const phoneDisplay = phone ? phone.replace(/\s/g, '') : '';
+        const whatsappLink = phoneDisplay ? `https://wa.me/${phoneDisplay.replace(/^0+/, '')}` : '#';
+        
+        return `
+            <tr id="charity_row_${charity.id}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 1rem; color: #fff;">${charity.user_name || '-'}</td>
+                <td style="padding: 1rem; text-align: center;">
+                    ${phoneDisplay ? `
+                        <a href="${whatsappLink}" target="_blank" style="color: #10b981; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
+                            <span>${phoneDisplay}</span>
+                        </a>
+                    ` : '<span style="color: #94a3b8;">-</span>'}
+                </td>
+                <td style="padding: 1rem; color: #fff; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${charity.workshop_title || '-'}">${charity.workshop_title || '-'}</td>
+                <td style="padding: 1rem; text-align: center;">
+                    <div style="color: #fff; font-weight: 600;">${charity.price ? charity.price.toFixed(2) : '0.00'} د.إ</div>
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.25rem;">${charity.number_of_seats} مقعد</div>
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                    <span style="display: inline-block; padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981; border-radius: 8px; font-weight: 600;">
+                        ${charity.available_seats} مقعد
+                    </span>
+                </td>
+                <td style="padding: 1rem; text-align: center;">
+                    ${type === 'existing' ? `
+                        <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center;">
+                            <button type="button" onclick="openAssignCharitySeatModal(${charity.id}, '${(charity.workshop_title || '').replace(/'/g, "\\'")}', '${(charity.user_name || '').replace(/'/g, "\\'")}', '${(charity.package_title || '').replace(/'/g, "\\'")}', ${charity.available_seats})" class="btn btn-sm" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); color: #8b5cf6;" title="منح مقعد">
+                                <i class="fa fa-user-plus"></i>
+                            </button>
+                            <button type="button" onclick="openManageCharityBalanceModal(${charity.id}, '${(charity.workshop_title || '').replace(/'/g, "\\'")}', '${(charity.user_name || '').replace(/'/g, "\\'")}', '${(charity.package_title || '').replace(/'/g, "\\'")}', ${charity.price_per_seat}, ${charity.used_seats || 0}, ${charity.available_seats}, ${charity.available_amount})" class="btn btn-sm" style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6;" title="إدارة الرصيد و إسترجاع">
+                                <i class="fa fa-cog"></i>
+                            </button>
+                            <button type="button" onclick="deleteCharity(${charity.id})" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444;" title="حذف">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    ` : `
+                        <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center;">
+                            <button type="button" onclick="restoreCharity(${charity.id})" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981;" title="استعادة">
+                                <i class="fa fa-undo"></i>
+                            </button>
+                            <button type="button" onclick="permanentlyDeleteCharity(${charity.id})" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444;" title="حذف نهائي">
+                                <i class="fa fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function deleteCharity(charityId) {
+    if (!confirm('هل أنت متأكد من حذف هذا الدعم؟')) {
+        return;
+    }
+    
+    fetch(`/charities/${charityId}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.charity) {
+            const charity = data.data.charity;
+            
+            charitySubscriptionsData.existing = charitySubscriptionsData.existing.filter(c => c.id !== charityId);
+            charitySubscriptionsData.deleted.unshift(charity);
+            
+            renderCharityTable('existing', charitySubscriptionsData.existing);
+            renderCharityTable('deleted', charitySubscriptionsData.deleted);
+            
+            updateCharityTotalAvailable();
+            
+            showToast('تم حذف الدعم بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء حذف الدعم', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting charity:', error);
+        showToast('حدث خطأ أثناء حذف الدعم', 'error');
+    });
+}
+
+function restoreCharity(charityId) {
+    fetch(`/charities/${charityId}/restore`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.charity) {
+            const charity = data.data.charity;
+            
+            charitySubscriptionsData.deleted = charitySubscriptionsData.deleted.filter(c => c.id !== charityId);
+            charitySubscriptionsData.existing.unshift(charity);
+            
+            renderCharityTable('existing', charitySubscriptionsData.existing);
+            renderCharityTable('deleted', charitySubscriptionsData.deleted);
+            
+            updateCharityTotalAvailable();
+            
+            showToast('تم استعادة الدعم بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء استعادة الدعم', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error restoring charity:', error);
+        showToast('حدث خطأ أثناء استعادة الدعم', 'error');
+    });
+}
+
+function permanentlyDeleteCharity(charityId) {
+    if (!confirm('هل أنت متأكد من الحذف النهائي لهذا الدعم؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        return;
+    }
+    
+    fetch(`/charities/${charityId}/permanent`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            charitySubscriptionsData.deleted = charitySubscriptionsData.deleted.filter(c => c.id !== charityId);
+            
+            renderCharityTable('deleted', charitySubscriptionsData.deleted);
+            
+            showToast('تم الحذف النهائي للدعم بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء الحذف النهائي', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error permanently deleting charity:', error);
+        showToast('حدث خطأ أثناء الحذف النهائي', 'error');
+    });
+}
+
+function updateCharityTotalAvailable() {
+    let totalAvailable = 0;
+    charitySubscriptionsData.existing.forEach(charity => {
+        totalAvailable += charity.available_amount || 0;
+    });
+    
+    const totalElement = document.getElementById('charityTotalAvailable');
+    if (totalElement) {
+        totalElement.textContent = totalAvailable.toFixed(2) + ' درهم';
+    }
+}
+
+let assignCharityUserSearchTimeout;
+let assignCharitySelectedUser = null;
+
+function openAssignCharitySeatModal(charityId, workshopTitle, ownerName, packageTitle, availableSeats) {
+    const template = document.getElementById('assignCharitySeatModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'منح مقعد من صندوق الدعم';
+    
+    document.getElementById('assignCharityId').value = charityId;
+    document.getElementById('assignCharityWorkshop').value = `${workshopTitle} - ${packageTitle} (${availableSeats} مقعد متاح)`;
+    document.getElementById('assignCharityOwner').value = ownerName;
+    
+    assignCharitySelectedUser = null;
+    
+    const searchInput = document.getElementById('assignCharityUserSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', handleAssignCharityUserSearch);
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function closeAssignCharitySeatModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('subscriptionModal'));
+    if (modal) {
+        modal.hide();
+    }
+}
+
+function handleAssignCharityUserSearch(event) {
+    const search = event.target.value.trim();
+    
+    clearTimeout(assignCharityUserSearchTimeout);
+    
+    if (search.length < 2) {
+        document.getElementById('assignCharityUserSearchResults').style.display = 'none';
+        return;
+    }
+    
+    assignCharityUserSearchTimeout = setTimeout(() => {
+        fetch(`/subscriptions/search-users?search=${encodeURIComponent(search)}`, {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data) {
+                displayAssignCharityUserSearchResults(data.data);
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+        });
+    }, 300);
+}
+
+function displayAssignCharityUserSearchResults(users) {
+    const resultsDiv = document.getElementById('assignCharityUserSearchResults');
+    if (!resultsDiv) return;
+
+    if (users.length === 0) {
+        resultsDiv.innerHTML = '<div class="search-result-item" style="color: #94a3b8;">لا توجد نتائج</div>';
+        resultsDiv.style.display = 'block';
+        return;
+    }
+
+    resultsDiv.innerHTML = users.map(user => {
+        const name = (user.full_name || '').replace(/'/g, "\\'");
+        const email = (user.email || '').replace(/'/g, "\\'");
+        const phone = (user.phone || '').replace(/'/g, "\\'");
+        return `
+            <div class="search-result-item" onclick="selectAssignCharityUser(${user.id}, '${name}', '${email}', '${phone}')" style="color: #fff;">
+                <strong>${user.full_name}</strong>
+                ${user.email ? `<br><small style="color: #94a3b8;">${user.email}</small>` : ''}
+                ${user.phone ? `<br><small style="color: #94a3b8;">${user.phone}</small>` : ''}
+            </div>
+        `;
+    }).join('');
+    resultsDiv.style.display = 'block';
+}
+
+function selectAssignCharityUser(userId, name, email, phone) {
+    assignCharitySelectedUser = { id: userId, name, email, phone };
+    const userIdInput = document.getElementById('assignCharityUserId');
+    const searchInput = document.getElementById('assignCharityUserSearch');
+    if (userIdInput) userIdInput.value = userId;
+    if (searchInput) searchInput.value = name;
+    const results = document.getElementById('assignCharityUserSearchResults');
+    if (results) results.style.display = 'none';
+}
+
+function submitAssignCharitySeat() {
+    const charityId = document.getElementById('assignCharityId').value;
+    const userId = document.getElementById('assignCharityUserId').value;
+    const charityNotes = document.getElementById('assignCharityNotes').value;
+    
+    if (!userId) {
+        showToast('يرجى اختيار مستخدم', 'error');
+        return;
+    }
+    
+    const formData = {
+        user_id: parseInt(userId),
+        charity_notes: charityNotes || null
+    };
+    
+    fetch(`/charities/${charityId}/assign-seat`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.charity) {
+            const charity = data.data.charity;
+            
+            const index = charitySubscriptionsData.existing.findIndex(c => c.id === parseInt(charityId));
+            if (index !== -1) {
+                charitySubscriptionsData.existing[index] = charity;
+            }
+            
+            if (charity.available_seats === 0) {
+                charitySubscriptionsData.existing = charitySubscriptionsData.existing.filter(c => c.id !== parseInt(charityId));
+            }
+            
+            renderCharityTable('existing', charitySubscriptionsData.existing);
+            updateCharityTotalAvailable();
+            
+            closeAssignCharitySeatModal();
+            
+            showToast('تم منح المقعد بنجاح', 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء منح المقعد', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error assigning charity seat:', error);
+        showToast('حدث خطأ أثناء منح المقعد', 'error');
+    });
+}
+
+let manageCharityData = {};
+
+function openManageCharityBalanceModal(charityId, workshopTitle, donorName, packageTitle, pricePerSeat, usedSeats, availableSeats, availableAmount) {
+    const template = document.getElementById('manageCharityBalanceModalTemplate');
+    document.getElementById('modalContent').innerHTML = template.innerHTML;
+    document.getElementById('subscriptionModalLabel').textContent = 'إدارة تذاكر التبرع';
+    
+    manageCharityData = {
+        charityId: charityId,
+        pricePerSeat: pricePerSeat,
+        usedSeats: usedSeats,
+        availableSeats: availableSeats,
+        maxReturnSeats: usedSeats
+    };
+    
+    document.getElementById('manageCharityId').value = charityId;
+    document.getElementById('manageCharityDonorName').textContent = donorName;
+    document.getElementById('manageCharityWorkshop').textContent = `${workshopTitle} - ${packageTitle}`;
+    document.getElementById('manageCharityPricePerSeat').textContent = pricePerSeat.toFixed(2) + ' درهم';
+    document.getElementById('manageCharityAvailableSeats').textContent = availableSeats;
+    document.getElementById('manageCharityAvailableAmount').textContent = availableAmount.toFixed(2);
+    
+    const initialValue = Math.min(1, usedSeats);
+    document.getElementById('manageCharitySeatsCount').value = initialValue;
+    
+    updateManageCharityValue();
+    
+    const plusBtn = document.getElementById('manageCharityPlusBtn');
+    const minusBtn = document.getElementById('manageCharityMinusBtn');
+    
+    if (plusBtn) {
+        plusBtn.onclick = function(e) {
+            e.preventDefault();
+            incrementManageCharitySeats();
+        };
+    }
+    
+    if (minusBtn) {
+        minusBtn.onclick = function(e) {
+            e.preventDefault();
+            decrementManageCharitySeats();
+        };
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+    modal.show();
+}
+
+function closeManageCharityBalanceModal() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('subscriptionModal'));
+    if (modal) {
+        modal.hide();
+    }
+}
+
+function incrementManageCharitySeats() {
+    const input = document.getElementById('manageCharitySeatsCount');
+    if (!input) {
+        console.error('Input not found');
+        return;
+    }
+    
+    const currentValue = parseInt(input.value) || 0;
+    const maxValue = manageCharityData.usedSeats || 0;
+    
+    console.log('Increment - Current:', currentValue, 'Max:', maxValue, 'Data:', manageCharityData);
+    
+    if (currentValue < maxValue) {
+        input.value = currentValue + 1;
+        updateManageCharityValue();
+    }
+}
+
+function decrementManageCharitySeats() {
+    const input = document.getElementById('manageCharitySeatsCount');
+    if (!input) {
+        console.error('Input not found');
+        return;
+    }
+    
+    const currentValue = parseInt(input.value) || 0;
+    
+    console.log('Decrement - Current:', currentValue);
+    
+    if (currentValue > 1) {
+        input.value = currentValue - 1;
+        updateManageCharityValue();
+    }
+}
+
+function updateManageCharityValue() {
+    const seatsInput = document.getElementById('manageCharitySeatsCount');
+    const valueDisplay = document.getElementById('manageCharityTotalValue');
+    
+    if (!seatsInput || !valueDisplay) return;
+    
+    const seatsCount = parseInt(seatsInput.value) || 0;
+    const totalValue = seatsCount * (manageCharityData.pricePerSeat || 0);
+    valueDisplay.textContent = totalValue.toFixed(2);
+}
+
+function selectManageCharityAction(action) {
+    document.getElementById('manageCharityAction').value = action;
+    
+    const keepBtn = document.getElementById('manageCharityActionKeep');
+    const refundBtn = document.getElementById('manageCharityActionRefund');
+    const noteDiv = document.getElementById('manageCharityActionNote');
+    const submitBtn = document.getElementById('manageCharitySubmitBtn');
+    const submitText = document.getElementById('manageCharitySubmitText');
+    
+    if (action === 'keep_balance') {
+        keepBtn.style.background = 'rgba(16, 185, 129, 0.3)';
+        keepBtn.style.borderColor = '#10b981';
+        keepBtn.style.borderWidth = '2px';
+        
+        refundBtn.style.background = 'rgba(190, 24, 93, 0.15)';
+        refundBtn.style.borderColor = 'rgba(190, 24, 93, 0.3)';
+        refundBtn.style.borderWidth = '2px';
+        
+        noteDiv.innerHTML = 'سيتم خصم المبلغ من الصندوق وإضافته كرصيد للمشترك (يمكن إعادة للمشترك لاحقاً)';
+        noteDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+        noteDiv.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        noteDiv.style.color = '#10b981';
+        
+        submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        submitText.innerHTML = 'احتفاظ كرصيد';
+    } else if (action === 'refund') {
+        refundBtn.style.background = 'rgba(190, 24, 93, 0.3)';
+        refundBtn.style.borderColor = '#be185d';
+        refundBtn.style.borderWidth = '2px';
+        
+        keepBtn.style.background = 'rgba(16, 185, 129, 0.15)';
+        keepBtn.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        keepBtn.style.borderWidth = '2px';
+        
+        noteDiv.innerHTML = 'سيتم خصم المبلغ من الصندوق وإضافته للمستحق (في حالة الاسترداد)';
+        noteDiv.style.background = 'rgba(190, 24, 93, 0.1)';
+        noteDiv.style.borderColor = 'rgba(190, 24, 93, 0.3)';
+        noteDiv.style.color = '#be185d';
+        
+        submitBtn.style.background = 'linear-gradient(135deg, #be185d 0%, #9f1239 100%)';
+        submitText.innerHTML = 'استرجاع مالي';
+    }
+};
+
+function submitManageCharityBalance() {
+    const charityId = document.getElementById('manageCharityId').value;
+    const seatsCount = parseInt(document.getElementById('manageCharitySeatsCount').value);
+    const action = document.getElementById('manageCharityAction').value;
+    
+    if (!action) {
+        showToast('يرجى اختيار الإجراء المطلوب', 'error');
+        return;
+    }
+    
+    if (!seatsCount || seatsCount < 1) {
+        showToast('يرجى إدخال عدد المقاعد', 'error');
+        return;
+    }
+    
+    const formData = {
+        seats_count: seatsCount,
+        action: action
+    };
+    
+    fetch(`/charities/${charityId}/return-seats`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.charity) {
+            const charity = data.data.charity;
+            
+            const index = charitySubscriptionsData.existing.findIndex(c => c.id === parseInt(charityId));
+            if (index !== -1) {
+                charitySubscriptionsData.existing[index] = charity;
+            }
+            
+            if (charity.available_seats === 0) {
+                charitySubscriptionsData.existing = charitySubscriptionsData.existing.filter(c => c.id !== parseInt(charityId));
+            }
+            
+            renderCharityTable('existing', charitySubscriptionsData.existing);
+            updateCharityTotalAvailable();
+            
+            closeManageCharityBalanceModal();
+            
+            const actionText = action === 'keep_balance' ? 'وتم إضافة المبلغ كرصيد' : 'وتم الاسترداد المالي';
+            showToast(`تم استرجاع ${seatsCount} مقعد بنجاح ${actionText}`, 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء استرجاع المقاعد', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error returning charity seats:', error);
+        showToast('حدث خطأ أثناء استرجاع المقاعد', 'error');
+    });
+}
+
+function openCharitySubscriptionsModal_OLD() {
+   alert('سيتم تنفيذ هذه الوظيفة لاحقاً');
 }
 
 function fetchBalanceSubscriptions() {
@@ -4254,7 +4917,7 @@ function fetchGiftSubscriptions() {
     // Show loading
     existingTbody.innerHTML = `
         <tr>
-            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
                 <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                 <div>جاري التحميل...</div>
             </td>
@@ -4262,7 +4925,7 @@ function fetchGiftSubscriptions() {
     `;
     deletedTbody.innerHTML = `
         <tr>
-            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
                 <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                 <div>جاري التحميل...</div>
             </td>
@@ -4292,7 +4955,7 @@ function fetchGiftSubscriptions() {
         } else {
             existingTbody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                    <td colspan="6" class="text-center py-4" style="color: #ef4444;">
                         <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                         <div>حدث خطأ أثناء جلب البيانات</div>
                     </td>
@@ -4300,7 +4963,7 @@ function fetchGiftSubscriptions() {
             `;
             deletedTbody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                    <td colspan="6" class="text-center py-4" style="color: #ef4444;">
                         <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                         <div>حدث خطأ أثناء جلب البيانات</div>
                     </td>
@@ -4312,7 +4975,7 @@ function fetchGiftSubscriptions() {
         console.error('Error fetching gift subscriptions:', error);
         existingTbody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                <td colspan="6" class="text-center py-4" style="color: #ef4444;">
                     <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                     <div>حدث خطأ أثناء جلب البيانات</div>
                 </td>
@@ -4320,7 +4983,7 @@ function fetchGiftSubscriptions() {
         `;
         deletedTbody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center py-4" style="color: #ef4444;">
+                <td colspan="6" class="text-center py-4" style="color: #ef4444;">
                     <i class="fa fa-exclamation-triangle fa-2x mb-2"></i>
                     <div>حدث خطأ أثناء جلب البيانات</div>
                 </td>
@@ -4349,18 +5012,41 @@ function renderGiftTable(type, gifts) {
     if (table) table.style.display = 'table';
     if (emptyDiv) emptyDiv.style.display = 'none';
     
-    tbody.innerHTML = gifts.map(gift => `
+    tbody.innerHTML = gifts.map(gift => {
+        // Format phone number for WhatsApp link
+        const phone = gift.receiver_phone || null;
+        let phoneDisplay = '-';
+        let phoneLink = '#';
+        
+        if (phone) {
+            // Clean phone number (remove spaces, dashes, parentheses, etc.)
+            const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+            // Remove leading + if present
+            const phoneNumber = cleanPhone.startsWith('+') ? cleanPhone.substring(1) : cleanPhone;
+            phoneDisplay = phone;
+            phoneLink = `https://wa.me/${phoneNumber}`;
+        }
+        
+        return `
         <tr id="gift_row_${gift.id}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word;">${gift.sender_name || '-'}</td>
-            <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word;">${gift.workshop_title || '-'}</td>
+            <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${gift.workshop_title || '-'}">${gift.workshop_title || '-'}</td>
             <td style="padding: 1rem; color: #fff; word-wrap: break-word; overflow-wrap: break-word;">${gift.receiver_name || '-'}</td>
+            <td style="padding: 1rem; text-align: center;">
+                ${phone ? `
+                    <a href="${phoneLink}" target="_blank" style="color: #25D366; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;" title="فتح WhatsApp">
+                        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
+                        <span>${phoneDisplay}</span>
+                    </a>
+                ` : '<span style="color: #94a3b8;">-</span>'}
+            </td>
             <td style="padding: 1rem; text-align: center; color: #94a3b8;">${gift.created_at || '-'}</td>
             <td style="padding: 1rem; text-align: center;">
                 ${type === 'existing' ? `
                     <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center;">
-                        ${gift.user_id !== null ? `
-                            <button type="button" onclick="approveGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981;" title="موافقة">
-                                <i class="fa fa-check"></i>
+                        ${gift.user_id === null ? `
+                            <button type="button" onclick="openCreateUserModal(${gift.id}, '${gift.receiver_name || ''}', '${gift.phone || ''}')" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981;" title="إنشاء حساب وتفعيل">
+                                <i class="fa fa-user-plus"></i>
                             </button>
                         ` : ''}
                         <button type="button" onclick="transferGiftSubscription(${gift.id})" class="btn btn-sm" style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #3b82f6;" title="تحويل">
@@ -4382,7 +5068,8 @@ function renderGiftTable(type, gifts) {
                 `}
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function switchGiftTab(tab) {
@@ -4476,40 +5163,77 @@ function restoreGiftSubscription(subscriptionId) {
     });
 }
 
-function approveGiftSubscription(subscriptionId) {
-    if (!confirm('هل أنت متأكد من الموافقة على هذه الهدية؟')) {
+function openCreateUserModal(giftId, receiverName, receiverPhone) {
+    document.getElementById('createUserGiftId').value = giftId;
+    document.getElementById('createUserFullName').value = receiverName || '';
+    document.getElementById('createUserPhone').value = receiverPhone || '';
+    document.getElementById('createUserEmail').value = '';
+    document.getElementById('createUserCountry').value = '';
+    
+    const modalElement = document.getElementById('createUserModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+    
+    setTimeout(() => {
+        modalElement.style.zIndex = '1060';
+        const allBackdrops = document.querySelectorAll('.modal-backdrop');
+        if (allBackdrops.length > 0) {
+            allBackdrops[allBackdrops.length - 1].style.zIndex = '1059';
+        }
+    }, 100);
+}
+
+function submitCreateUserForm() {
+    const form = document.getElementById('createUserForm');
+    const giftId = document.getElementById('createUserGiftId').value;
+    
+    if (!form.checkValidity()) {
+        form.reportValidity();
         return;
     }
     
-    fetch(`/subscriptions/gift-subscriptions/${subscriptionId}/approve`, {
+    const formData = {
+        full_name: document.getElementById('createUserFullName').value,
+        phone: document.getElementById('createUserPhone').value,
+        email: document.getElementById('createUserEmail').value,
+        country_id: parseInt(document.getElementById('createUserCountry').value)
+    };
+    
+    fetch(`/subscriptions/gift-subscriptions/${giftId}/create-user-and-assign`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
     })
     .then(response => response.json())
     .then(data => {
         if (data.success && data.data && data.data.subscription) {
             const subscription = data.data.subscription;
             
-            // Update the subscription in existing array
-            const index = giftSubscriptionsData.existing.findIndex(g => g.id === subscriptionId);
+            const index = giftSubscriptionsData.existing.findIndex(g => g.id === parseInt(giftId));
             if (index !== -1) {
                 giftSubscriptionsData.existing[index] = subscription;
             }
             
-            // Update table dynamically
             renderGiftTable('existing', giftSubscriptionsData.existing);
             
-            showToast('تم الموافقة على الهدية بنجاح', 'success');
+            const modalElement = document.getElementById('createUserModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+            
+            showToast('تم إنشاء الحساب وتفعيل الهدية بنجاح', 'success');
         } else {
-            showToast(data.message || 'حدث خطأ أثناء الموافقة على الهدية', 'error');
+            showToast(data.message || 'حدث خطأ أثناء إنشاء الحساب', 'error');
         }
     })
     .catch(error => {
-        console.error('Error approving gift subscription:', error);
-        showToast('حدث خطأ أثناء الموافقة على الهدية', 'error');
+        console.error('Error creating user and assigning gift:', error);
+        showToast('حدث خطأ أثناء إنشاء الحساب', 'error');
     });
 }
 
@@ -4588,7 +5312,9 @@ function openTotalSubscriptionsModal() {
     // Reset form
     document.getElementById('total_subscriptions_workshop_id').value = '';
     document.getElementById('total_subscriptions_summary').style.display = 'none';
-    document.getElementById('total_subscriptions_table_section').style.display = 'none';
+    document.getElementById('total_subscriptions_tabs_section').style.display = 'none';
+    document.getElementById('total_subscriptions_packages_table').style.display = 'none';
+    document.getElementById('total_subscriptions_payment_methods_table').style.display = 'none';
     document.getElementById('total_subscriptions_loading').style.display = 'none';
     document.getElementById('total_subscriptions_empty').style.display = 'none';
     
@@ -4601,7 +5327,9 @@ function handleTotalSubscriptionsWorkshopChange(event) {
     
     if (!workshopId) {
         document.getElementById('total_subscriptions_summary').style.display = 'none';
-        document.getElementById('total_subscriptions_table_section').style.display = 'none';
+        document.getElementById('total_subscriptions_tabs_section').style.display = 'none';
+        document.getElementById('total_subscriptions_packages_table').style.display = 'none';
+        document.getElementById('total_subscriptions_payment_methods_table').style.display = 'none';
         document.getElementById('total_subscriptions_loading').style.display = 'none';
         document.getElementById('total_subscriptions_empty').style.display = 'none';
         return;
@@ -4609,7 +5337,9 @@ function handleTotalSubscriptionsWorkshopChange(event) {
     
     // Show loading
     document.getElementById('total_subscriptions_summary').style.display = 'none';
-    document.getElementById('total_subscriptions_table_section').style.display = 'none';
+    document.getElementById('total_subscriptions_tabs_section').style.display = 'none';
+    document.getElementById('total_subscriptions_packages_table').style.display = 'none';
+    document.getElementById('total_subscriptions_payment_methods_table').style.display = 'none';
     document.getElementById('total_subscriptions_empty').style.display = 'none';
     document.getElementById('total_subscriptions_loading').style.display = 'block';
     
@@ -4628,9 +5358,7 @@ function handleTotalSubscriptionsWorkshopChange(event) {
             
             // Update summary
             document.getElementById('total_subscriptions_workshop_title').textContent = stats.workshop_title;
-            // Calculate total income from packages (sum of all package incomes)
-            const totalIncome = stats.packages ? stats.packages.reduce((sum, pkg) => sum + parseFloat(pkg.income || 0), 0) : 0;
-            document.getElementById('total_subscriptions_total_amount').textContent = totalIncome.toFixed(2) + ' د.إ';
+            document.getElementById('total_subscriptions_total_amount').textContent = (parseFloat(stats.total_amount || 0)).toFixed(2);
             document.getElementById('total_subscriptions_count').textContent = stats.total_count;
             document.getElementById('total_subscriptions_summary').style.display = 'block';
             
@@ -4640,20 +5368,34 @@ function handleTotalSubscriptionsWorkshopChange(event) {
                 summaryDiv.setAttribute('data-workshop-id', workshopId);
             }
             
-            // Update table
-            const tbody = document.getElementById('total_subscriptions_table_body');
+            // Update packages table
+            const packagesTbody = document.getElementById('total_subscriptions_packages_table_body');
             if (stats.packages && stats.packages.length > 0) {
-                tbody.innerHTML = stats.packages.map(pkg => `
+                packagesTbody.innerHTML = stats.packages.map(pkg => `
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
                         <td style="padding: 1rem; color: #fff;">${pkg.title}</td>
                         <td style="padding: 1rem; text-align: center; color: #fff;">${pkg.count}</td>
-                        <td style="padding: 1rem; text-align: center; color: #fff;">${parseFloat(pkg.income).toFixed(2)} د.إ</td>
+                        <td style="padding: 1rem; text-align: center; color: #fff;">${parseFloat(pkg.income || 0).toFixed(2)} د.إ</td>
                     </tr>
                 `).join('');
-                document.getElementById('total_subscriptions_table_section').style.display = 'block';
-            } else {
-                document.getElementById('total_subscriptions_empty').style.display = 'block';
             }
+            
+            // Update payment methods table
+            const paymentMethodsTbody = document.getElementById('total_subscriptions_payment_methods_table_body');
+            if (stats.payment_methods && stats.payment_methods.length > 0) {
+                paymentMethodsTbody.innerHTML = stats.payment_methods.map(pm => `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem; color: #fff;">${pm.type_label}</td>
+                        <td style="padding: 1rem; text-align: center; color: #fff;">${pm.count}</td>
+                        <td style="padding: 1rem; text-align: center; color: #fff;">${pm.gift_count}</td>
+                        <td style="padding: 1rem; text-align: center; color: #fff;">${parseFloat(pm.income || 0).toFixed(2)} د.إ</td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Show tabs and default to packages tab
+            document.getElementById('total_subscriptions_tabs_section').style.display = 'block';
+            switchTotalSubscriptionsTab('packages');
         } else {
             document.getElementById('total_subscriptions_empty').style.display = 'block';
         }
@@ -4663,6 +5405,32 @@ function handleTotalSubscriptionsWorkshopChange(event) {
         document.getElementById('total_subscriptions_loading').style.display = 'none';
         document.getElementById('total_subscriptions_empty').style.display = 'block';
     });
+}
+
+function switchTotalSubscriptionsTab(tab) {
+    // Hide all tables
+    document.getElementById('total_subscriptions_packages_table').style.display = 'none';
+    document.getElementById('total_subscriptions_payment_methods_table').style.display = 'none';
+    
+    // Reset all tab buttons
+    const packagesTab = document.getElementById('total_subscriptions_tab_packages');
+    const paymentMethodsTab = document.getElementById('total_subscriptions_tab_payment_methods');
+    
+    packagesTab.style.background = 'rgba(255,255,255,0.1)';
+    packagesTab.style.color = '#94a3b8';
+    paymentMethodsTab.style.background = 'rgba(255,255,255,0.1)';
+    paymentMethodsTab.style.color = '#94a3b8';
+    
+    // Show selected tab and table
+    if (tab === 'packages') {
+        packagesTab.style.background = 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)';
+        packagesTab.style.color = '#fff';
+        document.getElementById('total_subscriptions_packages_table').style.display = 'block';
+    } else if (tab === 'payment_methods') {
+        paymentMethodsTab.style.background = 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)';
+        paymentMethodsTab.style.color = '#fff';
+        document.getElementById('total_subscriptions_payment_methods_table').style.display = 'block';
+    }
 }
 
 function copyToClipboard(elementId, text) {
@@ -5001,5 +5769,231 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+let manageCharityModalData = {};
+
+window.openManageCharityBalanceModal = function(charityId, workshopTitle, donorName, packageTitle, pricePerSeat, usedSeats, availableSeats, availableAmount) {
+    const maxReturnableSeats = Math.max(usedSeats, availableSeats);
+    
+    if (maxReturnableSeats <= 0) {
+        showToast('لا توجد مقاعد متاحة للاسترجاع', 'error');
+        return;
+    }
+    
+    manageCharityModalData = {
+        charityId: charityId,
+        pricePerSeat: pricePerSeat,
+        usedSeats: usedSeats,
+        maxReturnableSeats: maxReturnableSeats
+    };
+    
+    const charityIdEl = document.getElementById('mcbCharityId');
+    const donorNameEl = document.getElementById('mcbDonorName');
+    const workshopEl = document.getElementById('mcbWorkshop');
+    const pricePerSeatEl = document.getElementById('mcbPricePerSeat');
+    const availableSeatsEl = document.getElementById('mcbAvailableSeats');
+    const availableAmountEl = document.getElementById('mcbAvailableAmount');
+    const actionEl = document.getElementById('mcbAction');
+    
+    if (charityIdEl) charityIdEl.value = charityId;
+    if (donorNameEl) donorNameEl.textContent = donorName;
+    if (workshopEl) workshopEl.textContent = `${workshopTitle} - ${packageTitle}`;
+    if (pricePerSeatEl) pricePerSeatEl.textContent = pricePerSeat.toFixed(2) + ' درهم';
+    if (availableSeatsEl) availableSeatsEl.textContent = availableSeats;
+    if (availableAmountEl) availableAmountEl.textContent = availableAmount.toFixed(2);
+    if (actionEl) actionEl.value = '';
+    
+    const seatsCountInput = document.getElementById('mcbSeatsCount');
+    const plusBtn = document.getElementById('mcbPlusBtn');
+    const minusBtn = document.getElementById('mcbMinusBtn');
+    
+    if (seatsCountInput) {
+        seatsCountInput.value = 1;
+    }
+    
+    if (plusBtn && minusBtn) {
+        const newPlusBtn = plusBtn.cloneNode(true);
+        const newMinusBtn = minusBtn.cloneNode(true);
+        plusBtn.parentNode.replaceChild(newPlusBtn, plusBtn);
+        minusBtn.parentNode.replaceChild(newMinusBtn, minusBtn);
+        
+        newPlusBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const currentValue = parseInt(seatsCountInput.value) || 1;
+            
+            if (currentValue < maxReturnableSeats) {
+                const newValue = currentValue + 1;
+                seatsCountInput.value = newValue;
+                
+                const display = document.getElementById('mcbSeatsDisplay');
+                const valueDisplay = document.getElementById('mcbTotalValue');
+                
+                if (display) {
+                    display.textContent = newValue;
+                }
+                
+                const pricePerSeat = manageCharityModalData.pricePerSeat || 0;
+                const total = newValue * pricePerSeat;
+                
+                if (valueDisplay) {
+                    valueDisplay.textContent = total.toFixed(2);
+                }
+            }
+        });
+        
+        newMinusBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const currentValue = parseInt(seatsCountInput.value) || 1;
+            
+            if (currentValue > 1) {
+                const newValue = currentValue - 1;
+                seatsCountInput.value = newValue;
+                
+                const display = document.getElementById('mcbSeatsDisplay');
+                const valueDisplay = document.getElementById('mcbTotalValue');
+                
+                if (display) {
+                    display.textContent = newValue;
+                }
+                
+                const pricePerSeat = manageCharityModalData.pricePerSeat || 0;
+                const total = newValue * pricePerSeat;
+                
+                if (valueDisplay) {
+                    valueDisplay.textContent = total.toFixed(2);
+                }
+            }
+        });
+    }
+    
+    window.updateMcbValue();
+    window.resetMcbActionButtons();
+    
+    const modal = new bootstrap.Modal(document.getElementById('manageCharityBalanceModal'));
+    modal.show();
+};
+
+window.updateMcbValue = function() {
+    const slider = document.getElementById('mcbSeatsCount');
+    const display = document.getElementById('mcbSeatsDisplay');
+    const valueDisplay = document.getElementById('mcbTotalValue');
+    
+    const seats = parseInt(slider.value) || 1;
+    const pricePerSeat = manageCharityModalData.pricePerSeat || 0;
+    const total = seats * pricePerSeat;
+    
+    display.textContent = seats;
+    valueDisplay.textContent = total.toFixed(2);
+    
+    const percentage = ((seats - 1) / (manageCharityModalData.usedSeats - 1)) * 100;
+    slider.style.background = `linear-gradient(to right, #ec4899 0%, #ec4899 ${percentage}%, rgba(255,255,255,0.1) ${percentage}%, rgba(255,255,255,0.1) 100%)`;
+};
+
+window.selectMcbAction = function(action) {
+    document.getElementById('mcbAction').value = action;
+    
+    const keepBtn = document.getElementById('mcbActionKeep');
+    const refundBtn = document.getElementById('mcbActionRefund');
+    const note = document.getElementById('mcbActionNote');
+    const submitBtn = document.getElementById('mcbSubmitBtn');
+    
+    if (action === 'keep_balance') {
+        keepBtn.style.background = 'rgba(16, 185, 129, 0.3)';
+        keepBtn.style.borderColor = '#10b981';
+        refundBtn.style.background = 'rgba(190, 24, 93, 0.15)';
+        refundBtn.style.borderColor = 'rgba(190, 24, 93, 0.3)';
+        
+        note.innerHTML = 'سيتم خصم المبلغ من الصندوق وإضافته كرصيد للمشترك';
+        note.style.background = 'rgba(16, 185, 129, 0.1)';
+        note.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        note.style.color = '#10b981';
+        
+        submitBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        submitBtn.innerHTML = '<i class="fa fa-wallet me-2"></i>احتفاظ كرصيد';
+    } else {
+        refundBtn.style.background = 'rgba(190, 24, 93, 0.3)';
+        refundBtn.style.borderColor = '#be185d';
+        keepBtn.style.background = 'rgba(16, 185, 129, 0.15)';
+        keepBtn.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+        
+        note.innerHTML = 'سيتم خصم المبلغ من الصندوق وإضافته للمستحق (في حالة الاسترداد)';
+        note.style.background = 'rgba(190, 24, 93, 0.1)';
+        note.style.borderColor = 'rgba(190, 24, 93, 0.3)';
+        note.style.color = '#be185d';
+        
+        submitBtn.style.background = 'linear-gradient(135deg, #be185d 0%, #9f1239 100%)';
+        submitBtn.innerHTML = '<i class="fa fa-money-bill-wave me-2"></i>استرجاع مالي';
+    }
+};
+
+window.resetMcbActionButtons = function() {
+    document.getElementById('mcbActionKeep').style.background = 'rgba(16, 185, 129, 0.15)';
+    document.getElementById('mcbActionKeep').style.borderColor = 'rgba(16, 185, 129, 0.3)';
+    document.getElementById('mcbActionRefund').style.background = 'rgba(190, 24, 93, 0.15)';
+    document.getElementById('mcbActionRefund').style.borderColor = 'rgba(190, 24, 93, 0.3)';
+    document.getElementById('mcbActionNote').innerHTML = 'يرجى اختيار الإجراء المطلوب';
+    document.getElementById('mcbActionNote').style.background = 'rgba(59, 130, 246, 0.1)';
+    document.getElementById('mcbActionNote').style.borderColor = 'rgba(59, 130, 246, 0.3)';
+    document.getElementById('mcbActionNote').style.color = '#94a3b8';
+    document.getElementById('mcbSubmitBtn').innerHTML = '<i class="fa fa-lock me-2"></i>تأكيد الاسترجاع';
+};
+
+window.submitMcbForm = function() {
+    const charityId = document.getElementById('mcbCharityId').value;
+    const seatsCount = parseInt(document.getElementById('mcbSeatsCount').value) || 1;
+    const action = document.getElementById('mcbAction').value;
+    
+    if (!action) {
+        showToast('يرجى اختيار الإجراء المطلوب', 'error');
+        return;
+    }
+    
+    fetch(`/charities/${charityId}/return-seats`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ seats_count: seatsCount, action: action })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.data && data.data.charity) {
+            const charity = data.data.charity;
+            
+            const index = charitySubscriptionsData.existing.findIndex(c => c.id === parseInt(charityId));
+            if (index !== -1) {
+                charitySubscriptionsData.existing[index] = charity;
+            }
+            
+            if (charity.available_seats === 0) {
+                charitySubscriptionsData.existing = charitySubscriptionsData.existing.filter(c => c.id !== parseInt(charityId));
+            }
+            
+            renderCharityTable('existing', charitySubscriptionsData.existing);
+            updateCharityTotalAvailable();
+            
+            bootstrap.Modal.getInstance(document.getElementById('manageCharityBalanceModal')).hide();
+            
+            const actionText = action === 'keep_balance' ? 'وتم إضافة المبلغ كرصيد' : 'وتم الاسترداد المالي';
+            showToast(`تم استرجاع ${seatsCount} مقعد بنجاح ${actionText}`, 'success');
+        } else {
+            showToast(data.message || 'حدث خطأ أثناء استرجاع المقاعد', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('حدث خطأ أثناء استرجاع المقاعد', 'error');
+    });
+};
 </script>
+
+@include('Admin.subscriptions.partials.modals.manage-charity-balance')
 @endsection
+
+@include('Admin.subscriptions.partials.modals.create-user')

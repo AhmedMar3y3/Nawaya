@@ -18,6 +18,7 @@
                         <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الاسم</th>
                         <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الهاتف</th>
                         <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الورشة</th>
+                        <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">نوع الطلب</th>
                         <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">تاريخ الإنشاء</th>
                         <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">طريقة الدفع</th>
                         <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الإجراءات</th>
@@ -26,7 +27,7 @@
                 <tbody id="pendingApprovalsTableBody">
                     <!-- Data will be populated here -->
                     <tr>
-                        <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
+                        <td colspan="7" class="text-center py-4" style="color: #94a3b8;">
                             <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                             <div>جاري التحميل...</div>
                         </td>
@@ -36,4 +37,5 @@
         </div>
     </div>
 </div>
+
 

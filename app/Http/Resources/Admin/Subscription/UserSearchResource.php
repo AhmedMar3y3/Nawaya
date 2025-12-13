@@ -18,3 +18,4 @@ class UserSearchResource extends JsonResource
         ];
     }
 }
+

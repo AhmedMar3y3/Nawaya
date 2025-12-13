@@ -24,6 +24,7 @@ use App\Http\Requests\Admin\Subscription\RefundSubscriptionRequest;
 use App\Http\Resources\Admin\Subscription\GiftSubscriptionResource;
 use App\Http\Requests\Admin\Subscription\TransferSubscriptionRequest;
 use App\Http\Resources\Admin\Subscription\BalanceSubscriptionResource;
+use App\Http\Requests\Admin\Subscription\CreateUserAndAssignGiftRequest;
 
 class SubscriptionController extends Controller
 {
@@ -278,17 +279,22 @@ class SubscriptionController extends Controller
     public function getPendingApprovals(): JsonResponse
     {
         try {
-            $subscriptions = $this->subscriptionService->getProcessingSubscriptions();
+            $items = $this->subscriptionService->getProcessingSubscriptions();
 
-            $data = $subscriptions->map(function ($subscription) {
+            $data = $items->map(function ($item) {
+                $model = $item['model'];
+                $type = $item['type'];
+                
                 return [
-                    'id'             => $subscription->id,
-                    'name'           => $subscription->user ? $subscription->user->full_name : ($subscription->full_name ?? '-'),
-                    'phone'          => $subscription->user ? $subscription->user->phone : ($subscription->phone ?? '-'),
-                    'workshop_title' => $subscription->workshop ? $subscription->workshop->title : '-',
-                    'created_at'     => $subscription->created_at ? $subscription->created_at->format('Y-m-d H:i') : '-',
-                    'created_at_ar'  => $subscription->created_at ? \App\Helpers\FormatArabicDates::formatArabicDate($subscription->created_at) : '-',
-                    'payment_type'   => $subscription->payment_type ? __('enums.payment_types.' . $subscription->payment_type->value, [], 'ar') : '-',
+                    'id'             => $model->id,
+                    'type'           => $type,
+                    'type_label'     => $type === 'charity' ? 'دعم' : 'اشتراك',
+                    'name'           => $model->user ? $model->user->full_name : ($model->full_name ?? '-'),
+                    'phone'          => $model->user ? $model->user->phone : ($model->phone ?? '-'),
+                    'workshop_title' => $model->workshop ? $model->workshop->title : '-',
+                    'created_at'     => $model->created_at ? $model->created_at->format('Y-m-d H:i') : '-',
+                    'created_at_ar'  => $model->created_at ? \App\Helpers\FormatArabicDates::formatArabicDate($model->created_at) : '-',
+                    'payment_type'   => $model->payment_type ? __('enums.payment_types.' . $model->payment_type->value, [], 'ar') : '-',
                 ];
             });
 
@@ -301,6 +307,13 @@ class SubscriptionController extends Controller
     public function approveSubscription(int $id): JsonResponse
     {
         try {
+            $type = request()->input('type', 'subscription');
+            
+            if ($type === 'charity') {
+                $this->subscriptionService->approveCharity($id);
+                return $this->successResponse('تم الموافقة على الاشتراك الخيري بنجاح');
+            }
+            
             $this->subscriptionService->approveSubscription($id);
             return $this->successResponse('تم الموافقة على الاشتراك بنجاح');
         } catch (\Exception $e) {
@@ -311,6 +324,13 @@ class SubscriptionController extends Controller
     public function rejectSubscription(int $id): JsonResponse
     {
         try {
+            $type = request()->input('type', 'subscription');
+            
+            if ($type === 'charity') {
+                $this->subscriptionService->rejectCharity($id);
+                return $this->successResponse('تم رفض الاشتراك الخيري بنجاح');
+            }
+            
             $this->subscriptionService->rejectSubscription($id);
             return $this->successResponse('تم رفض الاشتراك بنجاح');
         } catch (\Exception $e) {
@@ -321,25 +341,26 @@ class SubscriptionController extends Controller
     public function exportPendingApprovalsExcel()
     {
         try {
-            $subscriptions = $this->subscriptionService->getProcessingSubscriptions();
+            $items = $this->subscriptionService->getProcessingSubscriptions();
 
-            $exportClass = new class($subscriptions) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings, \Maatwebsite\Excel\Concerns\WithMapping
+            $exportClass = new class($items) implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings, \Maatwebsite\Excel\Concerns\WithMapping
             {
-                private $subscriptions;
+                private $items;
 
-                public function __construct($subscriptions)
+                public function __construct($items)
                 {
-                    $this->subscriptions = $subscriptions;
+                    $this->items = $items;
                 }
 
                 public function collection()
                 {
-                    return $this->subscriptions;
+                    return $this->items;
                 }
 
                 public function headings(): array
                 {
                     return [
+                        'النوع',
                         'الاسم',
                         'الهاتف',
                         'الورشة',
@@ -348,14 +369,18 @@ class SubscriptionController extends Controller
                     ];
                 }
 
-                public function map($subscription): array
+                public function map($item): array
                 {
+                    $model = $item['model'];
+                    $typeLabel = $item['type'] === 'charity' ? 'دعم' : 'اشتراك';
+                    
                     return [
-                        $subscription->user ? $subscription->user->full_name : ($subscription->full_name ?? '-'),
-                        $subscription->user ? $subscription->user->phone : ($subscription->phone ?? '-'),
-                        $subscription->workshop ? $subscription->workshop->title : '-',
-                        $subscription->created_at ? $subscription->created_at->format('Y-m-d H:i') : '-',
-                        $subscription->payment_type ? __('enums.payment_types.' . $subscription->payment_type->value, [], 'ar') : '-',
+                        $typeLabel,
+                        $model->user ? $model->user->full_name : ($model->full_name ?? '-'),
+                        $model->user ? $model->user->phone : ($model->phone ?? '-'),
+                        $model->workshop ? $model->workshop->title : '-',
+                        $model->created_at ? $model->created_at->format('Y-m-d H:i') : '-',
+                        $model->payment_type ? __('enums.payment_types.' . $model->payment_type->value, [], 'ar') : '-',
                     ];
                 }
             };
@@ -652,6 +677,16 @@ class SubscriptionController extends Controller
             return $this->successWithDataResponse(['subscription' => new GiftSubscriptionResource($subscription)]);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage() ?: 'حدث خطأ أثناء تحويل الاشتراك');
+        }
+    }
+
+    public function createUserAndAssignGift(CreateUserAndAssignGiftRequest $request, int $id): JsonResponse
+    {
+        try {
+            $subscription = $this->subscriptionService->createUserAndAssignGift($id, $request->validated());
+            return $this->successWithDataResponse(['subscription' => new GiftSubscriptionResource($subscription)]);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage() ?: 'حدث خطأ أثناء إنشاء المستخدم وتعيين الهدية');
         }
     }
 

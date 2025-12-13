@@ -774,7 +774,7 @@
             </a>
             <a href="{{ route('admin.support-messages.index') }}" class="action-btn">
                 <i class="fa fa-envelope action-icon"></i>
-                <span class="action-text">رسائل الدعم</span>
+                <span class="action-text">الإستشارات</span>
             </a>
         </div>
 
@@ -873,7 +873,7 @@
             <div class="stats-card" onclick="window.location.href='{{ route('admin.support-messages.index') }}'">
                 <div class="stats-header">
                     <div>
-                        <div class="stats-title">رسائل الدعم</div>
+                        <div class="stats-title">الاستشارات</div>
                         <div class="stats-value">{{ number_format($totalSupportMessages ?? 0) }}</div>
                         <div class="stats-subtitle">
                             <span class="trend-up">✓</span> إجمالي الرسائل

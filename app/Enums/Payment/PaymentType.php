@@ -11,4 +11,5 @@ enum PaymentType: string {
     case BANK_TRANSFER = 'bank_transfer';
     case LINK          = 'link';
     case USER_BALANCE  = 'user_balance';
+    case CHARITY       = 'charity';
 }

@@ -15,6 +15,7 @@ class GiftSubscriptionResource extends JsonResource
             'sender_name'      => $this->gifter ? $this->gifter->full_name : '-',
             'workshop_title'   => $this->workshop ? $this->workshop->title : '-',
             'receiver_name'    => $this->user ? $this->user->full_name : ($this->full_name ?? '-'),
+            'receiver_phone'   => $this->user ? $this->user->phone : ($this->phone ?? null),
             'created_at'       =>  FormatArabicDates::formatArabicDate($this->created_at),
             'user_id'          => $this->user_id ? (int) $this->user_id : null,
             'gift_user_id'     => $this->gift_user_id ? (int) $this->gift_user_id : null,

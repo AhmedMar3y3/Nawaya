@@ -63,6 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('subscriptions')->group(function () {
         Route::post('/create'          , [SubscriptionController::class, 'create']);
         Route::post('/process-payment' , [SubscriptionController::class, 'processPayment']);
+        Route::post('/buy-charity'     , [SubscriptionController::class, 'buyCharitySubscriptions']);
+        Route::post('/process-charity' , [SubscriptionController::class, 'processCharityPayment']);
     });
 
     // Profile routes

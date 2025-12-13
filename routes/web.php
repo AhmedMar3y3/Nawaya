@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\WorkshopController;
 use App\Http\Controllers\User\TapPaymentController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\CharityController;
 use App\Http\Controllers\Admin\SupportMessageController;
 use App\Http\Controllers\Admin\FinancialCenterController;
 
@@ -194,6 +195,7 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::delete('/gift-subscriptions/{id}/permanent', [SubscriptionController::class, 'permanentlyDeleteGiftSubscription'])->name('gift-subscriptions.permanent-delete');
         Route::post('/gift-subscriptions/{id}/approve'    , [SubscriptionController::class, 'approveGiftSubscription'])->name('gift-subscriptions.approve');
         Route::post('/gift-subscriptions/{id}/transfer'   , [SubscriptionController::class, 'transferGiftSubscription'])->name('gift-subscriptions.transfer');
+        Route::post('/gift-subscriptions/{id}/create-user-and-assign', [SubscriptionController::class, 'createUserAndAssignGift'])->name('gift-subscriptions.create-user-and-assign');
         Route::post('/{id}/reactivate'                    , [SubscriptionController::class, 'reactivateSubscription'])->name('reactivate');
         Route::get('/workshop/{workshopId}/stats'         , [SubscriptionController::class, 'getWorkshopSubscriptionsStats'])->name('workshop.stats');
         Route::get('/workshop/{workshopId}/stats/export/excel', [SubscriptionController::class, 'exportWorkshopStatsExcel'])->name('workshop.stats.export.excel');
@@ -201,6 +203,16 @@ Route::middleware(['auth.admin'])->group(function () {
         Route::post('/{id}/restore'       , [SubscriptionController::class, 'restore'])->name('restore');
         Route::delete('/{id}/permanent'   , [SubscriptionController::class, 'permanentlyDelete'])->name('permanent-delete');
         Route::delete('/{id}'             , [SubscriptionController::class, 'destroy'])->name('destroy');
+    });
+
+    // Charities Routes
+    Route::prefix('charities')->name('admin.charities.')->group(function () {
+        Route::get('/', [CharityController::class, 'getCharities'])->name('index');
+        Route::post('/{id}/assign-seat', [CharityController::class, 'assignSeat'])->name('assign-seat');
+        Route::post('/{id}/return-seats', [CharityController::class, 'returnSeats'])->name('return-seats');
+        Route::delete('/{id}', [CharityController::class, 'deleteCharity'])->name('delete');
+        Route::post('/{id}/restore', [CharityController::class, 'restoreCharity'])->name('restore');
+        Route::delete('/{id}/permanent', [CharityController::class, 'permanentlyDeleteCharity'])->name('permanent-delete');
     });
 
     // Certificates Routes

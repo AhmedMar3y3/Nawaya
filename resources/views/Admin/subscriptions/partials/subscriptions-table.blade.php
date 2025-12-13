@@ -35,6 +35,7 @@
                     
                     $statusText = __('enums.subscription_statuses.' . $subscription->status->value, [], 'ar');
                     $paymentTypeText = $subscription->payment_type ? __('enums.payment_types.' . $subscription->payment_type->value, [], 'ar') : '-';
+                    $isCharity = $subscription->payment_type && $subscription->payment_type->value === 'charity';
                 @endphp
                 <!-- First Row: User Details and Amount -->
                 <tr class="subscription-row-first" data-subscription-id="{{ $subscription->id }}">
@@ -77,12 +78,12 @@
                             <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
                                 <div>
                                     <span style="color: #94a3b8; font-size: 0.85rem;">السعر:</span>
-                                    <strong>{{ number_format($subscription->price, 2) }}</strong>
+                                    <strong style="{{ $isCharity ? 'color: #ec4899;' : '' }}">{{ number_format($subscription->price, 2) }}</strong>
                                     <span class="currency">د.إ</span>
                                 </div>
                                 <div>
                                     <span style="color: #94a3b8; font-size: 0.85rem;">المدفوع:</span>
-                                    <strong style="color: #10b981;">{{ number_format($subscription->paid_amount, 2) }}</strong>
+                                    <strong style="color: {{ $isCharity ? '#ec4899' : '#10b981' }};">{{ number_format($subscription->paid_amount, 2) }}</strong>
                                     <span class="currency">د.إ</span>
                                 </div>
                             </div>
@@ -103,7 +104,12 @@
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">نوع الدفع:</span>
-                                <span class="detail-value">{{ $paymentTypeText }}</span>
+                                <span class="detail-value" style="{{ $isCharity ? 'color: #ec4899; font-weight: 600;' : '' }}">
+                                    @if($isCharity)
+                                        <i class="fa fa-heart" style="color: #ec4899; margin-left: 0.25rem;"></i>
+                                    @endif
+                                    {{ $paymentTypeText }}
+                                </span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">هدية:</span>

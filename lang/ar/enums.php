@@ -13,6 +13,7 @@ return [
         'bank_transfer' => 'تحويل بنكي',
         'link'          => 'رابط دفع',
         'user_balance'  => 'رصيد داخلي',
+        'charity'       => 'منحة'
     ],
     
     'refund_types'              => [

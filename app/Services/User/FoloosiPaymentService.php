@@ -5,7 +5,6 @@ namespace App\Services\User;
 use App\Models\Order;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class FoloosiPaymentService
 {
@@ -44,12 +43,6 @@ class FoloosiPaymentService
                 'Accept'         => 'application/json',
             ])->post("{$this->baseUrl}/merchant/v1/payment-links/create", $payload);
 
-            Log::info('Foloosi Create Payment Link Response', [
-                'order_id' => $order->id,
-                'status'   => $response->status(),
-                'body'     => $response->body(),
-            ]);
-
             if ($response->successful()) {
                 $data = $response->json();
 
@@ -79,11 +72,6 @@ class FoloosiPaymentService
             throw new \Exception("Foloosi API Error [{$response->status()}]: {$errorMessage}");
 
         } catch (\Exception $e) {
-            Log::error('Foloosi Payment Link Creation Failed', [
-                'order_id' => $order->id,
-                'error'    => $e->getMessage(),
-                'trace'    => $e->getTraceAsString(),
-            ]);
 
             throw new \Exception('فشل في إنشاء رابط الدفع: ' . $e->getMessage());
         }
@@ -116,10 +104,6 @@ class FoloosiPaymentService
                 'error'  => $response->json('message') ?? 'Verification failed',
             ];
         } catch (\Exception $e) {
-            Log::error('Foloosi Verification Failed', [
-                'reference_id' => $referenceId,
-                'error'        => $e->getMessage(),
-            ]);
 
             return ['paid' => false, 'status' => 'error'];
         }
@@ -162,12 +146,6 @@ class FoloosiPaymentService
                 'Accept'         => 'application/json',
             ])->post("{$this->baseUrl}/merchant/v1/payment-links/create", $payload);
 
-            Log::info('Foloosi Create Payment Link Response (Subscription)', [
-                'subscription_id' => $subscription->id,
-                'status'          => $response->status(),
-                'body'            => $response->body(),
-            ]);
-
             if ($response->successful()) {
                 $data = $response->json();
 
@@ -197,12 +175,146 @@ class FoloosiPaymentService
             throw new \Exception("Foloosi API Error [{$response->status()}]: {$errorMessage}");
 
         } catch (\Exception $e) {
-            Log::error('Foloosi Payment Link Creation Failed (Subscription)', [
-                'subscription_id' => $subscription->id,
-                'error'          => $e->getMessage(),
-                'trace'          => $e->getTraceAsString(),
-            ]);
 
+            throw new \Exception('فشل في إنشاء رابط الدفع: ' . $e->getMessage());
+        }
+    }
+
+    public function createPaymentForMultipleSubscriptions($subscriptions): array
+    {
+        $totalAmount = 0;
+        $subscriptionIds = [];
+        
+        foreach ($subscriptions as $subscription) {
+            $totalAmount += $subscription->price;
+            $subscriptionIds[] = $subscription->id;
+        }
+
+        $firstSubscription = $subscriptions->first();
+        
+        if ($firstSubscription->is_gift) {
+            $gifter = $firstSubscription->gifter;
+            $customerName = $gifter->full_name ?? 'Customer';
+            $customerEmail = $gifter->email ?? '';
+            $customerMobile = $gifter->phone ?? '';
+            $phoneCode = $gifter->country?->code ?? '';
+        } else {
+            $user = $firstSubscription->user;
+            $customerName = $user->full_name ?? 'Customer';
+            $customerEmail = $user->email ?? '';
+            $customerMobile = $user->phone ?? '';
+            $phoneCode = $user->country?->code ?? '';
+        }
+
+        $payload = [
+            'amount'           => number_format($totalAmount, 2, '.', ''),
+            'currency'         => 'AED',
+            'description'      => 'Workshop Subscriptions #' . implode(', #', $subscriptionIds) . ' - ' . config('app.name'),
+            'link_type'        => 'single',
+            'customer_name'    => $customerName,
+            'customer_email'   => $customerEmail,
+            'customer_mobile'  => $customerMobile,
+            'phone_code'       => $phoneCode,
+            'notify_email'     => 'No',
+            'notify_sms'       => 'No',
+            'expire_date'      => now()->addDays(7)->format('Y-m-d H:i:s'),
+            'callback_url'     => $this->callbackUrl,
+        ];
+
+        try {
+            $response = Http::withHeaders([
+                'secret_key'     => $this->secretKey,
+                'Content-Type'   => 'application/json',
+                'Accept'         => 'application/json',
+            ])->post("{$this->baseUrl}/merchant/v1/payment-links/create", $payload);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (
+                    isset($data['message']) &&
+                    str_contains($data['message'], 'Payment link created successfully') &&
+                    isset($data['data']['payment_link_reference'])
+                ) {
+                    $reference   = $data['data']['payment_link_reference'];
+                    $paymentUrl  = "https://foloosi.com/v1/pay/{$reference}";
+
+                    return [
+                        'invoice_id'   => $reference,
+                        'invoice_url'  => $paymentUrl,
+                    ];
+                }
+
+                throw new \Exception($data['message'] ?? 'Unknown response from Foloosi');
+            }
+
+            $errorMessage = $response->json('message') ?? $response->body();
+            throw new \Exception("Foloosi API Error [{$response->status()}]: {$errorMessage}");
+
+        } catch (\Exception $e) {
+            throw new \Exception('فشل في إنشاء رابط الدفع: ' . $e->getMessage());
+        }
+    }
+
+    public function createPaymentForCharity(\App\Models\Charity $charity): array
+    {
+        $user = $charity->user;
+        $customerName = $user->full_name ?? 'Customer';
+        $customerEmail = $user->email ?? '';
+        $customerMobile = $user->phone ?? '';
+        $phoneCode = $user->country?->code ?? '';
+
+        $payload = [
+            'amount'           => number_format($charity->price, 2, '.', ''),
+            'currency'         => 'AED',
+            'description'      => 'Charity Subscription #' . $charity->id . ' - ' . config('app.name'),
+            'link_type'        => 'single',
+            'customer_name'    => $customerName,
+            'customer_email'   => $customerEmail,
+            'customer_mobile'  => $customerMobile,
+            'phone_code'       => $phoneCode,
+            'notify_email'     => 'No',
+            'notify_sms'       => 'No',
+            'expire_date'      => now()->addDays(7)->format('Y-m-d H:i:s'),
+            'callback_url'     => $this->callbackUrl,
+        ];
+
+        try {
+            $response = Http::withHeaders([
+                'secret_key'     => $this->secretKey,
+                'Content-Type'   => 'application/json',
+                'Accept'         => 'application/json',
+            ])->post("{$this->baseUrl}/merchant/v1/payment-links/create", $payload);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                if (
+                    isset($data['message']) &&
+                    str_contains($data['message'], 'Payment link created successfully') &&
+                    isset($data['data']['payment_link_reference'])
+                ) {
+                    $reference   = $data['data']['payment_link_reference'];
+                    $paymentUrl  = "https://foloosi.com/v1/pay/{$reference}";
+
+                    $charity->update([
+                        'invoice_id'  => $reference,
+                        'invoice_url' => $paymentUrl,
+                    ]);
+
+                    return [
+                        'invoice_id'   => $reference,
+                        'invoice_url'  => $paymentUrl,
+                    ];
+                }
+
+                throw new \Exception($data['message'] ?? 'Unknown response from Foloosi');
+            }
+
+            $errorMessage = $response->json('message') ?? $response->body();
+            throw new \Exception("Foloosi API Error [{$response->status()}]: {$errorMessage}");
+
+        } catch (\Exception $e) {
             throw new \Exception('فشل في إنشاء رابط الدفع: ' . $e->getMessage());
         }
     }

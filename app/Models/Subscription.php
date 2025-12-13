@@ -37,6 +37,9 @@ class Subscription extends Model
         'country_id',
         'message',
         'is_gift_approved',
+
+        'charity_id',
+        'charity_notes',
     ];
 
     protected $casts = [
@@ -85,5 +88,10 @@ class Subscription extends Model
         return $this->belongsToMany(WorkshopRecording::class, 'subscription_recordings', 'subscription_id', 'recording_id')
             ->withPivot('available_from', 'available_to')
             ->withTimestamps();
+    }
+
+    public function charity()
+    {
+        return $this->belongsTo(Charity::class);
     }
 }

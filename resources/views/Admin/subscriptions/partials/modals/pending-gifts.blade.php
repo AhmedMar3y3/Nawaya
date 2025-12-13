@@ -24,24 +24,26 @@
             <div id="gift_tab_content_existing" class="gift-tab-content">
                 <table class="table" style="color: #fff; margin: 0; width: 100%; table-layout: fixed;">
                     <colgroup>
-                        <col style="width: 20%;">
-                        <col style="width: 25%;">
-                        <col style="width: 20%;">
                         <col style="width: 15%;">
                         <col style="width: 20%;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                        <col style="width: 12%;">
+                        <col style="width: 23%;">
                     </colgroup>
                     <thead style="position: sticky; top: 0; background: rgba(15, 23, 42, 0.98); z-index: 10; backdrop-filter: blur(10px);">
                         <tr>
                             <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">المرسل</th>
                             <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الورشة</th>
                             <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">المستلم</th>
+                            <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">رقم المستلم</th>
                             <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">تاريخ الإنشاء</th>
                             <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="giftExistingTableBody">
                         <tr>
-                            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+                            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
                                 <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                                 <div>جاري التحميل...</div>
                             </td>
@@ -59,24 +61,26 @@
             <div id="gift_tab_content_deleted" class="gift-tab-content" style="display: none;">
                 <table class="table" style="color: #fff; margin: 0; width: 100%; table-layout: fixed;">
                     <colgroup>
-                        <col style="width: 20%;">
-                        <col style="width: 25%;">
-                        <col style="width: 20%;">
                         <col style="width: 15%;">
                         <col style="width: 20%;">
+                        <col style="width: 15%;">
+                        <col style="width: 15%;">
+                        <col style="width: 12%;">
+                        <col style="width: 23%;">
                     </colgroup>
                     <thead style="position: sticky; top: 0; background: rgba(15, 23, 42, 0.98); z-index: 10; backdrop-filter: blur(10px);">
                         <tr>
                             <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">المرسل</th>
                             <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الورشة</th>
                             <th style="padding: 0.75rem; text-align: right; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">المستلم</th>
+                            <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">رقم المستلم</th>
                             <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">تاريخ الإنشاء</th>
                             <th style="padding: 0.75rem; text-align: center; color: #94a3b8; font-weight: 600; font-size: 0.875rem; border-bottom: 1px solid rgba(255,255,255,0.1);">الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="giftDeletedTableBody">
                         <tr>
-                            <td colspan="5" class="text-center py-4" style="color: #94a3b8;">
+                            <td colspan="6" class="text-center py-4" style="color: #94a3b8;">
                                 <i class="fa fa-spinner fa-spin fa-2x mb-2"></i>
                                 <div>جاري التحميل...</div>
                             </td>
@@ -92,4 +96,3 @@
         </div>
     </div>
 </div>
-

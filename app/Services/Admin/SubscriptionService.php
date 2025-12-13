@@ -343,10 +343,33 @@ class SubscriptionService
 
     public function getProcessingSubscriptions(): Collection
     {
-        return Subscription::where('status', \App\Enums\Subscription\SubscriptionStatus::PROCESSING)
+        $subscriptions = Subscription::where('status', \App\Enums\Subscription\SubscriptionStatus::PROCESSING)
             ->with(['user', 'workshop', 'package'])
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($subscription) {
+                return [
+                    'id' => $subscription->id,
+                    'type' => 'subscription',
+                    'model' => $subscription,
+                ];
+            });
+
+        $charities = \App\Models\Charity::where('status', \App\Enums\Subscription\SubscriptionStatus::PROCESSING)
+            ->with(['user', 'workshop', 'package'])
+            ->latest()
+            ->get()
+            ->map(function ($charity) {
+                return [
+                    'id' => $charity->id,
+                    'type' => 'charity',
+                    'model' => $charity,
+                ];
+            });
+
+        return $subscriptions->concat($charities)->sortByDesc(function ($item) {
+            return $item['model']->created_at;
+        })->values();
     }
 
     public function approveSubscription(int $subscriptionId): Subscription
@@ -371,6 +394,30 @@ class SubscriptionService
         ]);
 
         return $subscription->fresh();
+    }
+
+    public function approveCharity(int $charityId): \App\Models\Charity
+    {
+        $charity = \App\Models\Charity::where('status', \App\Enums\Subscription\SubscriptionStatus::PROCESSING)
+            ->findOrFail($charityId);
+
+        $charity->update([
+            'status' => \App\Enums\Subscription\SubscriptionStatus::PAID,
+        ]);
+
+        return $charity->fresh();
+    }
+
+    public function rejectCharity(int $charityId): \App\Models\Charity
+    {
+        $charity = \App\Models\Charity::where('status', \App\Enums\Subscription\SubscriptionStatus::PROCESSING)
+            ->findOrFail($charityId);
+
+        $charity->update([
+            'status' => \App\Enums\Subscription\SubscriptionStatus::FAILED,
+        ]);
+
+        return $charity->fresh();
     }
 
     public function deleteSubscription(int $id): bool
@@ -564,11 +611,30 @@ class SubscriptionService
             ];
         }
 
+        $paymentMethodStats = [];
+        $paymentTypes = \App\Enums\Payment\PaymentType::cases();
+        
+        foreach ($paymentTypes as $paymentType) {
+            $paymentSubscriptions = $subscriptions->where('payment_type', $paymentType);
+            $paymentCount = $paymentSubscriptions->count();
+            $giftCount = $paymentSubscriptions->where('is_gift', true)->count();
+            $paymentIncome = $paymentSubscriptions->sum('price');
+            
+            $paymentMethodStats[] = [
+                'type'        => $paymentType->value,
+                'type_label'  => $paymentType->getLocalizedName(),
+                'count'       => $paymentCount,
+                'gift_count'  => $giftCount,
+                'income'      => $paymentIncome,
+            ];
+        }
+
         return [
             'workshop_title' => $workshop->title,
             'total_amount'   => $totalIncome,
             'total_count'    => $totalCount,
             'packages'       => array_values($packageStats),
+            'payment_methods' => $paymentMethodStats,
         ];
     }
 
@@ -777,6 +843,34 @@ class SubscriptionService
         }
 
         $subscription->update([
+            'is_gift_approved' => true,
+        ]);
+
+        return $subscription->fresh(['user', 'workshop', 'workshop.packages', 'country', 'gifter']);
+    }
+
+    public function createUserAndAssignGift(int $subscriptionId, array $userData): Subscription
+    {
+        $subscription = $this->getSubscriptionById($subscriptionId);
+
+        if (! $subscription->is_gift) {
+            throw new \Exception('هذا الاشتراك ليس هدية');
+        }
+
+        if ($subscription->user_id !== null) {
+            throw new \Exception('الهدية مخصصة بالفعل لمستخدم موجود');
+        }
+
+        $user = User::create([
+            'full_name'  => $userData['full_name'],
+            'phone'      => $userData['phone'],
+            'email'      => $userData['email'],
+            'country_id' => $userData['country_id'],
+            'is_active'  => true,
+        ]);
+
+        $subscription->update([
+            'user_id'          => $user->id,
             'is_gift_approved' => true,
         ]);
 
